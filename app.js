@@ -263,8 +263,6 @@ function applyTheme(m){if(m==='terminal'){document.documentElement.setAttribute(
   else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#F5F7FA';}}
 (function(){try{var s=localStorage.getItem(TKEY);if(s)applyTheme(s);}catch(e){}})();
 $('#themeBtn').addEventListener('click',function(){var term=document.documentElement.getAttribute('data-theme')==='terminal';var next=term?'light':'terminal';applyTheme(next);try{localStorage.setItem(TKEY,next);}catch(e){}});
-$('#shareBtn').addEventListener('click',function(){var d={title:'Daftar Efek Syariah IDX 2016-2026 · Lotmetrik',text:'Telusuri saham syariah yang masuk & keluar daftar OJK, 2016-2026.',url:location.href};
-  if(navigator.share)navigator.share(d).catch(function(){});else{copyText(location.href);toast('Link disalin');}});
 function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(function(){fb(t);});else fb(t);
   function fb(x){var a=el('textarea');a.value=x;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}}
 var toastT;function toast(m){var e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('on');},2100);}
