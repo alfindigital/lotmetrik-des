@@ -231,8 +231,6 @@ section{padding:22px 0}
 /* ---------- TRACKER ---------- */
 .tracker-in{display:flex;gap:8px;flex-wrap:wrap}
 .tracker-in .search{flex:1 1 200px}
-.watch-row{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
-.watch-lbl{font-size:12px;color:var(--text-muted);font-weight:700}
 .tr-res{margin-top:16px}
 .tr-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .tr-head .tk{font-weight:800;font-size:1.5rem;letter-spacing:.01em}
@@ -266,16 +264,6 @@ section{padding:22px 0}
 .fact .fl{font-size:12.5px;font-weight:700;color:var(--text)}
 .fact .fd{font-size:11.5px;color:var(--text-secondary);line-height:1.4}
 .fact .more{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--accent-text);margin-top:auto;letter-spacing:.02em}
-
-/* ---------- LEAD BAND ---------- */
-.lead-band{margin-top:8px}
-.lead-inner{background:var(--navy-900);border-radius:var(--r-lg);padding:22px;display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:center}
-.lead-inner h3{color:#fff;font-size:1.15rem} .lead-inner p{color:var(--slate-300);font-size:13px;margin-top:6px;line-height:1.5}
-.lead-form{display:flex;gap:8px;flex-wrap:wrap}
-.lead-form input[type=email]{flex:1;min-width:150px;font:inherit;font-size:16px;padding:11px 13px;border-radius:var(--r-md);border:1px solid var(--navy-600);background:var(--navy-800);color:#fff}
-.lead-form input::placeholder{color:var(--slate-500)}
-.lead-ok{color:var(--teal-400);font-size:14px;font-weight:600}
-.hp{position:absolute;left:-9999px}
 
 /* ---------- MODAL ---------- */
 .modal-back{position:fixed;inset:0;z-index:60;background:rgba(6,18,31,.55);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center}
@@ -334,7 +322,6 @@ footer{margin-top:28px;background:var(--navy-950);color:var(--slate-300)}
   .metrics{gap:9px}
   .tr-stats{grid-template-columns:1fr 1fr}
   .card-body{padding:13px}
-  .lead-inner{grid-template-columns:1fr}
   .lm-cards{grid-template-columns:1fr}
 }
 @media(max-width:400px){ .facts{grid-template-columns:1fr} }
@@ -450,7 +437,6 @@ footer{margin-top:28px;background:var(--navy-950);color:var(--slate-300)}
           </div>
           <button class="btn btn-primary" id="trkBtn">Lacak</button>
         </div>
-        <div class="watch-row" id="watchRow" style="display:none"></div>
         <div class="tr-res" id="trkRes">
           <p class="tr-hint">Ketik kode saham 4 huruf untuk lihat di periode mana dia ada di daftar syariah, kapan masuk, kapan keluar. Coba: <a href="#" data-trk="ASII">ASII</a>, <a href="#" data-trk="TLKM">TLKM</a>, <a href="#" data-trk="BUKA">BUKA</a>, <a href="#" data-trk="TIRA">TIRA</a>.</p>
         </div>
@@ -464,21 +450,6 @@ footer{margin-top:28px;background:var(--navy-950);color:var(--slate-300)}
       <div class="note">tap untuk lihat daftar</div>
     </div>
     <div class="facts" id="facts"></div>
-  </section>
-
-  <section id="notify" class="lead-band">
-    <div class="lead-inner">
-      <div>
-        <h3>Kabari pas DES rilis berikutnya</h3>
-        <p>OJK memperbarui daftar sekitar 2x setahun. Titip email, cuma dikirim pas ada rilis baru (paling 2 email setahun). Nggak spam.</p>
-      </div>
-      <form id="leadForm" name="des-notify" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="lead-form" action="/">
-        <input type="hidden" name="form-name" value="des-notify">
-        <p class="hp"><label>Jangan diisi: <input name="bot-field"></label></p>
-        <input type="email" name="email" required placeholder="email kamu" aria-label="Alamat email">
-        <button type="submit" class="btn btn-go">Kabari aku</button>
-      </form>
-    </div>
   </section>
 
 </main>
@@ -522,8 +493,8 @@ footer{margin-top:28px;background:var(--navy-950);color:var(--slate-300)}
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=212"></script>
-<script src="app.js?v=212"></script>
+<script src="data.js?v=213"></script>
+<script src="app.js?v=213"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->

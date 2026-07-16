@@ -274,10 +274,8 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
   else if(rec.oneHit)chips+=' <span class="chip out">Sekali lewat</span>';
   else if(rec.runs>=2)chips+=' <span class="chip">Comeback '+rec.runs+' babak</span>';
   var dots='',srlist=[];for(var i=0;i<N;i++){var on=rec.bits[i]==='1';dots+='<span class="dot '+(on?'on':'')+'" data-tip="'+shortLabel(i)+' '+periods[i].phase+': '+(on?'ada':'tidak')+'"></span>';if(on)srlist.push(shortLabel(i)+' '+periods[i].phase);}
-  var saved=inWatch(code);
   host.innerHTML='<div class="tr-head"><span class="tk mono">'+rec.t+'</span><span class="nm">'+esc(rec.name)+'</span>'+
-      '<span class="tr-actions"><button class="btn btn-ghost btn-sm" id="trkStar" aria-pressed="'+saved+'">'+(saved?'★ Dipantau':'☆ Pantau')+'</button>'+
-      '<button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></span></div>'+
+      '<span class="tr-actions"><button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></span></div>'+
     '<div class="tr-chips">'+chips+'</div>'+
     '<div class="dots" role="img" aria-label="'+esc(rec.t+' ada di daftar pada: '+(srlist.length?srlist.join(', '):'tidak pernah'))+'">'+dots+'</div>'+
     '<div class="tr-stats">'+
@@ -289,26 +287,12 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
   $('#trkShare').onclick=function(){var url=SITE+'/#t='+code,txt=trackerText(rec);
     if(navigator.share)navigator.share({title:'DES · '+code,text:txt,url:url}).catch(function(){});
     else{copyText(txt+' '+url);toast('Teks + link disalin');}};
-  $('#trkStar').onclick=function(){toggleWatch(code);var s=inWatch(code);this.setAttribute('aria-pressed',s);this.textContent=s?'★ Dipantau':'☆ Pantau';toast(s?code+' masuk pantauan':code+' dihapus dari pantauan');renderWatch();};
 }
 function doTrack(){var v=$('#trkInput').value;if(v)showTracker(v,true);}
 $('#trkBtn').addEventListener('click',doTrack);
 $('#trkInput').addEventListener('input',function(){var v=this.value.trim().toUpperCase();if(perT[v])showTracker(v,true);});
 $('#trkInput').addEventListener('keydown',function(e){if(e.key==='Enter')doTrack();});
 $('#trkRes').addEventListener('click',function(e){var a=e.target.closest('[data-trk]');if(a){e.preventDefault();showTracker(a.dataset.trk,true);}});
-
-/* ---------- watchlist ---------- */
-var WKEY='lotmetrik-des-watch';
-function getWatch(){try{return JSON.parse(localStorage.getItem(WKEY)||'[]');}catch(e){return [];}}
-function setWatch(a){try{localStorage.setItem(WKEY,JSON.stringify(a));}catch(e){}}
-function inWatch(c){return getWatch().indexOf(c)>-1;}
-function toggleWatch(c){var a=getWatch(),k=a.indexOf(c);if(k>-1)a.splice(k,1);else a.push(c);setWatch(a);}
-function renderWatch(){var row=$('#watchRow');if(!row)return;var a=getWatch().filter(function(c){return perT[c];});
-  if(!a.length){row.innerHTML='';row.style.display='none';return;}
-  row.style.display='';
-  row.innerHTML='<span class="watch-lbl">Pantauanku:</span>'+a.map(function(c){return '<button class="tag" data-trk="'+c+'">'+c+'</button>';}).join('');
-}
-$('#watchRow')&&$('#watchRow').addEventListener('click',function(e){var b=e.target.closest('[data-trk]');if(b){showTracker(b.dataset.trk,true);scrollTo('#lacak');}});
 
 /* =====================================================================
    FACTS + MODAL (semua angka diturunkan dari data)
@@ -381,19 +365,11 @@ function applyHash(){
   setPeriod(N-1);
 }
 
-/* lead capture (Netlify Forms via AJAX; no redirect) */
-var leadForm=$('#leadForm');
-if(leadForm)leadForm.addEventListener('submit',function(e){
-  e.preventDefault();var data=new URLSearchParams(new FormData(leadForm)).toString();
-  fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data})
-    .then(function(){leadForm.innerHTML='<p class="lead-ok">Sip, nanti dikabari pas DES rilis. Makasih.</p>';})
-    .catch(function(){toast('Gagal kirim, coba lagi ya');});});
-
 function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(function(){fb(t);});else fb(t);
   function fb(x){var a=el('textarea');a.value=x;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}}
 var toastT;function toast(m){var e=$('#toast');e.textContent=m;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){e.classList.remove('on');},2400);}
 function scrollTo(s){var t=$(s);if(t)t.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});}
 
 /* ---------- INIT ---------- */
-renderHero();initCountdown();renderChart();renderChartSR();buildTimeline();buildDatalist();renderFacts();renderWatch();applyHash();
+renderHero();initCountdown();renderChart();renderChartSR();buildTimeline();buildDatalist();renderFacts();applyHash();
 })();
