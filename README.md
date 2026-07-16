@@ -11,31 +11,23 @@ Alat data gratis: telusuri Daftar Efek Syariah OJK 2016-2026. Statis, tanpa serv
 
 Cukup 5 file. Tanpa build, tanpa npm.
 
-## Deploy (pilih SATU, gratis)
-### Netlify Drop (paling gampang)
-1. Buka `https://app.netlify.com/drop`
-2. Seret folder `des-flow-tool-v2` ke kotak. Selesai, dapat link.
-
-### Cloudflare Pages / Vercel
-Upload isi folder (5 file). Framework preset: **Other** (ini statis).
-
-## Custom domain lotmetrik.my.id
-Kalau v1 sudah di Netlify dan kamu mau v2 gantiin di domain yang sama, cukup re-deploy folder ini ke situs Netlify yang sama (drag ulang / Deploys > Drag and drop). Domain ikut otomatis.
-
-Untuk pasang `lotmetrik.my.id` (atau subdomain, mis. `des.lotmetrik.my.id`):
-1. Netlify > situs kamu > **Domain management** > **Add a domain** > ketik domainnya.
-2. Netlify kasih target DNS. Buka panel domain `.my.id` kamu, tambahkan:
-   - Domain utama `lotmetrik.my.id` → `A` record ke IP Netlify (mis. `75.2.60.5`), atau ganti nameserver ke Netlify DNS.
-   - Subdomain (mis. `des`) → `CNAME` ke `namasitus.netlify.app`.
-3. Tunggu propagasi (menit-jam). HTTPS otomatis dari Netlify (gratis).
-
-Catatan: brand constants menyebut domain utama `lotmetrik.com`. Kalau nanti pindah ke .com, langkahnya sama.
+## Deploy — LIVE via GitHub (otomatis)
+Situs ini sudah live di **https://des.lotmetrik.my.id**.
+- Repo: `alfindigital/lotmetrik-des` → auto-deploy ke Netlify tiap `git push`.
+- Cara update: edit file → `git commit` → `git push`. Netlify build & publish sendiri. **Nol drag-drop.**
+- Cache-buster: tiap ubah `app.js`/`data.js`, naikkan `?v=NNN` di tag `<script>` `index.html` biar user tidak kena file basi.
 
 ## Update data DES (tiap 6 bulan, manual)
-Yang berubah cuma `data.js`. `index.html` & `app.js` tidak disentuh.
+Yang berubah utama cuma `data.js`. `index.html` & `app.js` tidak disentuh.
 1. OJK terbit rilis baru → kasih file Excel-nya ke Claude (skill `des-flow`).
-2. Claude regenerasi `data.js` (parse Excel → bitstring). Ini tidak bisa diedit tangan (850 saham × 21 periode).
-3. Ganti `data.js`, re-deploy (drag ulang folder). Chart, timeline, tracker, fakta ikut update otomatis.
+2. Claude regenerasi `data.js` (parse Excel → bitstring). Tidak bisa diedit tangan (850 saham × 21 periode).
+3. Ganti `data.js`. Chart, timeline, tracker, fakta ikut update **otomatis** dari data.
+4. **PENTING (angka statis yang TIDAK auto-update)** — kalau puncak/awal/terakhir/jumlah rilis berubah, samakan manual di `index.html`:
+   - `<meta name="description">` dan `og:description` / `twitter:description` (ada literal `307 jadi 688 lalu 622`).
+   - `og:image:alt` (menyebut 307 / 688 / 622).
+   - `og.png` — gambar preview perlu digambar ulang kalau puncak/terakhir berubah.
+   Ini satu-satunya teks yang crawler baca tapi JS tidak bisa perbarui.
+5. Naikkan cache-buster `?v=NNN`, lalu `git push`.
 
 ## Ganti handle / disclaimer
 - Handle IG ada di footer `index.html` (`@lotmetrik`). Sudah benar sesuai brand.
