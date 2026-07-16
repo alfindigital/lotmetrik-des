@@ -87,7 +87,12 @@ function buildPanduan(){
     '<div class="guide pg-guide">'+
       '<h4>Apa itu Daftar Efek Syariah (DES)?</h4>'+
       '<p>DES adalah daftar resmi saham yang dinyatakan sesuai prinsip syariah oleh OJK. Diterbitkan berkala, sekitar 2x setahun (periode I pertengahan tahun, periode II akhir tahun). Sejak '+shortLabel(0)+' sudah '+N+' rilis.</p>'+
-      '<p>Sebuah saham lolos bila memenuhi rasio keuangan syariah, di antaranya: total utang berbasis bunga di bawah 45% total aset, dan pendapatan bunga serta pendapatan tidak halal lainnya di bawah 10% total pendapatan. Kriteria lengkap mengikuti aturan OJK.</p>'+
+      '<p>Sebuah saham lolos bila kegiatan usahanya tidak bertentangan dengan prinsip syariah dan memenuhi rasio keuangan yang ditetapkan OJK. Sejak <b>POJK 8/2025</b> (menggantikan POJK 35/2017), ambang rasionya diperketat:</p>'+
+      '<ul>'+
+        '<li>Total utang berbasis bunga diturunkan bertahap dari 45% menuju <b>33% dari total aset</b> (dalam 10 tahun sejak 2025).</li>'+
+        '<li>Total pendapatan bunga &amp; pendapatan tidak halal lainnya turun dari 10% ke <b>di bawah 5% dari total pendapatan</b> (berlaku sekitar April 2026). Rincian lengkap ada di POJK 8/2025.</li>'+
+      '</ul>'+
+      '<p>Rilis <b>'+shortLabel(N-1)+'</b> ('+esc(META[N-1].kep)+') mencoret '+periods[N-1].keluar.length+' saham sekaligus — keluar terbanyak sepanjang '+N+' rilis, dan ini rilis pertama setelah ambang pendapatan non-halal diperketat ke 5%. Besar kemungkinan terkait aturan baru itu, tapi data ini tidak merinci sebab keluar per saham.</p>'+
       '<h4>Cara pakai</h4>'+
       '<ul>'+
         '<li><b>Statistik atas</b> — ringkasan angka: jumlah kini, puncak, awal, saham unik, setia, dan comeback. Kartu yang bisa diklik membuka daftar isinya.</li>'+
@@ -113,9 +118,11 @@ function buildPanduan(){
         '<li><b>Data historis tidak menjamin masa depan.</b> Komposisi daftar berubah tiap rilis.</li>'+
       '</ul>'+
       '<h4>Sumber &amp; pembaruan</h4>'+
-      '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah.<br>Data per '+esc(META[N-1].date)+' ('+esc(META[N-1].kep)+').<br>'+N+' rilis · '+fmtNum(TICKERS.length)+' emiten unik (basis: saham berkode IDX).<br>Rilis berikutnya diperkirakan sekitar '+r.when+'. Selalu verifikasi ke sumber resmi OJK &amp; IDX.</div>'+
+      '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah.<br>Data per '+esc(META[N-1].date)+' ('+esc(META[N-1].kep)+').<br>'+N+' rilis · '+fmtNum(TICKERS.length)+' emiten unik (basis: saham berkode IDX).<br>Rilis berikutnya diperkirakan sekitar '+r.when+'. Selalu verifikasi ke sumber resmi OJK &amp; IDX.<br><a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" target="_blank" rel="noopener">Buka data resmi OJK &#8594;</a></div>'+
       '<h4>Disclaimer</h4>'+
       '<p class="disc">Konten Lotmetrik adalah edukasi berbasis data — bukan rekomendasi, ajakan, atau nasihat investasi. Lotmetrik bukan penasihat investasi berizin. Data historis tidak menjamin kinerja masa depan. Sejalan dengan POJK 6/2026.</p>'+
+      '<h4>Kabar rilis berikutnya</h4>'+
+      '<p>Data DES cuma berubah sekitar 2x setahun. Biar tidak ketinggalan rilis berikutnya (≈ '+r.when+'), ikuti <a href="https://t.me/lotmetrik" target="_blank" rel="noopener">@lotmetrik di Telegram</a>.</p>'+
       '<h4>Alat gratis lain dari Lotmetrik</h4>'+
       '<div class="guide-links">'+
         '<a href="https://5.lotmetrik.my.id" target="_blank" rel="noopener">KSEI 5% Harian</a>'+
