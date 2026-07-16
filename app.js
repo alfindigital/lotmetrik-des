@@ -1,9 +1,7 @@
 /* =====================================================================
-   Lotmetrik — DES Explorer (v2.1)
+   Lotmetrik — DES Explorer (v2.2, compact layout)
    Alat data Daftar Efek Syariah OJK. Zero dependencies.
-   Semua metrik + angka fakta + rentang sumbu DIHITUNG dari data.js
-   (tidak ada hardcode yang bisa basi saat data diperbarui).
-   Angka: JetBrains Mono, desimal koma, minus U+2212. teal=naik, merah=turun.
+   Angka + rentang sumbu dihitung dari data.js. Panduan/sumber ada di modal.
    ===================================================================== */
 (function(){
 "use strict";
@@ -11,11 +9,9 @@ var DES = window.DES;
 if(!DES){document.body.innerHTML='<p style="padding:40px">Gagal memuat data.</p>';return;}
 var META=DES.meta, NAMES=DES.names, PRES=DES.present, N=META.length;
 var TICKERS=Object.keys(PRES).sort();
-var MINUS='−';
-var SITE='https://des.lotmetrik.my.id';
+var MINUS='−', SITE='https://des.lotmetrik.my.id';
 var BLN=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
-/* ---------- helpers ---------- */
 var $=function(s,r){return (r||document).querySelector(s);};
 var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s));};
 function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;}
@@ -27,8 +23,6 @@ function yearOf(i){return META[i].date.split(' ')[2];}
 function phase(i){return META[i].key.indexOf('_P1')>-1?'P1':'P2';}
 function bits(t){return PRES[t];}
 function reduceMotion(){try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}}
-var LAST_TOTAL=META[N-1].total;
-function stampHTML(){return 'Sumber: <b>OJK</b> · Daftar Efek Syariah · Per: <b>'+esc(META[N-1].date)+'</b> · n=<b>'+fmtNum(TICKERS.length)+'</b> emiten unik ('+N+' rilis) · rilis terakhir <b>'+fmtNum(LAST_TOTAL)+'</b> saham';}
 
 /* ---------- derive periods ---------- */
 var periods=[];
@@ -42,16 +36,14 @@ for(var i=0;i<N;i++){
     label:shortLabel(i),phase:phase(i),baseline:i===0,masuk:masuk,keluar:keluar,net:i===0?0:masuk.length-keluar.length});
 }
 
-/* ---------- per-ticker + lists (semua dinamis) ---------- */
+/* ---------- per-ticker + lists ---------- */
 function runsOf(b){var r=0,p='0';for(var j=0;j<b.length;j++){if(b[j]==='1'&&p==='0')r++;p=b[j];}return r;}
 function flipsOf(b){var f=0;for(var j=1;j<b.length;j++){if(b[j]!==b[j-1])f++;}return f;}
 var perT={},survivors=[],oneHit=[],newcomers=[],comeback=[],revolving=[];
 for(var x=0;x<TICKERS.length;x++){
   var t=TICKERS[x],b=bits(t),cnt=(b.match(/1/g)||[]).length,runs=runsOf(b),flips=flipsOf(b),exits=0;
   for(var j=1;j<N;j++){ if(b[j]==='0'&&b[j-1]==='1') exits++; }
-  var here=b[N-1]==='1';
-  // "Kali masuk" = event masuk SETELAH baseline (hadir sejak awal bukan event masuk)
-  var enters=runs-(b[0]==='1'?1:0);
+  var here=b[N-1]==='1', enters=runs-(b[0]==='1'?1:0);
   perT[t]={t:t,name:NAMES[t]||t,bits:b,count:cnt,runs:runs,flips:flips,enters:enters,exits:exits,statusNow:here,
     survivor:cnt===N, oneHit:cnt===1&&!here, newcomer:cnt===1&&here};
   if(cnt===N)survivors.push(t);
@@ -65,7 +57,7 @@ var maxOut={n:-1,i:1}; for(var i=1;i<N;i++){ if(periods[i].keluar.length>maxOut.
 var peak={total:-1,i:0}; for(var i=0;i<N;i++){ if(META[i].total>peak.total)peak={total:META[i].total,i:i}; }
 var revTop=revolving.slice(0,3);
 
-/* ---------- nice axis (anti-jebol saat data update) ---------- */
+/* ---------- nice axis ---------- */
 function axisFor(vals,padFrac){
   var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),pad=Math.max(1,(mx-mn)*padFrac);
   mn-=pad;mx+=pad;var span=mx-mn,steps=[5,10,20,25,50,100,200,500,1000],step=steps[steps.length-1];
@@ -77,80 +69,94 @@ function axisFor(vals,padFrac){
 var AX_TOTAL=axisFor(META.map(function(m){return m.total;}),0.06);
 var AX_NET=axisFor(periods.slice(1).map(function(p){return p.net;}).concat([0]),0.12);
 
-/* =====================================================================
-   HERO + STAMPS + COUNTDOWN
-   ===================================================================== */
-function renderHero(){
-  var first=periods[0],last=periods[N-1],drop=last.total-peak.total;
-  $('#heroMetrics').innerHTML=
-    mcard(first.total,'','Awal · '+shortLabel(first.i),'titik mulai')+
-    mcard(peak.total,'hl','Puncak · '+shortLabel(peak.i),'rekor tertinggi')+
-    mcard(last.total,'down','Kini · '+shortLabel(last.i),fmtSigned(drop)+' dari puncak');
-  $('#heroStamp').innerHTML=stampHTML();
-  $('#chartStamp').innerHTML=stampHTML();
-  $('#footStamp').innerHTML=stampHTML();
-  $('#footCopy').textContent='© '+yearOf(N-1)+' Lotmetrik · diolah dari '+N+' rilis resmi OJK';
-  var cr=$('#chartRange'); if(cr) cr.textContent=yearOf(0)+' - '+yearOf(N-1)+' · '+N+' rilis';
-  var hn=$('#heroN'); if(hn) hn.textContent=N;
-  function mcard(v,cls,l,sub){return '<div class="mcard"><span class="ml">'+esc(l)+'</span>'+
-    '<span class="mv '+cls+' mono">'+fmtNum(v)+'</span><span class="ms">'+esc(sub)+'</span></div>';}
+/* ---------- next release / countdown / guide ---------- */
+function nextReleaseInfo(){
+  var p=META[N-1].date.split(' '),m=BLN.indexOf(p[1]),yr=+p[2],nm=m+6,ny=yr;if(nm>11){nm-=12;ny++;}
+  var target=new Date(ny,nm,1),now=new Date();
+  return {when:BLN[nm]+' '+ny, months:(target.getFullYear()-now.getFullYear())*12+(target.getMonth()-now.getMonth())};
 }
-function initCountdown(){
-  var box=$('#nextRelease'); if(!box) return;
-  var p=META[N-1].date.split(' '),m=BLN.indexOf(p[1]),yr=+p[2];
-  var nm=m+6,ny=yr; if(nm>11){nm-=12;ny++;}
-  var target=new Date(ny,nm,1), now=new Date();
-  var months=(target.getFullYear()-now.getFullYear())*12+(target.getMonth()-now.getMonth());
-  var when='sekitar '+BLN[nm]+' '+ny;
-  box.innerHTML='Rilis DES berikutnya diperkirakan <b>'+when+'</b>'+(months>0?' (≈ '+months+' bulan lagi)':' (sebentar lagi)')+'. Datanya menyusul di sini.';
+function initCountdown(){var box=$('#nextRelease');if(!box)return;var r=nextReleaseInfo();
+  box.innerHTML='Rilis DES berikutnya diperkirakan <b>sekitar '+r.when+'</b>'+(r.months>0?' (≈ '+r.months+' bulan lagi)':'')+'.';}
+function openGuide(){var r=nextReleaseInfo();
+  var body='<div class="guide">'+
+    '<h4>Apa itu Daftar Efek Syariah?</h4>'+
+    '<p>OJK menerbitkan DES sekitar 2x setahun. Saham lolos kalau utang berbasis bunga di bawah 45% total aset dan pendapatan non-halal di bawah 10%. Sejak 2016 sudah '+N+' rilis.</p>'+
+    '<h4>Cara pakai</h4>'+
+    '<ul><li>Tap titik grafik atau kotak periode untuk lihat siapa masuk &amp; keluar.</li>'+
+    '<li>Ketik kode di <b>Lacak jejak</b> untuk riwayat 21 periode satu saham.</li>'+
+    '<li>Tap angka atau kartu Fakta untuk daftar lengkap. Tombol Bagikan bikin link langsung ke temuanmu.</li></ul>'+
+    '<h4>Baca hati-hati</h4>'+
+    '<ul><li><b>Keluar DES bukan delisting</b> dan bukan berarti sahamnya jelek, cuma gagal saringan syariah semester itu.</li>'+
+    '<li>"'+survivors.length+' setia" punya bias umur listing: cuma saham yang sudah tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori ini. Setia bukan jaminan cuan.</li></ul>'+
+    '<h4>Sumber</h4>'+
+    '<p class="mono">OJK · Daftar Efek Syariah · per '+META[N-1].date+' · '+N+' rilis · '+fmtNum(TICKERS.length)+' emiten unik (basis: saham berkode IDX). Rilis berikutnya diperkirakan sekitar '+r.when+'.</p>'+
+    '<p class="disc">Konten Lotmetrik EDUKASI berbasis data, bukan rekomendasi, ajakan, atau nasihat investasi. Lotmetrik bukan penasihat investasi berizin. Data historis tidak menjamin kinerja masa depan; verifikasi ke sumber resmi (OJK &amp; IDX). Sejalan dengan POJK 6/2026.</p>'+
+    '<h4>Alat gratis lain dari Lotmetrik</h4>'+
+    '<div class="guide-links"><a href="https://5.lotmetrik.my.id" target="_blank" rel="noopener">KSEI 5% Harian</a>'+
+    '<a href="https://beta.lotmetrik.my.id" target="_blank" rel="noopener">Radar Beta</a>'+
+    '<a href="https://lotmetrik.my.id" target="_blank" rel="noopener">lotmetrik.my.id</a>'+
+    '<a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">@lotmetrik</a></div></div>';
+  showModal('Panduan · DES Explorer','Cara pakai, catatan, dan sumber.',body);}
+
+/* ---------- stats (hero) ---------- */
+function renderHero(){
+  var first=periods[0],last=periods[N-1];
+  $('#heroMetrics').innerHTML=[
+    st(fmtNum(last.total),'down','Kini · '+shortLabel(last.i)),
+    st(fmtNum(peak.total),'hl','Puncak · '+shortLabel(peak.i)),
+    st(fmtNum(first.total),'','Awal · '+shortLabel(first.i)),
+    st(fmtNum(TICKERS.length),'','Emiten unik',1),
+    st(String(survivors.length),'up','Setia '+N+'/'+N,0),
+    st(String(comeback.length),'up','Comeback',2)
+  ].join('');
+  var cr=$('#chartRange');if(cr)cr.textContent=yearOf(0)+'–'+yearOf(N-1)+' · '+N+' rilis';
+  var fy=$('#footYear');if(fy)fy.textContent=yearOf(N-1);
+  function st(v,cls,l,f){var clk=f!=null;
+    return (clk?'<button class="scard clk" data-f="'+f+'">':'<div class="scard">')+
+      '<span class="sv '+cls+' mono">'+v+'</span><span class="sl">'+esc(l)+'</span>'+
+      (clk?'<span class="sl-more">Lihat ›</span></button>':'</div>');}
 }
 
 /* =====================================================================
-   CHART (dinamis, flat data-terminal, keyboard-accessible)
+   CHART
    ===================================================================== */
-var W=1000,H=400,padL=46,padR=16,padT=20,padB=34,plotW=W-62,plotH=H-54,chartMode='total';
+var W=1000,H=380,padL=46,padR=16,padT=18,padB=32,plotW=W-62,plotH=H-50,chartMode='total';
 var ttEl=$('#chartTt'),hostEl=$('#chartHost'),wrapEl=hostEl.parentNode;
 function xAt(i){return padL+plotW*(i/(N-1));}
 function svgOpen(){return '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Grafik daftar efek syariah '+yearOf(0)+' sampai '+yearOf(N-1)+'. Detail angka ada di tabel di bawah.">';}
-function gridYears(){var s='';for(var i=0;i<N;i+=4){s+='<text x="'+xAt(i).toFixed(1)+'" y="'+(H-9)+'" font-size="26" text-anchor="middle">'+yearOf(i)+'</text>';}return s;}
-function watermark(){return '<text class="wmk" x="'+(W-padR-6)+'" y="'+(H-padB-4)+'" font-size="28" text-anchor="end">@lotmetrik</text>';}
+function gridYears(){var s='';for(var i=0;i<N;i+=4){s+='<text x="'+xAt(i).toFixed(1)+'" y="'+(H-8)+'" font-size="25" text-anchor="middle">'+yearOf(i)+'</text>';}return s;}
+function watermark(){return '<text class="wmk" x="'+(W-padR-6)+'" y="'+(H-padB-4)+'" font-size="26" text-anchor="end">@lotmetrik</text>';}
 function hitRect(i){var w=plotW/N;return '<rect class="hit" tabindex="0" role="button" aria-label="'+esc(periods[i].label+' '+periods[i].phase+', total '+periods[i].total+' saham')+'" data-i="'+i+'" x="'+(xAt(i)-w/2).toFixed(1)+'" y="'+padT+'" width="'+w.toFixed(1)+'" height="'+plotH+'" fill="transparent" style="cursor:pointer"/>';}
 function renderChart(){chartMode==='total'?renderTotal():renderNet();renderLegend();}
 function renderTotal(){
-  var ax=AX_TOTAL; function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
+  var ax=AX_TOTAL;function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
   var grid='';ax.ticks.forEach(function(g){var yy=y(g).toFixed(1);
     grid+='<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="var(--grid-line)" stroke-width="1"/>';
-    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="24" text-anchor="end">'+g+'</text>';});
+    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="23" text-anchor="end">'+g+'</text>';});
   var pts=[];for(var i=0;i<N;i++)pts.push([xAt(i),y(META[i].total)]);
   var line=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
   var area=line+' L'+pts[N-1][0].toFixed(1)+' '+(H-padB)+' L'+pts[0][0].toFixed(1)+' '+(H-padB)+' Z';
   var drop='M'+pts[peak.i][0].toFixed(1)+' '+pts[peak.i][1].toFixed(1);
   for(var i=peak.i+1;i<N;i++)drop+=' L'+pts[i][0].toFixed(1)+' '+pts[i][1].toFixed(1);
   var dots='',hits='';
-  for(var i=0;i<N;i++){var isP=i===peak.i,isL=i===N-1;
-    var c=isP?'var(--highlight)':(isL?'var(--down)':'var(--up)'),r=isP||isL?6:3;
-    dots+='<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)+'" r="'+r+'" fill="'+c+'"/>';
-    hits+=hitRect(i);}
+  for(var i=0;i<N;i++){var isP=i===peak.i,isL=i===N-1,c=isP?'var(--highlight)':(isL?'var(--down)':'var(--up)'),r=isP||isL?6:3;
+    dots+='<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)+'" r="'+r+'" fill="'+c+'"/>';hits+=hitRect(i);}
   hostEl.innerHTML=svgOpen()+grid+gridYears()+watermark()+
     '<path d="'+area+'" fill="var(--up-soft)"/>'+
     '<path d="'+line+'" fill="none" stroke="var(--up)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+
-    '<path d="'+drop+'" fill="none" stroke="var(--down)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'+
-    dots+hits+'</svg>';
+    '<path d="'+drop+'" fill="none" stroke="var(--down)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'+dots+hits+'</svg>';
   bindHits();
 }
 function renderNet(){
-  var ax=AX_NET; function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
+  var ax=AX_NET;function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
   var grid='';ax.ticks.forEach(function(g){var yy=y(g).toFixed(1);
     grid+='<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="var(--grid-line)" stroke-width="'+(g===0?1.4:1)+'"/>';
-    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="24" text-anchor="end">'+(g>0?'+':g<0?MINUS:'')+Math.abs(g)+'</text>';});
+    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="23" text-anchor="end">'+(g>0?'+':g<0?MINUS:'')+Math.abs(g)+'</text>';});
   var bw=plotW/N*0.56,bars='',hits='';
-  for(var i=1;i<N;i++){var v=periods[i].net,cx=xAt(i),top=y(Math.max(0,v)),bot=y(Math.min(0,v)),h=Math.abs(bot-top);
-    var c=v>=0?'var(--up)':'var(--down)';
-    bars+='<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,h).toFixed(1)+'" fill="'+c+'" rx="1"/>';
-    hits+=hitRect(i);}
+  for(var i=1;i<N;i++){var v=periods[i].net,cx=xAt(i),top=y(Math.max(0,v)),bot=y(Math.min(0,v)),h=Math.abs(bot-top),c=v>=0?'var(--up)':'var(--down)';
+    bars+='<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,h).toFixed(1)+'" fill="'+c+'" rx="1"/>';hits+=hitRect(i);}
   hostEl.innerHTML=svgOpen()+grid+gridYears()+watermark()+
-    '<line x1="'+padL+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y(0).toFixed(1)+'" stroke="var(--border-strong)" stroke-width="1.2"/>'+
-    bars+hits+'</svg>';
+    '<line x1="'+padL+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y(0).toFixed(1)+'" stroke="var(--border-strong)" stroke-width="1.2"/>'+bars+hits+'</svg>';
   bindHits();
 }
 function renderLegend(){
@@ -158,8 +164,7 @@ function renderLegend(){
     ?'<span><i style="background:var(--up)"></i>Jumlah saham</span><span><i style="background:var(--highlight)"></i>Puncak '+peak.total+'</span><span><i style="background:var(--down)"></i>Penurunan '+yearOf(N-1)+'</span><span class="axnote">sumbu Y tidak mulai dari 0</span>'
     :'<span><i style="background:var(--up)"></i>Net masuk</span><span><i style="background:var(--down)"></i>Net keluar</span><span class="axnote">tiap batang = masuk − keluar</span>';
 }
-function bindHits(){$$('.hit',hostEl).forEach(function(h){
-  var i=+h.dataset.i;
+function bindHits(){$$('.hit',hostEl).forEach(function(h){var i=+h.dataset.i;
   h.addEventListener('pointerenter',function(){showTT(i,h);});
   h.addEventListener('pointermove',function(){showTT(i,h);});
   h.addEventListener('pointerleave',hideTT);
@@ -177,18 +182,17 @@ function showTT(i,hit){var p=periods[i],html;
   var tw=ttEl.offsetWidth,th=ttEl.offsetHeight,left=Math.max(4,Math.min(cx-tw/2,wrapEl.clientWidth-tw-4)),top=cy-th-14;if(top<0)top=cy+16;
   ttEl.style.left=left+'px';ttEl.style.top=top+'px';}
 function hideTT(){ttEl.classList.remove('on');}
-function renderChartSR(){
-  var rows=periods.map(function(p){return '<tr><td>'+esc(p.label)+' '+p.phase+'</td><td>'+p.total+'</td><td>'+(p.baseline?'-':'+'+p.masuk.length)+'</td><td>'+(p.baseline?'-':p.keluar.length)+'</td></tr>';}).join('');
-  var sr=$('#chartSR'); if(sr) sr.innerHTML='<table><caption>Data daftar efek syariah per rilis</caption><thead><tr><th>Periode</th><th>Total</th><th>Masuk</th><th>Keluar</th></tr></thead><tbody>'+rows+'</tbody></table>';
-}
+function renderChartSR(){var sr=$('#chartSR');if(!sr)return;
+  sr.innerHTML='<table><caption>Data daftar efek syariah per rilis</caption><thead><tr><th>Periode</th><th>Total</th><th>Masuk</th><th>Keluar</th></tr></thead><tbody>'+
+    periods.map(function(p){return '<tr><td>'+esc(p.label)+' '+p.phase+'</td><td>'+p.total+'</td><td>'+(p.baseline?'-':'+'+p.masuk.length)+'</td><td>'+(p.baseline?'-':p.keluar.length)+'</td></tr>';}).join('')+'</tbody></table>';}
 $$('#chartSeg .seg-btn').forEach(function(b){b.addEventListener('click',function(){
   $$('#chartSeg .seg-btn').forEach(function(x){x.classList.remove('is-active');x.setAttribute('aria-pressed','false');});
   b.classList.add('is-active');b.setAttribute('aria-pressed','true');chartMode=b.dataset.mode;hideTT();renderChart();});});
 
 /* =====================================================================
-   PERIOD EXPLORER — timeline buttons + 3 net tiles
+   PERIOD EXPLORER — timeline + 2-kolom masuk/keluar
    ===================================================================== */
-var curPeriod=N-1,curIO='out',ioQuery='';
+var curPeriod=N-1,ioQuery='';
 function buildTimeline(){
   $('#timeline').innerHTML=periods.map(function(p){
     var nb=p.baseline?'nb':(p.net>=0?'nb pos':'nb neg');
@@ -196,22 +200,17 @@ function buildTimeline(){
   }).join('');
   $('#timeline').addEventListener('click',function(e){var b=e.target.closest('[data-i]');if(b)setPeriod(+b.dataset.i,{user:true});});
   $('#timeline').addEventListener('keydown',function(e){
-    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight'&&e.key!=='Home'&&e.key!=='End')return;
-    e.preventDefault();var ni=curPeriod;
-    if(e.key==='ArrowLeft')ni=Math.max(0,curPeriod-1);
-    else if(e.key==='ArrowRight')ni=Math.min(N-1,curPeriod+1);
-    else if(e.key==='Home')ni=0; else if(e.key==='End')ni=N-1;
-    setPeriod(ni,{user:true});var b=$('#timeline .tl-box[data-i="'+ni+'"]');if(b)b.focus();
-  });
+    if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight'&&e.key!=='Home'&&e.key!=='End')return;e.preventDefault();var ni=curPeriod;
+    if(e.key==='ArrowLeft')ni=Math.max(0,curPeriod-1);else if(e.key==='ArrowRight')ni=Math.min(N-1,curPeriod+1);
+    else if(e.key==='Home')ni=0;else if(e.key==='End')ni=N-1;
+    setPeriod(ni,{user:true});var b=$('#timeline .tl-box[data-i="'+ni+'"]');if(b)b.focus();});
 }
-function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;curIO=p.baseline?'in':'out';ioQuery='';$('#ioSearch').value='';
+function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;ioQuery='';$('#ioSearch').value='';
   var tl=$('#timeline'),active=null;
-  $$('#timeline .tl-box').forEach(function(b){var on=+b.dataset.i===i;b.classList.toggle('active',on);
-    b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;if(on)active=b;});
-  if(active&&tl){ // scroll HORIZONTAL lokal saja — tidak menggulir window
-    tl.scrollTo({left:active.offsetLeft-(tl.clientWidth-active.offsetWidth)/2,behavior:reduceMotion()?'auto':'smooth'});}
+  $$('#timeline .tl-box').forEach(function(b){var on=+b.dataset.i===i;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;if(on)active=b;});
+  if(active&&tl)tl.scrollTo({left:active.offsetLeft-(tl.clientWidth-active.offsetWidth)/2,behavior:reduceMotion()?'auto':'smooth'});
   $('#pPrev').disabled=i<=0;$('#pNext').disabled=i>=N-1;
-  renderPSum();renderTiles();syncIOseg();renderIOList();
+  renderPSum();renderTiles();renderIO();
   if(opts.user)setHash('p='+p.key);}
 function renderPSum(){var p=periods[curPeriod];
   $('#pSumHead').innerHTML='<span class="pt mono">'+fmtNum(p.total)+'</span><span class="pm">saham syariah · efektif <b>'+esc(p.date)+'</b> · '+esc(p.kep)+'</span>';}
@@ -223,24 +222,24 @@ function renderTiles(){var p=periods[curPeriod];
     tile('net','Bersih',fmtSigned(p.net),'selisih masuk-keluar');
   function tile(c,l,v,s){return '<div class="tile '+c+'"><div class="tl2">'+l+'</div><div class="tv mono">'+v+'</div><div class="ts">'+s+'</div></div>';}
 }
-function syncIOseg(){var p=periods[curPeriod];
-  $$('#ioSeg .seg-btn').forEach(function(b){var io=b.dataset.io,on=io===curIO;b.classList.toggle('is-active',on);b.setAttribute('aria-pressed',on?'true':'false');
-    var n=p.baseline?(io==='in'?p.masuk.length:0):(io==='in'?p.masuk.length:p.keluar.length);
-    var lbl=p.baseline&&io==='in'?'Isi awal':(io==='in'?'Masuk':'Keluar');
-    b.innerHTML='<span class="dotc" style="background:var('+(io==='in'?'--up':'--down')+')"></span>'+lbl+' <span class="mono">'+n+'</span>';});}
-function renderIOList(){var p=periods[curPeriod];var arr=(curIO==='in'?p.masuk:p.keluar).slice();
-  var q=ioQuery.trim().toUpperCase();if(q)arr=arr.filter(function(t){return t.indexOf(q)>-1||(NAMES[t]||'').toUpperCase().indexOf(q)>-1;});
-  var ul=$('#ioList');
-  if(!arr.length){ul.innerHTML='<li class="io-empty">'+(p.baseline&&curIO==='out'?'Periode awal tidak punya data keluar (ini titik mulai).':(q?'Tidak ada hasil untuk "'+esc(ioQuery)+'".':'Tidak ada saham '+(curIO==='in'?'masuk':'keluar')+' di periode ini.'))+'</li>';}
-  else{ul.innerHTML=arr.map(function(t){return '<li class="io-row '+(curIO==='in'?'in':'out')+'" role="button" tabindex="0" data-trk="'+t+'" aria-label="'+esc(t+' '+(NAMES[t]||t)+', buka jejak')+'"><span class="tk mono">'+t+'</span><span class="nm">'+esc(NAMES[t]||t)+'</span><span class="ar mono">&#8250;</span></li>';}).join('');}
-  $('#ioCount').textContent=fmtNum(arr.length)+' saham'+(q?' (difilter)':'')+' · '+shortLabel(curPeriod)+' '+periods[curPeriod].phase;}
+function renderIO(){var p=periods[curPeriod],q=ioQuery.trim().toUpperCase();
+  function filt(a){return q?a.filter(function(t){return t.indexOf(q)>-1||(NAMES[t]||'').toUpperCase().indexOf(q)>-1;}):a;}
+  var out=filt(p.keluar.slice()),inn=filt(p.masuk.slice());
+  col($('#ioListOut'),out,'out',p.baseline?'Periode awal, tidak ada data keluar.':null);
+  col($('#ioListIn'),inn,'in',null);
+  $('#cntOut').textContent=p.baseline?'0':fmtNum(out.length)+(q?'*':'');
+  $('#cntIn').textContent=fmtNum(inn.length)+(q?'*':'');
+  function col(ul,arr,cls,baseEmpty){
+    if(!arr.length){ul.innerHTML='<li class="io-empty">'+(baseEmpty||(q?'Tidak ada hasil.':'Tidak ada.'))+'</li>';return;}
+    ul.innerHTML=arr.map(function(t){return '<li class="io-row '+cls+'" role="button" tabindex="0" data-trk="'+t+'" aria-label="'+esc(t+' '+(NAMES[t]||t))+'"><span class="tk mono">'+t+'</span><span class="nm">'+esc(NAMES[t]||t)+'</span><span class="ar mono">›</span></li>';}).join('');}
+}
+function ioActivate(e){var r=e.target.closest('[data-trk]');if(r){showTracker(r.dataset.trk,true);scrollTo('#lacak');}}
+['#ioListOut','#ioListIn'].forEach(function(sel){var e=$(sel);if(!e)return;
+  e.addEventListener('click',ioActivate);
+  e.addEventListener('keydown',function(ev){if((ev.key==='Enter'||ev.key===' ')&&ev.target.closest('[data-trk]')){ev.preventDefault();ioActivate(ev);}});});
 $('#pPrev').addEventListener('click',function(){if(curPeriod>0)setPeriod(curPeriod-1,{user:true});});
 $('#pNext').addEventListener('click',function(){if(curPeriod<N-1)setPeriod(curPeriod+1,{user:true});});
-$$('#ioSeg .seg-btn').forEach(function(b){b.addEventListener('click',function(){curIO=b.dataset.io;syncIOseg();renderIOList();});});
-$('#ioSearch').addEventListener('input',function(){ioQuery=this.value;renderIOList();});
-function ioActivate(e){var r=e.target.closest('[data-trk]');if(r){showTracker(r.dataset.trk,true);scrollTo('#lacak');}}
-$('#ioList').addEventListener('click',ioActivate);
-$('#ioList').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-trk]')){e.preventDefault();ioActivate(e);}});
+$('#ioSearch').addEventListener('input',function(){ioQuery=this.value;renderIO();});
 $('#ioCsv').addEventListener('click',function(){exportPeriodCSV(curPeriod);});
 function exportPeriodCSV(i){var p=periods[i],rows=[['status','kode','nama']];
   if(p.baseline){p.masuk.forEach(function(t){rows.push(['ISI_AWAL',t,NAMES[t]||t]);});}
@@ -249,24 +248,19 @@ function exportPeriodCSV(i){var p=periods[i],rows=[['status','kode','nama']];
 function csvSource(){return '# Sumber: OJK Daftar Efek Syariah · Per: '+META[N-1].date+' · '+SITE+' · @lotmetrik · edukasi, bukan rekomendasi';}
 function downloadCSV(name,rows){
   var body=rows.map(function(r){return r.map(function(c){c=String(c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(',');}).join('\n');
-  var csv=csvSource()+'\n'+body;
-  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}),a=el('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  var blob=new Blob(['﻿'+csvSource()+'\n'+body],{type:'text/csv;charset=utf-8'}),a=el('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},200);}
 
 /* =====================================================================
-   STOCK TRACKER (+ share, watchlist, deep-link)
+   STOCK TRACKER
    ===================================================================== */
 function buildDatalist(){$('#trkList').innerHTML=TICKERS.map(function(t){return '<option value="'+t+'">'+esc(NAMES[t]||'')+'</option>';}).join('');}
-function trackerText(rec){
-  var status=rec.survivor?'setia '+N+'/'+N+' periode':(rec.newcomer?'pendatang baru':(rec.oneHit?'cuma 1 periode':(rec.statusNow?'di dalam':'di luar')));
+function trackerText(rec){var status=rec.survivor?'setia '+N+'/'+N+' periode':(rec.newcomer?'pendatang baru':(rec.oneHit?'cuma 1 periode':(rec.statusNow?'di dalam':'di luar')));
   return rec.t+' ('+esc(rec.name)+') di Daftar Efek Syariah OJK: '+status+', muncul '+rec.count+'/'+N+' rilis.';}
 function showTracker(code,user){code=String(code||'').trim().toUpperCase();var rec=perT[code],host=$('#trkRes');
-  if(!rec){
-    var sug=TICKERS.filter(function(t){return t.indexOf(code)===0;}).slice(0,6);
+  if(!rec){var sug=TICKERS.filter(function(t){return t.indexOf(code)===0;}).slice(0,6);
     host.innerHTML='<p class="tr-hint">Kode <b>'+esc(code)+'</b> tidak pernah masuk Daftar Efek Syariah '+yearOf(0)+'-'+yearOf(N-1)+'.'+
-      (sug.length?' Mungkin maksudmu: '+sug.map(function(t){return '<a href="#" data-trk="'+t+'">'+t+'</a>';}).join(', ')+'.':' Cek lagi ejaannya, atau coba ')+
-      (sug.length?'':'<a href="#" data-trk="ASII">ASII</a>, <a href="#" data-trk="TLKM">TLKM</a>, <a href="#" data-trk="BUKA">BUKA</a>.')+'</p>';
-    return;}
+      (sug.length?' Mungkin maksudmu: '+sug.map(function(t){return '<a href="#" data-trk="'+t+'">'+t+'</a>';}).join(', ')+'.':' Cek lagi ejaannya, atau coba <a href="#" data-trk="ASII">ASII</a>, <a href="#" data-trk="TLKM">TLKM</a>, <a href="#" data-trk="BUKA">BUKA</a>.')+'</p>';return;}
   $('#trkInput').value=code; if(user)setHash('t='+code);
   var chips='<span class="chip '+(rec.statusNow?'in':'out')+'">'+(rec.statusNow?'Di dalam ('+shortLabel(N-1)+')':'Di luar ('+shortLabel(N-1)+')')+'</span>';
   if(rec.survivor)chips+=' <span class="chip star">Setia '+N+'/'+N+'</span>';
@@ -295,21 +289,22 @@ $('#trkInput').addEventListener('keydown',function(e){if(e.key==='Enter')doTrack
 $('#trkRes').addEventListener('click',function(e){var a=e.target.closest('[data-trk]');if(a){e.preventDefault();showTracker(a.dataset.trk,true);}});
 
 /* =====================================================================
-   FACTS + MODAL (semua angka diturunkan dari data)
+   FACTS + MODAL
    ===================================================================== */
 var FACTS=[
-  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua '+N+' periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Hadir di seluruh '+N+' rilis. Catatan: hanya saham yang sudah tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori ini, jadi ini bias umur listing, bukan rekomendasi.'},
+  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua '+N+' periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Hadir di seluruh '+N+' rilis. Catatan: hanya saham yang tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori ini (bias umur listing), bukan rekomendasi.'},
   {v:fmtNum(TICKERS.length),l:'Saham unik',d:'Pernah masuk DES minimal sekali',cls:'',kind:'list',list:TICKERS.slice(),title:fmtNum(TICKERS.length)+' Saham Unik',sub:'Semua emiten yang pernah mampir di DES sepanjang '+N+' rilis.'},
   {v:String(comeback.length),l:'Comeback',d:'Keluar lalu masuk daftar lagi',cls:'up',kind:'list',list:comeback,title:comeback.length+' Saham Comeback',sub:'Pernah keluar, lalu balik lagi ke daftar.'},
-  {v:String(oneHit.length),l:'Sekali lewat',d:'Cuma 1 periode lalu keluar lagi',cls:'',kind:'list',list:oneHit,title:oneHit.length+' Saham Sekali Lewat',sub:'Muncul cuma 1 periode lalu keluar. (Pendatang baru yang masih di dalam tidak dihitung di sini.)'},
+  {v:String(oneHit.length),l:'Sekali lewat',d:'Cuma 1 periode lalu keluar lagi',cls:'',kind:'list',list:oneHit,title:oneHit.length+' Saham Sekali Lewat',sub:'Muncul cuma 1 periode lalu keluar. (Pendatang baru yang masih di dalam tidak dihitung.)'},
   {v:perT[revTop[0]].flips+'x',l:'Pintu putar',d:revTop.join(', ')+' paling sering ganti status',cls:'',kind:'revolve',title:'Si Paling Pintu Putar',sub:'Diurut dari yang paling sering ganti status masuk-keluar.'},
   {v:MINUS+maxOut.n,l:'Keluar terbanyak',d:shortLabel(maxOut.i)+', rilis dengan keluar terbanyak',cls:'down',kind:'period',i:maxOut.i,title:''}
 ];
-function renderFacts(){$('#facts').innerHTML=FACTS.map(function(f,idx){
-  return '<button class="fact '+f.cls+'" data-f="'+idx+'"><span class="fv mono">'+f.v+'</span><span class="fl">'+esc(f.l)+'</span><span class="fd">'+esc(f.d)+'</span><span class="more">Lihat &#8250;</span></button>';}).join('');}
-$('#facts').addEventListener('click',function(e){var b=e.target.closest('[data-f]');if(b)openFact(+b.dataset.f);});
-function captionFor(f){
-  var head=f.v+' · '+f.l+' — Daftar Efek Syariah OJK '+yearOf(0)+'-'+yearOf(N-1)+'.';
+function renderFacts(){$('#facts').innerHTML=[3,4,5].map(function(idx){var f=FACTS[idx];
+  return '<button class="fact '+f.cls+'" data-f="'+idx+'"><span class="fv mono">'+f.v+'</span><span class="fl">'+esc(f.l)+'</span><span class="fd">'+esc(f.d)+'</span><span class="more">Lihat ›</span></button>';}).join('');}
+function factClick(e){var b=e.target.closest('[data-f]');if(b)openFact(+b.dataset.f);}
+$('#facts').addEventListener('click',factClick);
+$('#heroMetrics').addEventListener('click',factClick);
+function captionFor(f){var head=f.v+' · '+f.l+' — Daftar Efek Syariah OJK '+yearOf(0)+'-'+yearOf(N-1)+'.';
   var sample=(f.list?f.list.slice(0,6).join(', '):revTop.join(', '));
   return head+'\nContoh: '+sample+'.\nCek sendiri: '+SITE+'/#f='+FACTS.indexOf(f)+'\nvia @lotmetrik · edukasi, bukan rekomendasi.';}
 function openFact(idx){var f=FACTS[idx];
@@ -339,14 +334,12 @@ modalBack.addEventListener('click',function(e){if(e.target===modalBack)closeModa
 function modalActivate(e){var a=e.target.closest('[data-trk]');if(a){closeModal();showTracker(a.dataset.trk,true);scrollTo('#lacak');}}
 $('#modalBody').addEventListener('click',modalActivate);
 $('#modalBody').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.closest('[data-trk]')){e.preventDefault();modalActivate(e);}});
-modalBack.addEventListener('keydown',function(e){
-  if(e.key==='Tab'){var f=focusables();if(!f.length)return;var first=f[0],last=f[f.length-1];
-    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
-    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
+modalBack.addEventListener('keydown',function(e){if(e.key==='Tab'){var f=focusables();if(!f.length)return;var first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}});
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();hideTT();}});
 
 /* =====================================================================
-   THEME / DEEP-LINK / LEAD / TOAST / utils
+   THEME / GUIDE / DEEP-LINK / utils
    ===================================================================== */
 var TKEY='lotmetrik-des-theme';
 function applyTheme(m){var t=$('#themeBtn');
@@ -354,16 +347,16 @@ function applyTheme(m){var t=$('#themeBtn');
   else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#F5F7FA';if(t)t.setAttribute('aria-pressed','false');}}
 (function(){try{var s=localStorage.getItem(TKEY);if(s)applyTheme(s);}catch(e){}})();
 $('#themeBtn').addEventListener('click',function(){var term=document.documentElement.getAttribute('data-theme')==='terminal';var next=term?'light':'terminal';applyTheme(next);try{localStorage.setItem(TKEY,next);}catch(e){}});
+$('#guideBtn').addEventListener('click',openGuide);
+var gb2=$('#guideBtn2');if(gb2)gb2.addEventListener('click',openGuide);
 
 function setHash(s){try{history.replaceState(null,'','#'+s);}catch(e){}}
-function applyHash(){
-  var h=(location.hash||'').replace(/^#/,''),m={};
+function applyHash(){var h=(location.hash||'').replace(/^#/,''),m={};
   h.split('&').forEach(function(p){var kv=p.split('=');if(kv[0])m[kv[0]]=decodeURIComponent(kv[1]||'');});
   if(m.t){setPeriod(N-1);showTracker(m.t,false);scrollTo('#lacak');return;}
   if(m.p){var pi=-1;for(var i=0;i<N;i++)if(META[i].key===m.p)pi=i;if(pi>=0){setPeriod(pi);scrollTo('#periode');return;}}
   if(m.f){var fi=+m.f;setPeriod(N-1);if(FACTS[fi]){openFact(fi);scrollTo('#fakta');}return;}
-  setPeriod(N-1);
-}
+  setPeriod(N-1);}
 
 function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(function(){fb(t);});else fb(t);
   function fb(x){var a=el('textarea');a.value=x;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}}
