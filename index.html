@@ -93,11 +93,13 @@ button{font-family:inherit;cursor:pointer}
 .nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 86%,transparent);
   backdrop-filter:saturate(1.4) blur(10px);-webkit-backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
 .nav-in{max-width:var(--w);margin:0 auto;padding:0 18px;height:58px;display:flex;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:inline-flex;align-items:center;gap:9px;color:var(--text)}
-.brand-ic{width:30px;height:30px;border-radius:8px;background:#0B1F3A;border:1px solid rgba(255,255,255,.10);
+.brand{display:inline-flex;align-items:center;gap:10px;color:var(--text)}
+.brand-ic{width:32px;height:32px;border-radius:9px;background:#0B1F3A;border:1px solid rgba(255,255,255,.10);
   display:grid;place-items:center;flex:none;box-shadow:var(--shadow-card)}
-.brand-ic svg{width:19px;height:19px;display:block}
-.brand .wm{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--text);white-space:nowrap}
+.brand-ic svg{width:21px;height:21px;display:block}
+.brand-txt{display:flex;flex-direction:column;justify-content:center;line-height:1}
+.brand .wm{font-weight:800;font-size:16px;letter-spacing:-.02em;color:var(--text);white-space:nowrap;line-height:1.05}
+.brand .by{font-size:10.5px;font-weight:600;color:var(--text-muted);letter-spacing:.02em;white-space:nowrap;margin-top:2px}
 .tag{display:inline-block;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
   color:var(--text-muted);border:1px solid var(--border-strong);border-radius:var(--r-pill);padding:3px 8px;white-space:nowrap}
 .nav-act{display:flex;align-items:center;gap:8px}
@@ -130,7 +132,6 @@ button{font-family:inherit;cursor:pointer}
 
 /* PAGE HEAD + STATS */
 .pagehead{padding:22px 0 4px}
-.pagehead .lede{font-size:14px;color:var(--text-secondary);line-height:1.5;max-width:64ch;margin:0 0 14px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
 .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;text-align:left;
   display:flex;flex-direction:column;gap:3px;color:inherit;box-shadow:var(--shadow-card)}
@@ -212,6 +213,8 @@ section{padding:16px 0}
 .search input{width:100%;font:inherit;font-size:16px;padding:9px 12px 9px 33px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface);color:var(--text)}
 .search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--up-soft)}
 .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;opacity:.5;pointer-events:none}
+.search input::-webkit-calendar-picker-indicator{display:none!important}
+.search input::-webkit-search-decoration,.search input::-webkit-search-results-button{display:none}
 .io-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .io-col h3{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:7px}
 .io-col.in h3{color:var(--up-text)} .io-col.out h3{color:var(--down-text)}
@@ -321,15 +324,21 @@ body.panduan-open #panduanPage{display:block}
 .pg-back{display:inline-flex;align-items:center;gap:6px}
 .pg-title{font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.03em}
 .pg-lede{font-size:13.5px;color:var(--text-secondary);margin:6px 0 20px;max-width:64ch;line-height:1.55}
-.pg-guide{max-width:760px}
-.pg-guide.guide h4{font-size:15px;margin:26px 0 7px;letter-spacing:-.01em}
-.pg-guide.guide h4:first-child{margin-top:0}
-.pg-guide.guide p,.pg-guide.guide li{font-size:13.5px;line-height:1.6}
-.pg-guide .glossary{list-style:none;padding:0;margin:6px 0 0;display:grid;gap:2px}
-.pg-guide .glossary li{padding:7px 0;border-bottom:1px solid var(--hairline)}
-.pg-guide .glossary b{color:var(--text)}
-.pg-src{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);line-height:1.6;background:var(--surface-2);
-  border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;margin-top:8px}
+.pg-guide{max-width:none}
+.pg-grid{column-gap:16px}
+@media(min-width:760px){.pg-grid{column-count:2}}
+.pg-card{break-inside:avoid;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:15px 18px;margin:0 0 16px;box-shadow:var(--shadow-card)}
+.pg-card h4{font-size:15px;margin:0 0 9px;letter-spacing:-.01em;color:var(--text)}
+.pg-card p,.pg-card li{font-size:13.5px;line-height:1.6;color:var(--text-secondary)}
+.pg-card p+p{margin-top:9px}
+.pg-card ul{margin:6px 0 0;padding-left:18px}
+.pg-card li{margin-bottom:6px}
+.pg-card .glossary{list-style:none;padding:0;margin:2px 0 0}
+.pg-card .glossary li{padding:8px 0;border-bottom:1px solid var(--hairline);margin:0}
+.pg-card .glossary li:last-child{border-bottom:none}
+.pg-card .glossary b{color:var(--text)}
+.pg-card .disc{border-left:3px solid var(--amber-500);padding-left:12px;color:var(--text-muted)}
+.pg-src{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);line-height:1.6}
 
 /* FOOTER (1 baris) */
 footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surface-2)}
@@ -362,13 +371,12 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
     <a class="brand" href="#top" id="brandHome" aria-label="DES Dashboard by Lotmetrik">
       <span class="brand-ic" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
-          <line x1="7" y1="17" x2="7" y2="11.5" stroke="#2DD4BF" stroke-width="2.2" stroke-linecap="round"/>
-          <line x1="12" y1="17" x2="12" y2="7" stroke="#2DD4BF" stroke-width="2.2" stroke-linecap="round"/>
-          <line x1="17" y1="17" x2="17" y2="9.5" stroke="#F59E0B" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M5 5.5v13h14" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="10.6" cy="12" r="8" fill="#2DD4BF"/>
+          <circle cx="14.7" cy="9.3" r="7" fill="#0B1F3A"/>
+          <path d="M16.9 11.6L17.6 13.5L19.5 14.2L17.6 14.9L16.9 16.8L16.2 14.9L14.3 14.2L16.2 13.5Z" fill="#F59E0B"/>
         </svg>
       </span>
-      <span class="wm">DES Dashboard</span><span class="tag">by lotmetrik</span>
+      <span class="brand-txt"><span class="wm">DES Dashboard</span><span class="by">by lotmetrik</span></span>
     </a>
     <div class="nav-act">
       <button class="icon-btn" id="guideBtn" aria-label="Panduan &amp; sumber" title="Panduan">
@@ -386,7 +394,6 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
   <h1 class="sr-only">DES Dashboard — Daftar Efek Syariah IDX 2016–2026 dari Lotmetrik</h1>
 
   <section class="pagehead">
-    <p class="lede">Daftar resmi saham sesuai prinsip syariah versi OJK, dirombak sekitar 2× setahun. Cek sahammu masih di dalam daftar atau sudah dicoret.</p>
     <div class="stats" id="heroMetrics"></div>
   </section>
 
@@ -400,7 +407,6 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
             <datalist id="trkList"></datalist>
           </div>
           <button class="btn btn-primary" id="trkBtn">Lacak</button>
-          <button class="infodot" id="lacakInfo" type="button" aria-label="Info: cara pakai pelacak">i<span class="tip"><b>Lacak jejak satu saham</b> di 21 rilis DES: di rilis mana dia ada, kapan masuk, kapan keluar. Tap untuk buka Panduan.</span></button>
         </div>
         <div class="tr-res" id="trkRes"></div>
       </div>
@@ -426,14 +432,6 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
         <div id="chartSR" class="sr-only"></div>
       </div>
     </div>
-  </section>
-
-  <section id="fakta">
-    <div class="sec-head">
-      <h2>Fakta dekade</h2>
-      <div class="note">tap untuk lihat daftar</div>
-    </div>
-    <div class="facts" id="facts"></div>
   </section>
 
   <section id="periode">
@@ -502,8 +500,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=242"></script>
-<script src="app.js?v=242"></script>
+<script src="data.js?v=243"></script>
+<script src="app.js?v=243"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->
