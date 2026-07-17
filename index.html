@@ -130,6 +130,7 @@ button{font-family:inherit;cursor:pointer}
 
 /* PAGE HEAD + STATS */
 .pagehead{padding:22px 0 4px}
+.pagehead .lede{font-size:14px;color:var(--text-secondary);line-height:1.5;max-width:64ch;margin:0 0 14px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px}
 .scard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px 14px;text-align:left;
   display:flex;flex-direction:column;gap:3px;color:inherit;box-shadow:var(--shadow-card)}
@@ -231,6 +232,15 @@ section{padding:16px 0}
 .tracker-in .search{flex:1 1 220px}
 .tr-res{margin-top:16px}
 .tr-res:empty{margin-top:0}
+.tr-verdict{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:var(--r-lg);border:1px solid;margin-bottom:14px}
+.tr-verdict.in{background:var(--up-soft);border-color:color-mix(in srgb,var(--up) 42%,transparent);color:var(--up-text)}
+.tr-verdict.out{background:var(--down-soft);border-color:color-mix(in srgb,var(--down) 42%,transparent);color:var(--down-text)}
+.tr-verdict .vic{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--surface)}
+.tr-verdict .vic svg{width:20px;height:20px}
+.tr-verdict .vbody{flex:1;min-width:0}
+.tr-verdict .vmain{font-weight:800;font-size:1.1rem;letter-spacing:-.01em;line-height:1.18}
+.tr-verdict .vsub{font-size:12px;color:var(--text-secondary);margin-top:3px;line-height:1.4}
+.tr-verdict .btn{flex:none;align-self:flex-start}
 .tr-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .tr-head .tk{font-weight:800;font-size:1.5rem;letter-spacing:.01em}
 .tr-head .nm{font-size:13px;color:var(--text-secondary)}
@@ -376,6 +386,7 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
   <h1 class="sr-only">DES Dashboard — Daftar Efek Syariah IDX 2016–2026 dari Lotmetrik</h1>
 
   <section class="pagehead">
+    <p class="lede">Daftar resmi saham sesuai prinsip syariah versi OJK, dirombak sekitar 2× setahun. Cek sahammu masih di dalam daftar atau sudah dicoret.</p>
     <div class="stats" id="heroMetrics"></div>
   </section>
 
@@ -491,8 +502,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=241"></script>
-<script src="app.js?v=241"></script>
+<script src="data.js?v=242"></script>
+<script src="app.js?v=242"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->

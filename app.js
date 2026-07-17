@@ -166,7 +166,7 @@ var ttEl=$('#chartTt'),hostEl=$('#chartHost'),wrapEl=hostEl.parentNode;
 function xAt(i){return padL+plotW*(i/(N-1));}
 function svgOpen(){return '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Grafik daftar efek syariah '+yearOf(0)+' sampai '+yearOf(N-1)+'. Detail angka ada di tabel di bawah.">';}
 function gridYears(){var s='';for(var i=0;i<N;i+=4){s+='<text x="'+xAt(i).toFixed(1)+'" y="'+(H-8)+'" font-size="25" text-anchor="middle">'+yearOf(i)+'</text>';}return s;}
-function watermark(){return '<text class="wmk" x="'+(W-padR-6)+'" y="'+(H-padB-4)+'" font-size="26" text-anchor="end">@lotmetrik</text>';}
+function watermark(){return '<text class="wmk" x="'+(W-padR-6)+'" y="'+(H-padB-4)+'" font-size="22" text-anchor="end">OJK · '+META[N-1].date+' · @lotmetrik</text>';}
 function hitRect(i){var w=plotW/N;return '<rect class="hit" tabindex="0" role="button" aria-label="'+esc(periods[i].label+' '+periods[i].phase+', total '+periods[i].total+' saham')+'" data-i="'+i+'" x="'+(xAt(i)-w/2).toFixed(1)+'" y="'+padT+'" width="'+w.toFixed(1)+'" height="'+plotH+'" fill="transparent" style="cursor:pointer"/>';}
 function renderChart(){chartMode==='total'?renderTotal():renderNet();renderLegend();}
 function renderTotal(){
@@ -285,11 +285,12 @@ $('#ioCsv').addEventListener('click',function(){exportPeriodCSV(curPeriod);});
 function exportPeriodCSV(i){var p=periods[i],rows=[['status','kode','nama']];
   if(p.baseline){p.masuk.forEach(function(t){rows.push(['AWAL',t,NAMES[t]||t]);});}
   else{p.masuk.forEach(function(t){rows.push(['MASUK',t,NAMES[t]||t]);});p.keluar.forEach(function(t){rows.push(['KELUAR',t,NAMES[t]||t]);});}
-  downloadCSV('DES_'+p.key+'_masuk_keluar.csv',rows);toast('CSV '+shortLabel(i)+' diunduh · @lotmetrik');}
-function csvSource(){return '# Sumber: OJK Daftar Efek Syariah · Per: '+META[N-1].date+' · '+SITE+' · @lotmetrik · edukasi, bukan rekomendasi';}
-function downloadCSV(name,rows){
+  downloadCSV('DES_'+p.key+'_masuk_keluar.csv',rows,csvSource(p));toast('CSV '+shortLabel(i)+' diunduh · @lotmetrik');}
+function csvSource(p){var per=p?('Per: '+p.date+' ('+p.kep+')'):('Per: '+META[N-1].date);
+  return '# Sumber: OJK Daftar Efek Syariah · '+per+' · '+SITE+' · @lotmetrik · edukasi, bukan rekomendasi';}
+function downloadCSV(name,rows,src){
   var body=rows.map(function(r){return r.map(function(c){c=String(c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(',');}).join('\n');
-  var blob=new Blob(['﻿'+csvSource()+'\n'+body],{type:'text/csv;charset=utf-8'}),a=el('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
+  var blob=new Blob(['﻿'+(src||csvSource())+'\n'+body],{type:'text/csv;charset=utf-8'}),a=el('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
   setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},200);}
 
 /* =====================================================================
@@ -297,21 +298,28 @@ function downloadCSV(name,rows){
    ===================================================================== */
 function buildDatalist(){$('#trkList').innerHTML=TICKERS.map(function(t){return '<option value="'+t+'">'+esc(NAMES[t]||'')+'</option>';}).join('');}
 function trackerText(rec){var status=rec.survivor?'setia '+N+'/'+N+' periode':(rec.newcomer?'pendatang baru':(rec.oneHit?'cuma 1 periode':(rec.statusNow?'di dalam':'di luar')));
-  return rec.t+' ('+esc(rec.name)+') di Daftar Efek Syariah OJK: '+status+', muncul '+rec.count+'/'+N+' rilis.';}
+  return rec.t+' ('+esc(rec.name)+') di Daftar Efek Syariah OJK: '+status+', muncul '+rec.count+'/'+N+' rilis. Via @lotmetrik · edukasi, bukan rekomendasi.';}
 function showTracker(code,user){code=String(code||'').trim().toUpperCase();var rec=perT[code],host=$('#trkRes');
   if(!rec){var sug=TICKERS.filter(function(t){return t.indexOf(code)===0;}).slice(0,6);
     host.innerHTML='<p class="tr-hint">Kode <b>'+esc(code)+'</b> tidak ditemukan dalam data DES '+yearOf(0)+'–'+yearOf(N-1)+'.'+
       (sug.length?' Mungkin maksudmu: '+sug.map(function(t){return '<a href="#" data-trk="'+t+'">'+t+'</a>';}).join(', ')+'.':' Cek lagi ejaannya, atau coba <a href="#" data-trk="ASII">ASII</a>, <a href="#" data-trk="TLKM">TLKM</a>, <a href="#" data-trk="BUKA">BUKA</a>.')+'</p>';return;}
   $('#trkInput').value=code; if(user)setHash('t='+code);
-  var chips='<span class="chip '+(rec.statusNow?'in':'out')+'">'+(rec.statusNow?'Di dalam ('+shortLabel(N-1)+')':'Di luar ('+shortLabel(N-1)+')')+'</span>';
-  if(rec.survivor)chips+=' <span class="chip star">Setia '+N+'/'+N+'</span>';
-  else if(rec.newcomer)chips+=' <span class="chip">Pendatang baru</span>';
-  else if(rec.oneHit)chips+=' <span class="chip out">Sekali lewat</span>';
-  else if(rec.runs>=2)chips+=' <span class="chip">Comeback '+rec.runs+' babak</span>';
+  var inNow=rec.statusNow, cur=rec.bits[N-1], since=N-1;
+  while(since>0 && rec.bits[since-1]===cur) since--;
+  var sinceLbl=shortLabel(since);
+  var chips='';
+  if(rec.survivor)chips+='<span class="chip star">Setia '+N+'/'+N+'</span>';
+  else if(rec.newcomer)chips+='<span class="chip">Pendatang baru</span>';
+  else if(rec.oneHit)chips+='<span class="chip out">Sekali lewat</span>';
+  else if(rec.runs>=2)chips+='<span class="chip">Comeback '+rec.runs+' babak</span>';
   var dots='',srlist=[];for(var i=0;i<N;i++){var on=rec.bits[i]==='1';dots+='<span class="dot '+(on?'on':'')+'" data-tip="'+shortLabel(i)+' '+periods[i].phase+': '+(on?'ada':'tidak')+'"></span>';if(on)srlist.push(shortLabel(i)+' '+periods[i].phase);}
-  host.innerHTML='<div class="tr-head"><span class="tk mono">'+rec.t+'</span><span class="nm">'+esc(rec.name)+'</span>'+
-      '<span class="tr-actions"><button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></span></div>'+
-    '<div class="tr-chips">'+chips+'</div>'+
+  var vic=inNow?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  host.innerHTML='<div class="tr-verdict '+(inNow?'in':'out')+'">'+
+      '<span class="vic" aria-hidden="true">'+vic+'</span>'+
+      '<div class="vbody"><div class="vmain"><b class="mono">'+rec.t+'</b> '+(inNow?'ADA':'TIDAK ada')+' di Daftar Efek Syariah</div>'+
+        '<div class="vsub">'+esc(rec.name)+' · rilis terbaru '+shortLabel(N-1)+' · '+(inNow?'di dalam':'di luar')+' sejak '+esc(sinceLbl)+'</div></div>'+
+      '<button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></div>'+
+    (chips?'<div class="tr-chips">'+chips+'</div>':'')+
     '<div class="dots" role="img" aria-label="'+esc(rec.t+' ada di daftar pada: '+(srlist.length?srlist.join(', '):'tidak pernah'))+'">'+dots+'</div>'+
     '<div class="tr-stats">'+
       '<div class="tr-stat"><div class="v mono">'+rec.count+'<span class="v-sub">/'+N+'</span></div><div class="k">Muncul</div></div>'+
