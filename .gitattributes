@@ -1,0 +1,8 @@
+# Konsisten LF untuk file yang di-generate ulang (biar update lokal vs GitHub Actions tidak bentrok line-ending)
+data.js text eol=lf
+index.html text eol=lf
+app.js text eol=lf
+*.bat text eol=crlf
+*.png binary
+*.xlsx binary
+*.ttf binary

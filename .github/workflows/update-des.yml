@@ -1,0 +1,49 @@
+name: Update DES data
+
+# Jalan otomatis tiap ada file Excel OJK baru di _update/ojk_excel/
+# (upload lewat GitHub web = "Add file -> Upload files"), atau jalankan manual
+# dari tab Actions -> "Update DES data" -> "Run workflow".
+
+on:
+  push:
+    paths:
+      - "_update/ojk_excel/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-des
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install openpyxl pillow
+
+      - name: Regenerasi data.js + sinkron angka statis
+        run: python _update/build_data.py
+
+      - name: Gambar ulang og.png
+        run: python _update/render_og.py
+
+      - name: Commit & push hasil
+        run: |
+          git config user.name "des-updater[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.js index.html og.png
+          if git diff --cached --quiet; then
+            echo "Tidak ada perubahan untuk di-commit."
+          else
+            git commit -m "Auto-update data DES [skip ci]"
+            git push
+          fi
