@@ -44,6 +44,8 @@ def load_existing_meta():
         d = json.loads(raw)
         return {m["key"]: {"date": m.get("date"), "kep": m.get("kep")} for m in d["meta"]}
     except Exception:
+        print("[WARN] data.js ADA tapi tidak bisa dibaca — tanggal/nomor SK rilis lama akan di-reset dari nama file.")
+        print("       Kalau ini tidak disengaja, batalkan (tutup jendela) dan minta bantuan sebelum lanjut.")
         return {}
 
 
@@ -89,6 +91,9 @@ def main():
     present = {c: "".join("1" if c in maps[k] else "0" for k in order) for c in union}
 
     existing = load_existing_meta()
+    if existing and len(order) < len(existing):
+        die(f"Rilis yang terbaca ({len(order)}) LEBIH SEDIKIT dari data sebelumnya ({len(existing)}).\n"
+            f"       JANGAN hapus file Excel lama dari _update/ojk_excel/ — semua rilis historis harus tetap ada. Tidak menulis apa pun.")
     meta = []
     for k in order:
         total = len(maps[k])
