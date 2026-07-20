@@ -11,6 +11,9 @@ echo Nama file WAJIB: DES_TAHUN_Pn_KEPno.xlsx
 echo    contoh rilis akhir 2026 SK no.60 -^> DES_2026_P2_KEP60.xlsx
 echo    (P1 = rilis pertengahan tahun, P2 = rilis akhir tahun)
 echo.
+echo CATATAN: langkah publish butuh login GitHub yang sudah tersimpan di PC ini.
+echo Kalau muncul jendela login GitHub, ikuti saja (cukup sekali seumur PC).
+echo.
 pause
 
 set "PY=python"
@@ -28,11 +31,18 @@ if errorlevel 1 goto :err
 
 echo.
 echo [3/3] Publish ke GitHub (Netlify akan deploy otomatis)...
-git add -A
+git add data.js index.html og.png _update\ojk_excel
+git diff --cached --quiet
+if not errorlevel 1 (
+  echo Tidak ada perubahan data - tidak ada yang perlu di-publish.
+  goto :done
+)
 git commit -m "Update data DES"
+if errorlevel 1 goto :err
 git push
 if errorlevel 1 goto :err
 
+:done
 echo.
 echo ============================================
 echo    SELESAI. Buka https://des.lotmetrik.my.id
@@ -45,7 +55,8 @@ exit /b 0
 echo.
 echo ============================================
 echo    GAGAL - baca pesan error di atas.
-echo    Kalau soal "format Excel berubah", minta bantuan (Claude/dev).
+echo    Kalau soal "format Excel berubah", minta bantuan (AI/dev).
+echo    Kalau soal login GitHub: buka github.com, login, lalu coba lagi.
 echo ============================================
 pause
 exit /b 1
