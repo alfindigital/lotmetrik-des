@@ -257,8 +257,9 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
 .stats-line{{font-size:13px;color:var(--secondary);display:flex;flex-wrap:wrap;gap:6px 12px}}
 .stats-line b{{font-family:var(--mono);font-size:15px;color:var(--navy)}}
 .foot{{margin-top:26px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
-  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}}
-.foot-social{{display:inline-flex;gap:6px}}
+  display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}}
+.foot-meta{{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}}
+.foot-social{{display:inline-flex;gap:6px;margin-left:auto}}
 .foot .soc{{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:6px;border:1px solid var(--border);color:var(--muted);background:var(--surface);text-decoration:none}}
 .foot .soc:hover{{color:var(--teal);border-color:var(--teal);text-decoration:none}}
 .foot .soc svg{{width:14px;height:14px}}
@@ -315,7 +316,13 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
   · <a href="/#panduan">Panduan</a>.</p>
 
   <div class="foot">
-    <span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a></span>
+    <div class="foot-meta">
+      <span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a></span>
+      <span class="sep">·</span>
+      <span>Data: OJK {esc(first_y)}–{esc(last_y)}</span>
+      <span class="sep">·</span>
+      <a href="/#panduan">Panduan</a>
+    </div>
     <span class="foot-social" aria-label="Sosial Lotmetrik">
       <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -324,10 +331,6 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.3L2.8 11.5c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4.9 1 .9.6 0 .8-.3 1.1-.6l2.7-2.6 5.6 4.1c1 .6 1.8.3 2-.9l3.5-16.5c.4-1.5-.5-2.1-1.6-1.7zM9.3 14.7l-.2 3.3 1.1-2.2 8.7-7.8c.3-.3 0-.4-.4-.2L9.3 14.7z"/></svg>
       </a>
     </span>
-    <span class="sep">·</span>
-    <span>Data: OJK {esc(first_y)}–{esc(last_y)}</span>
-    <span class="sep">·</span>
-    <a href="/#panduan">Panduan</a>
   </div>
 </div>
 <script src="/share.js" defer></script>
