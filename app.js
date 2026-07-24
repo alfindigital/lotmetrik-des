@@ -93,10 +93,10 @@ function buildPanduan(){
         '</ul></section>'+
       '<section class="pg-sec"><h4>Cara pakai</h4>'+
         '<ul>'+
-          '<li><b>Statistik atas</b> — ringkasan angka: jumlah kini, puncak, awal, saham unik, setia, dan comeback. Kartu yang bisa diklik membuka daftar isinya.</li>'+
+          '<li><b>Statistik atas</b> — ringkasan angka: jumlah kini, puncak, setia, dan comeback. Kartu yang bisa diklik membuka daftar isinya.</li>'+
           '<li><b>Cari saham</b> — ketik kode (mis. ASII) untuk melihat apakah saham itu ada di DES sekarang, dan jejaknya di seluruh '+N+' rilis: kapan masuk, kapan keluar.</li>'+
           '<li><b>Grafik tren</b> — jumlah saham tiap rilis. Mode &ldquo;Net masuk-keluar&rdquo; menampilkan selisih tiap periode.</li>'+
-          '<li><b>Masuk &amp; keluar per periode</b> — pilih rilis di timeline untuk melihat siapa yang baru lolos dan siapa yang dicoret. Bisa dicari di kolom pencarian.</li>'+
+          '<li><b>Masuk &amp; keluar per periode</b> — pilih rilis di timeline untuk melihat siapa yang baru lolos dan siapa yang dicoret.</li>'+
         '</ul></section>'+
       '<section class="pg-sec"><h4>Istilah</h4>'+
         '<ul class="glossary">'+
@@ -105,7 +105,7 @@ function buildPanduan(){
           '<li><b>Net</b> — jumlah masuk dikurangi jumlah keluar.</li>'+
           '<li><b>Setia</b> — hadir di semua rilis tanpa pernah absen.</li>'+
           '<li><b>Comeback</b> — pernah keluar lalu masuk lagi (dua babak atau lebih).</li>'+
-          '<li><b>1 Time</b> — muncul cuma satu periode lalu keluar. Pendatang baru yang masih di dalam tidak dihitung.</li>'+
+          '<li><b>1 Time</b> — muncul sekali lalu keluar (bukan pendatang baru).</li>'+
         '</ul></section>'+
       '<section class="pg-sec"><h4>Baca hati-hati</h4>'+
         '<ul>'+
@@ -114,12 +114,12 @@ function buildPanduan(){
           '<li><b>Data historis tidak menjamin masa depan.</b> Komposisi daftar berubah tiap rilis.</li>'+
         '</ul></section>'+
     '</div>'+
-    '<section class="pg-sec pg-foot"><h4>Sumber &amp; pembaruan</h4>'+
-      '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah. Selalu verifikasi ke sumber resmi OJK &amp; IDX.</div>'+
-      '<p style="margin-top:9px"><a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" target="_blank" rel="noopener">Buka data resmi OJK &#8594;</a></p></section>'+
-    '<section class="pg-sec pg-foot"><h4>Disclaimer</h4>'+
-      '<p class="disc">Konten Lotmetrik untuk edukasi — bukan rekomendasi investasi. Sejalan dengan POJK 6/2026.</p></section>'+
-    '</div>';
+    '<div class="pg-cols">'+
+      '<section class="pg-sec"><h4>Sumber &amp; pembaruan</h4>'+
+        '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah. Selalu verifikasi ke sumber resmi OJK &amp; IDX.</div></section>'+
+      '<section class="pg-sec"><h4>Disclaimer</h4>'+
+        '<p class="disc">Konten Lotmetrik untuk edukasi — bukan rekomendasi investasi. Sejalan dengan POJK 6/2026.</p></section>'+
+    '</div></div>';
   var b=$('#pgBack');if(b)b.addEventListener('click',closePanduan);
 }
 function openPanduan(){document.body.classList.add('panduan-open');try{history.replaceState(null,'','#panduan');}catch(e){}
@@ -134,8 +134,6 @@ function renderHero(){
   $('#heroMetrics').innerHTML=[
     st(fmtNum(last.total),'','Kini · '+shortLabel(last.i)),
     st(fmtNum(peak.total),'up','Puncak · '+shortLabel(peak.i)),
-    st(fmtNum(first.total),'','Awal · '+shortLabel(first.i)),
-    st(fmtNum(TICKERS.length),'','Saham unik',1),
     st(String(survivors.length),'up','Setia',0),
     st(String(comeback.length),'up','Comeback',2)
   ].join('');
@@ -156,7 +154,7 @@ function svgOpen(){return '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" pres
 function gridYears(){var s='';for(var i=0;i<N;i+=4){var anc=i===0?'start':(i>=N-2?'end':'middle'),x=i===0?padL:(i>=N-2?(W-padR):xAt(i));s+='<text x="'+x.toFixed(1)+'" y="'+(H-12)+'" font-size="21" text-anchor="'+anc+'">'+yearOf(i)+'</text>';}return s;}
 function watermark(){return '';}
 function hitRect(i){var w=plotW/N;return '<rect class="hit" tabindex="0" role="button" aria-label="'+esc(periods[i].label+' '+periods[i].phase+', total '+periods[i].total+' saham')+'" data-i="'+i+'" x="'+(xAt(i)-w/2).toFixed(1)+'" y="'+padT+'" width="'+w.toFixed(1)+'" height="'+plotH+'" fill="transparent" style="cursor:pointer"/>';}
-function renderChart(){chartMode==='total'?renderTotal():renderNet();renderLegend();}
+function renderChart(){chartMode==='total'?renderTotal():renderNet();}
 function renderTotal(){
   var ax=AX_TOTAL;function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
   var grid='';ax.ticks.forEach(function(g){var yy=y(g).toFixed(1);
@@ -187,11 +185,6 @@ function renderNet(){
   hostEl.innerHTML=svgOpen()+grid+gridYears()+watermark()+
     '<line x1="'+padL+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y(0).toFixed(1)+'" stroke="var(--border-strong)" stroke-width="1.2"/>'+bars+hits+'</svg>';
   bindHits();
-}
-function renderLegend(){
-  $('#chartLegend').innerHTML=chartMode==='total'
-    ?'<span><i style="background:var(--up)"></i>Jumlah saham</span><span><i style="background:var(--up)"></i>Puncak '+peak.total+'</span><span><i style="background:var(--down)"></i>Penurunan '+yearOf(N-1)+'</span>'
-    :'<span><i style="background:var(--up)"></i>Net masuk</span><span><i style="background:var(--down)"></i>Net keluar</span><span class="axnote">tiap batang = masuk − keluar</span>';
 }
 function bindHits(){$$('.hit',hostEl).forEach(function(h){var i=+h.dataset.i;
   h.addEventListener('pointerenter',function(){showTT(i,h);});
@@ -225,7 +218,7 @@ $$('#chartSeg .seg-btn').forEach(function(b){b.addEventListener('click',function
 /* =====================================================================
    PERIOD EXPLORER — timeline + 2-kolom masuk/keluar
    ===================================================================== */
-var curPeriod=N-1,ioQuery='';
+var curPeriod=N-1;
 function buildTimeline(){
   $('#timeline').innerHTML=periods.map(function(p){
     var nb=p.baseline?'nb':(p.net>=0?'nb pos':'nb neg'),mo=monthAbbr(p.i);
@@ -241,7 +234,7 @@ function buildTimeline(){
     else if(e.key==='Home')ni=0;else if(e.key==='End')ni=N-1;
     setPeriod(ni,{user:true});var b=$('#timeline .tl-box[data-i="'+ni+'"]');if(b)b.focus();});
 }
-function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;ioQuery='';$('#ioSearch').value='';
+function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;
   var tl=$('#timeline'),active=null;
   $$('#timeline .tl-box').forEach(function(b){var on=+b.dataset.i===i;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;if(on)active=b;});
   if(active&&tl)tl.scrollTo({left:active.offsetLeft-(tl.clientWidth-active.offsetWidth)/2,behavior:reduceMotion()?'auto':'smooth'});
@@ -258,15 +251,13 @@ function renderPSum(){var p=periods[curPeriod],host=$('#pSumRow');if(!host)retur
     tile('out','Keluar',MINUS+fmtNum(p.keluar.length))+
     tile('net','Net',fmtSigned(p.net));}
 function renderTiles(){/* digabung ke renderPSum */}
-function renderIO(){var p=periods[curPeriod],q=ioQuery.trim().toUpperCase();
-  function filt(a){return q?a.filter(function(t){return t.indexOf(q)>-1||(NAMES[t]||'').toUpperCase().indexOf(q)>-1;}):a;}
-  var out=filt(p.keluar.slice()),inn=filt(p.masuk.slice());
+function renderIO(){var p=periods[curPeriod],out=p.keluar.slice(),inn=p.masuk.slice();
   col($('#ioListOut'),out,'out',p.baseline?'Periode awal, tidak ada data keluar.':null);
   col($('#ioListIn'),inn,'in',null);
-  $('#cntOut').textContent=p.baseline?'0':fmtNum(out.length)+(q?'*':'');
-  $('#cntIn').textContent=fmtNum(inn.length)+(q?'*':'');
+  $('#cntOut').textContent=p.baseline?'0':fmtNum(out.length);
+  $('#cntIn').textContent=fmtNum(inn.length);
   function col(ul,arr,cls,baseEmpty){
-    if(!arr.length){ul.innerHTML='<li class="io-empty">'+(baseEmpty||(q?'Tidak ada hasil.':'Tidak ada.'))+'</li>';return;}
+    if(!arr.length){ul.innerHTML='<li class="io-empty">'+(baseEmpty||'Tidak ada.')+'</li>';return;}
     ul.innerHTML=arr.map(function(t){return '<li class="io-row '+cls+'" role="button" tabindex="0" data-trk="'+t+'" aria-label="'+esc(t+' '+(NAMES[t]||t))+'"><span class="tk mono">'+t+'</span><span class="nm">'+esc(NAMES[t]||t)+'</span><span class="ar mono">›</span></li>';}).join('');}
 }
 function ioActivate(e){var r=e.target.closest('[data-trk]');if(r){showTracker(r.dataset.trk,true);scrollTo('#lacak');}}
@@ -275,7 +266,6 @@ function ioActivate(e){var r=e.target.closest('[data-trk]');if(r){showTracker(r.
   e.addEventListener('keydown',function(ev){if((ev.key==='Enter'||ev.key===' ')&&ev.target.closest('[data-trk]')){ev.preventDefault();ioActivate(ev);}});});
 $('#pPrev').addEventListener('click',function(){if(curPeriod>0)setPeriod(curPeriod-1,{user:true});});
 $('#pNext').addEventListener('click',function(){if(curPeriod<N-1)setPeriod(curPeriod+1,{user:true});});
-$('#ioSearch').addEventListener('input',function(){ioQuery=this.value;renderIO();});
 
 /* =====================================================================
    STOCK TRACKER
@@ -297,12 +287,12 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
   var seo='/saham/'+code.toLowerCase();
   host.innerHTML='<div class="tr-verdict '+(inNow?'in':'out')+'">'+
       '<span class="vic" aria-hidden="true">'+vic+'</span>'+
-      '<div class="vbody"><div class="vmain"><b class="mono">'+rec.t+'</b> '+(inNow?'SYARIAH':'TIDAK SYARIAH')+'</div>'+
-        '<div class="vsub">'+esc(rec.name)+'</div>'+
-        '<div class="tr-acts">'+
-          '<a class="btn btn-ghost btn-sm" href="'+seo+'">Halaman publik</a>'+
-          '<button class="btn btn-ghost btn-sm" id="trkShare" type="button">Bagikan</button>'+
-        '</div></div></div>';
+      '<div class="vbody"><div class="vmain">'+(inNow?'SYARIAH':'TIDAK SYARIAH')+'</div>'+
+        '<div class="vsub">'+esc(rec.name)+'</div></div>'+
+      '<div class="tr-acts">'+
+        '<a class="btn btn-ghost btn-sm" href="'+seo+'">Lihat Detail</a>'+
+        '<button class="btn btn-ghost btn-sm" id="trkShare" type="button">Bagikan</button>'+
+      '</div></div>';
   $('#trkShare').onclick=function(){var url=SITE+seo,txt=trackerText(rec);
     if(navigator.share)navigator.share({title:'DES · '+code,text:txt,url:url}).catch(function(){});
     else{copyText(txt+' '+url);toast('Teks + link disalin');}};
@@ -354,11 +344,24 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal(
    THEME / GUIDE / DEEP-LINK / utils
    ===================================================================== */
 var TKEY='lotmetrik-des-theme';
+var CKEY='lotmetrik-des-chart-open';
 function applyTheme(m){var t=$('#themeBtn');
   if(m==='terminal'){document.documentElement.setAttribute('data-theme','terminal');document.querySelector('meta[name=theme-color]').content='#0B1F3A';if(t)t.setAttribute('aria-pressed','true');}
   else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#F5F7FA';if(t)t.setAttribute('aria-pressed','false');}}
 (function(){try{var s=localStorage.getItem(TKEY);if(s)applyTheme(s);}catch(e){}})();
 $('#themeBtn').addEventListener('click',function(){var term=document.documentElement.getAttribute('data-theme')==='terminal';var next=term?'light':'terminal';applyTheme(next);try{localStorage.setItem(TKEY,next);}catch(e){}});
+(function initChartTog(){
+  var card=$('#grafik .card'),btn=$('#chartTog'),lbl=$('.chart-tog-lbl',btn);if(!card||!btn)return;
+  function setOpen(on){
+    card.classList.toggle('is-collapsed',!on);
+    btn.setAttribute('aria-expanded',on?'true':'false');
+    if(lbl)lbl.textContent=on?'Tutup grafik':'Buka grafik';
+    try{localStorage.setItem(CKEY,on?'1':'0');}catch(e){}
+  }
+  var open=true;try{var s=localStorage.getItem(CKEY);if(s==='0')open=false;else if(s==='1')open=true;}catch(e){}
+  setOpen(open);
+  btn.addEventListener('click',function(){setOpen(btn.getAttribute('aria-expanded')!=='true');});
+})();
 $('#guideBtn').addEventListener('click',openPanduan);
 var gb2=$('#guideBtn2');if(gb2)gb2.addEventListener('click',openPanduan);
 var bh=$('#brandHome');if(bh)bh.addEventListener('click',function(e){if(document.body.classList.contains('panduan-open')){e.preventDefault();closePanduan();}});
