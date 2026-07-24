@@ -12,7 +12,6 @@ from __future__ import annotations
 import json
 import os
 import re
-import shutil
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -278,9 +277,14 @@ def main() -> None:
     if not codes:
         die("data.js tidak punya saham.")
 
-    if os.path.isdir(SAHAM_DIR):
-        shutil.rmtree(SAHAM_DIR)
     os.makedirs(SAHAM_DIR, exist_ok=True)
+    # Hapus file lama (jangan rmtree folder — di Windows sering PermissionError / case-fold).
+    for old in os.listdir(SAHAM_DIR):
+        if old.lower().endswith(".html"):
+            try:
+                os.remove(os.path.join(SAHAM_DIR, old))
+            except OSError as e:
+                print(f"[WARN] gagal hapus {old}: {e}")
 
     for code in codes:
         bits = present[code]
