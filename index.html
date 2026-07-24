@@ -140,7 +140,8 @@ section{padding:16px 0}
 .card-body{padding:16px}
 #grafik .card.is-collapsed .card-head{border-bottom:none}
 #grafik .card.is-collapsed .card-body{display:none}
-.chart-toggle{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);border-radius:var(--r-md);padding:8px 11px;font:inherit;font-size:12.5px;font-weight:700;transition:border-color var(--dur-fast),color var(--dur-fast),background var(--dur-fast)}
+.chart-head-right{display:inline-flex;align-items:center;gap:8px;margin-left:auto}
+.chart-toggle{display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);border-radius:var(--r-md);padding:8px;font:inherit;line-height:0;cursor:pointer;transition:border-color var(--dur-fast),color var(--dur-fast),background var(--dur-fast)}
 .chart-toggle:hover{border-color:var(--accent);color:var(--accent)}
 .chart-toggle svg{width:14px;height:14px;display:block;transition:transform var(--dur) var(--ease)}
 #grafik .card.is-collapsed .chart-toggle svg{transform:rotate(-90deg)}
@@ -287,7 +288,9 @@ section{padding:16px 0}
 body.panduan-open #app{display:none}
 body.panduan-open #panduanPage{display:block}
 .pg-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.pg-back{display:inline-flex;align-items:center;gap:6px}
+.pg-back{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);display:grid;place-items:center;cursor:pointer;padding:0}
+.pg-back:hover{border-color:var(--accent);color:var(--accent)}
+.pg-back svg{width:18px;height:18px;display:block}
 .pg-title{font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.03em}
 .pg-lede{font-size:13.5px;color:var(--text-secondary);margin:6px 0 18px;max-width:none;line-height:1.55}
 .pg-doc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:4px 20px 10px;box-shadow:var(--shadow-card)}
@@ -413,15 +416,14 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
   <section id="grafik">
     <div class="card">
       <div class="card-head">
-        <button type="button" class="chart-toggle" id="chartTog" aria-expanded="true" aria-controls="chartBody" title="Tutup atau buka grafik">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
-          <span class="chart-tog-lbl">Tutup grafik</span>
-        </button>
         <div class="chart-head-right">
           <div class="seg" id="chartSeg" role="group" aria-label="Mode grafik">
             <button class="seg-btn is-active" data-mode="total" aria-pressed="true">Total</button>
             <button class="seg-btn" data-mode="net" aria-pressed="false">Net</button>
           </div>
+          <button type="button" class="chart-toggle" id="chartTog" aria-expanded="true" aria-controls="chartBody" aria-label="Tutup grafik" title="Tutup grafik">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
         </div>
       </div>
       <div class="card-body" id="chartBody">
@@ -495,8 +497,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=267"></script>
-<script src="app.js?v=267"></script>
+<script src="data.js?v=269"></script>
+<script src="app.js?v=269"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->

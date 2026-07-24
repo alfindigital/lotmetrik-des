@@ -80,12 +80,12 @@ function nextReleaseInfo(){
 function buildPanduan(){
   var host=$('#panduanPage');if(!host)return;
   host.innerHTML='<div class="wrap">'+
-    '<div class="pg-top"><button class="btn btn-ghost btn-sm pg-back" id="pgBack" type="button">&#8249; Dashboard</button></div>'+
+    '<div class="pg-top"><button class="pg-back" id="pgBack" type="button" aria-label="Kembali ke dashboard" title="Kembali ke dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button></div>'+
     '<h2 class="pg-title">Panduan &amp; sumber</h2>'+
     '<p class="pg-lede">Cara membaca data Daftar Efek Syariah OJK di dashboard ini, arti tiap istilah, dan catatan penting sebelum menyimpulkan.</p>'+
     '<div class="pg-doc"><div class="pg-cols">'+
       '<section class="pg-sec"><h4>Apa itu Daftar Efek Syariah (DES)?</h4>'+
-        '<p>DES adalah daftar resmi saham yang dinyatakan sesuai prinsip syariah oleh OJK. Diterbitkan berkala, sekitar 2x setahun (periode I pertengahan tahun, periode II akhir tahun). Sejak '+shortLabel(0)+' sudah '+N+' rilis.</p>'+
+        '<p>DES adalah daftar resmi saham yang dinyatakan sesuai prinsip syariah oleh OJK. Diterbitkan berkala, sekitar 2x setahun (periode I pertengahan tahun, periode II akhir tahun). Sejak '+shortLabel(0)+'.</p>'+
         '<p>Sebuah saham lolos bila kegiatan usahanya tidak bertentangan dengan prinsip syariah dan memenuhi rasio keuangan yang ditetapkan OJK. Sejak <b>POJK 8/2025</b> (menggantikan POJK 35/2017), ambang rasionya diperketat:</p>'+
         '<ul>'+
           '<li>Total utang berbasis bunga diturunkan bertahap dari 45% menuju <b>33% dari total aset</b> (dalam 10 tahun sejak 2025).</li>'+
@@ -132,8 +132,8 @@ function closePanduan(){if(!document.body.classList.contains('panduan-open'))ret
 function renderHero(){
   var first=periods[0],last=periods[N-1];
   $('#heroMetrics').innerHTML=[
-    st(fmtNum(last.total),'','Kini · '+shortLabel(last.i)),
-    st(fmtNum(peak.total),'up','Puncak · '+shortLabel(peak.i)),
+    st(fmtNum(last.total),'','Terbaru'),
+    st(fmtNum(peak.total),'up','Puncak'),
     st(String(survivors.length),'up','Setia',0),
     st(String(comeback.length),'up','Comeback',2)
   ].join('');
@@ -351,11 +351,13 @@ function applyTheme(m){var t=$('#themeBtn');
 (function(){try{var s=localStorage.getItem(TKEY);if(s)applyTheme(s);}catch(e){}})();
 $('#themeBtn').addEventListener('click',function(){var term=document.documentElement.getAttribute('data-theme')==='terminal';var next=term?'light':'terminal';applyTheme(next);try{localStorage.setItem(TKEY,next);}catch(e){}});
 (function initChartTog(){
-  var card=$('#grafik .card'),btn=$('#chartTog'),lbl=$('.chart-tog-lbl',btn);if(!card||!btn)return;
+  var card=$('#grafik .card'),btn=$('#chartTog');if(!card||!btn)return;
   function setOpen(on){
     card.classList.toggle('is-collapsed',!on);
     btn.setAttribute('aria-expanded',on?'true':'false');
-    if(lbl)lbl.textContent=on?'Tutup grafik':'Buka grafik';
+    var lab=on?'Tutup grafik':'Buka grafik';
+    btn.setAttribute('aria-label',lab);
+    btn.setAttribute('title',lab);
     try{localStorage.setItem(CKEY,on?'1':'0');}catch(e){}
   }
   var open=true;try{var s=localStorage.getItem(CKEY);if(s==='0')open=false;else if(s==='1')open=true;}catch(e){}

@@ -34,17 +34,23 @@
   --red:#F87171;--red-text:#F87171;--red-soft:rgba(248,113,113,.14);
   --amber:#FBBF24;--amber-soft:rgba(251,191,36,.16)}
 *{box-sizing:border-box}
-body{margin:0;font-family:var(--sans);background:var(--off);color:var(--navy);
+html,body{height:100%}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;font-family:var(--sans);background:var(--off);color:var(--navy);
   -webkit-font-smoothing:antialiased;line-height:1.5}
 a{color:var(--teal);font-weight:600;text-decoration:none}
 a:hover{text-decoration:underline}
-.wrap{max-width:560px;margin:0 auto;padding:18px 16px 40px}
-.brand{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;color:inherit;text-decoration:none}
+.wrap{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:18px 16px 24px;box-sizing:border-box}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-width:0}
 .brand:hover{text-decoration:none}
 .brand-ic{width:36px;height:36px;border-radius:8px;background:#0B1F3A;display:grid;place-items:center;flex:none;border:1px solid var(--border)}
 .brand-ic svg{width:22px;height:22px}
 .wm{display:block;font-weight:800;font-size:13px;letter-spacing:-.02em;line-height:1.15}
 .by{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}
+.back{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--secondary);
+  display:grid;place-items:center;text-decoration:none}
+.back:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.back svg{width:18px;height:18px;display:block}
 h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;margin:0 0 6px;font-weight:800}
 .name{font-size:14px;color:var(--muted);margin:0 0 18px}
 .verdict{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid;margin:0 0 14px}
@@ -61,23 +67,23 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
   padding:4px 9px;border-radius:999px;background:var(--teal-soft);color:var(--teal-text)}
 .chip.out{background:var(--red-soft);color:var(--red-text)}
 .chip.star{background:var(--amber-soft);color:var(--amber)}
-.dots{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px}
-.dot{width:10px;height:10px;border-radius:3px;background:var(--border-strong)}
+.dots{display:flex;width:100%;gap:3px;margin:0 0 14px}
+.dot{flex:1;min-width:0;height:16px;border-radius:4px;background:var(--border-strong)}
 .dot.on{background:var(--teal)}
-.stats-line{font-size:13px;color:var(--secondary);display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 14px}
-.stats-line b{font-family:var(--mono);font-size:15px;color:var(--navy)}
-.box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:0 0 18px}
-.box h2{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px;font-weight:700}
-.box p{margin:0;font-size:13px;color:var(--navy);line-height:1.5}
+.stats-line{display:grid;grid-template-columns:repeat(3,1fr);width:100%;gap:8px;margin:0 0 16px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-align:left}
+.stat .sv{font-family:var(--mono);font-size:1.35rem;font-weight:800;line-height:1;letter-spacing:-.02em;color:var(--navy)}
+.stat .sv.up{color:var(--teal-text)}
+.stat .sv.down{color:var(--red-text)}
+.stat .sl{font-size:11.5px;color:var(--muted);font-weight:600}
 .actions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .btn{appearance:none;border:1px solid var(--border-strong);background:var(--surface);color:var(--navy);
   font:inherit;font-weight:700;font-size:13.5px;padding:10px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
 .btn:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
-.btn-go{background:var(--teal);border-color:var(--teal);color:#fff}
-.btn-go:hover{filter:brightness(.95);color:#fff}
-[data-theme="terminal"] .btn-go{color:#0B1F3A}
-.note{font-size:12.5px;color:var(--muted);margin:0;line-height:1.45}
-.foot{margin-top:26px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
+.note{font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.45}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:0 0 12px}
+.box p{margin:0;font-size:13.5px;color:var(--secondary);line-height:1.55}
+.foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
   display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}
 .foot-meta{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}
 .foot-social{display:inline-flex;gap:6px;margin-left:auto}
@@ -90,16 +96,21 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
 </head>
 <body>
 <div class="wrap">
-  <a class="brand" href="/">
-    <span class="brand-ic" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/>
-        <circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/>
-        <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
-      </svg>
-    </span>
-    <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
-  </a>
+  <div class="top">
+    <a class="brand" href="/">
+      <span class="brand-ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/>
+          <circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/>
+          <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
+        </svg>
+      </span>
+      <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
+    </a>
+    <a class="back" href="/" aria-label="Kembali ke dashboard" title="Kembali ke dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </a>
+  </div>
 
   <h1>Apakah MIDI masuk Daftar Efek Syariah?</h1>
   <p class="name">PT Midi Utama Indonesia Tbk</p>
@@ -115,23 +126,17 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
   <div class="chips"><span class="chip">Comeback 2 babak</span></div>
   <div class="dots" role="img" aria-label="MIDI ada di daftar pada: Des 2019, Agu 2020, Des 2020, Agu 2021, Des 2021, Jul 2022, Des 2022, Jun 2023, Des 2023, Jun 2024, Jun 2025, Des 2025"><span class="dot" title="Jun 2016: tidak"></span><span class="dot" title="Des 2016: tidak"></span><span class="dot" title="Jun 2017: tidak"></span><span class="dot" title="Des 2017: tidak"></span><span class="dot" title="Jun 2018: tidak"></span><span class="dot" title="Des 2018: tidak"></span><span class="dot" title="Jun 2019: tidak"></span><span class="dot on" title="Des 2019: ada"></span><span class="dot on" title="Agu 2020: ada"></span><span class="dot on" title="Des 2020: ada"></span><span class="dot on" title="Agu 2021: ada"></span><span class="dot on" title="Des 2021: ada"></span><span class="dot on" title="Jul 2022: ada"></span><span class="dot on" title="Des 2022: ada"></span><span class="dot on" title="Jun 2023: ada"></span><span class="dot on" title="Des 2023: ada"></span><span class="dot on" title="Jun 2024: ada"></span><span class="dot" title="Des 2024: tidak"></span><span class="dot on" title="Jun 2025: ada"></span><span class="dot on" title="Des 2025: ada"></span><span class="dot" title="Jun 2026: tidak"></span></div>
   <div class="stats-line" aria-label="Ringkasan jejak">
-    <span><b>12/21</b> muncul</span>
-    <span><b style="color:var(--teal)">2</b> masuk</span>
-    <span><b style="color:var(--red)">2</b> keluar</span>
-  </div>
-  <div class="box">
-    <h2>Periode hadir</h2>
-    <p>Des 2019, Agu 2020, Des 2020, Agu 2021, Des 2021, Jul 2022, Des 2022, Jun 2023, Des 2023, Jun 2024, Jun 2025, Des 2025.</p>
+    <div class="stat"><span class="sv">12/21</span><span class="sl">muncul</span></div>
+    <div class="stat"><span class="sv up">2</span><span class="sl">masuk</span></div>
+    <div class="stat"><span class="sv down">2</span><span class="sl">keluar</span></div>
   </div>
 
   <div class="actions">
     <button type="button" class="btn" id="shareBtn" data-url="https://des.lotmetrik.my.id/saham/midi" data-text="MIDI (PT Midi Utama Indonesia Tbk) TIDAK SYARIAH di Daftar Efek Syariah OJK. Via @lotmetrik.">Bagikan</button>
-    <a class="btn btn-go" href="https://des.lotmetrik.my.id/#t=MIDI">Jejak di dashboard</a>
   </div>
 
-  <p class="note">Data historis tidak menjamin status berikutnya. Selalu verifikasi ke
-  <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">sumber resmi OJK</a>
-  · <a href="/#panduan">Panduan</a>.</p>
+  <div class="box"><p>MIDI (PT Midi Utama Indonesia Tbk) tercatat dalam Daftar Efek Syariah (DES) OJK pada 12 periode hadir dari Des 2019 hingga Des 2025. Riwayat kehadiran ini membantu melihat konsistensi status syariah emiten di pasar modal Indonesia. Status terkini: tidak syariah.</p></div>
+  <p class="note">Data historis tidak menjamin status berikutnya.</p>
 
   <div class="foot">
     <div class="foot-meta">
