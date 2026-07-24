@@ -66,21 +66,17 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     N = len(meta)
     in_now = bits[-1] == "1"
     count = bits.count("1")
-    enters = exits = 0
+    runs = 0
+    prev = "0"
+    for ch in bits:
+        if ch == "1" and prev == "0":
+            runs += 1
+        prev = ch
+    enters = runs - (1 if bits[0] == "1" else 0)
+    exits = 0
     for i in range(1, N):
-        if bits[i] == "1" and bits[i - 1] == "0":
-            enters += 1
         if bits[i] == "0" and bits[i - 1] == "1":
             exits += 1
-    if bits[0] == "1":
-        # babak pertama tidak dihitung "masuk" di dashboard (enters = runs - 1 if started in)
-        runs = 0
-        prev = "0"
-        for ch in bits:
-            if ch == "1" and prev == "0":
-                runs += 1
-            prev = ch
-        enters = runs - 1
 
     si = since_index(bits)
     since = short_label(meta[si]["date"])
@@ -90,33 +86,78 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     url = f"{SITE}/saham/{code.lower()}"
     dash = f"{SITE}/#t={code}"
 
+    survivor = count == N
+    newcomer = count == 1 and in_now
+    one_hit = count == 1 and not in_now
+    comeback = runs >= 2
+
+    chips = []
+    if survivor:
+        chips.append(f'<span class="chip star">Setia {N}/{N}</span>')
+    elif newcomer:
+        chips.append('<span class="chip">Pendatang baru</span>')
+    elif one_hit:
+        chips.append('<span class="chip out">Sekali lewat</span>')
+    elif comeback:
+        chips.append(f'<span class="chip">Comeback {runs} babak</span>')
+    chips_html = ("<div class=\"chips\">" + "".join(chips) + "</div>") if chips else ""
+
+    dots = []
+    on_periods = []
+    for i in range(N):
+        on = bits[i] == "1"
+        lab = short_label(meta[i]["date"])
+        ph = "P1" if "_P1" in meta[i]["key"] else "P2"
+        tip = f"{lab} {ph}: {'ada' if on else 'tidak'}"
+        dots.append(
+            f'<span class="dot{" on" if on else ""}" title="{esc(tip)}"></span>'
+        )
+        if on:
+            on_periods.append(f"{lab} {ph}")
+    dots_html = "".join(dots)
+    period_txt = ", ".join(on_periods) if on_periods else "tidak pernah masuk dalam rentang data"
+    aria_dots = (
+        f"{code} ada di daftar pada: {', '.join(on_periods)}"
+        if on_periods
+        else f"{code} tidak pernah ada di daftar dalam rentang data"
+    )
+
     if in_now:
         verdict = "ADA"
         verdict_cls = "in"
-        lead = f"<b>{esc(code)}</b> saat ini <b>ADA</b> di Daftar Efek Syariah OJK."
         status_line = f"Di dalam sejak {esc(since)} · rilis terbaru {esc(short_label(last['date']))}"
         og_desc = (
             f"{code} ({name}) ADA di Daftar Efek Syariah OJK "
             f"per {last['date']}. Jejak {count}/{N} rilis · Lotmetrik."
         )
+        caveat = ""
     else:
         verdict = "TIDAK ada"
         verdict_cls = "out"
-        lead = f"<b>{esc(code)}</b> saat ini <b>TIDAK ada</b> di Daftar Efek Syariah OJK."
         status_line = f"Di luar sejak {esc(since)} · rilis terbaru {esc(short_label(last['date']))}"
         og_desc = (
             f"{code} ({name}) TIDAK ada di Daftar Efek Syariah OJK "
             f"per {last['date']}. Jejak {count}/{N} rilis · Lotmetrik."
         )
+        caveat = (
+            '<p class="caveat"><b>Keluar DES bukan delisting</b> dan bukan berarti sahamnya jelek — '
+            "hanya tidak lolos saringan syariah pada rilis itu.</p>"
+        )
 
+    share_text = (
+        f"{code} ({name}) di Daftar Efek Syariah OJK: "
+        f"{'ADA' if in_now else 'TIDAK ada'}, muncul {count}/{N} rilis. "
+        f"Via @lotmetrik · edukasi, bukan rekomendasi."
+    )
     title = f"Apakah {code} syariah? · DES OJK {last_y} · Lotmetrik"
     h1 = f"Apakah {esc(code)} masuk Daftar Efek Syariah?"
-
-    # ringkas titik timeline (teks, untuk crawler)
-    on_periods = [
-        short_label(meta[i]["date"]) for i in range(N) if bits[i] == "1"
-    ]
-    period_txt = ", ".join(on_periods) if on_periods else "tidak pernah masuk dalam rentang data"
+    vic = (
+        "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' "
+        "stroke-linecap='round' stroke-linejoin='round'><path d='M5 13l4 4L19 7'/></svg>"
+        if in_now
+        else "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' "
+        "stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>"
+    )
 
     ld = {
         "@context": "https://schema.org",
@@ -125,11 +166,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         "url": url,
         "description": og_desc,
         "isPartOf": {"@type": "WebSite", "name": "DES Dashboard", "url": SITE + "/"},
-        "about": {
-            "@type": "Corporation",
-            "name": name,
-            "tickerSymbol": code,
-        },
+        "about": {"@type": "Corporation", "name": name, "tickerSymbol": code},
         "dateModified": last["date"],
     }
 
@@ -157,46 +194,63 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 <style>
-:root{{--navy:#0B1F3A;--teal:#0F9488;--teal-soft:rgba(15,148,136,.12);--red:#DC2626;--red-soft:rgba(220,38,38,.10);
-  --off:#F5F7FA;--muted:#5F7186;--border:#D7DEE7;--white:#fff}}
+:root{{--navy:#0B1F3A;--teal:#0F9488;--teal-text:#0D7A70;--teal-soft:rgba(20,184,166,.12);
+  --red:#DC2626;--red-text:#B91C1C;--red-soft:rgba(239,68,68,.10);
+  --amber:#D97706;--amber-soft:rgba(245,158,11,.14);
+  --off:#F5F7FA;--muted:#5F7186;--secondary:#44566B;--border:#D7DEE7;--border-strong:#B9C4D2;--white:#fff;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif}}
 *{{box-sizing:border-box}}
-body{{margin:0;font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--off);color:var(--navy);
+body{{margin:0;font-family:var(--sans);background:var(--off);color:var(--navy);
   -webkit-font-smoothing:antialiased;line-height:1.5}}
 a{{color:var(--teal);font-weight:600;text-decoration:none}}
 a:hover{{text-decoration:underline}}
-.wrap{{max-width:640px;margin:0 auto;padding:20px 18px 48px}}
-.brand{{display:inline-flex;align-items:center;gap:10px;margin-bottom:28px;color:inherit;text-decoration:none}}
+.wrap{{max-width:640px;margin:0 auto;padding:18px 16px 52px}}
+.brand{{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;color:inherit;text-decoration:none}}
 .brand:hover{{text-decoration:none}}
 .brand-ic{{width:36px;height:36px;border-radius:8px;background:var(--navy);display:grid;place-items:center;flex:none}}
 .brand-ic svg{{width:22px;height:22px}}
 .wm{{display:block;font-weight:800;font-size:15px;letter-spacing:-.02em}}
 .by{{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}}
-h1{{font-size:clamp(1.35rem,4vw,1.75rem);letter-spacing:-.03em;line-height:1.15;margin:0 0 18px}}
-.verdict{{display:flex;gap:14px;align-items:flex-start;padding:16px 16px;border-radius:12px;border:1px solid var(--border);
-  background:var(--white);margin-bottom:18px}}
-.verdict.in{{background:var(--teal-soft);border-color:rgba(15,148,136,.35)}}
-.verdict.out{{background:var(--red-soft);border-color:rgba(220,38,38,.28)}}
-.vic{{flex:none;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;color:#fff}}
-.verdict.in .vic{{background:var(--teal)}}
-.verdict.out .vic{{background:var(--red)}}
-.vic svg{{width:22px;height:22px}}
-.vmain{{font-size:1.15rem;font-weight:800;letter-spacing:-.02em}}
-.vmain .mono{{font-family:'JetBrains Mono',monospace}}
-.vsub{{font-size:13.5px;color:var(--muted);margin-top:4px}}
-.name{{font-size:15px;color:var(--muted);margin:0 0 20px}}
-.stats{{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}}
+h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;margin:0 0 8px;font-weight:800}}
+.name{{font-size:14.5px;color:var(--muted);margin:0 0 16px}}
+.verdict{{display:flex;gap:12px;align-items:center;padding:14px 14px;border-radius:12px;border:1px solid;
+  margin-bottom:12px}}
+.verdict.in{{background:var(--teal-soft);border-color:rgba(15,148,136,.35);color:var(--teal-text)}}
+.verdict.out{{background:var(--red-soft);border-color:rgba(220,38,38,.28);color:var(--red-text)}}
+.vic{{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--white)}}
+.vic svg{{width:20px;height:20px}}
+.vbody{{flex:1;min-width:0}}
+.vmain{{font-size:1.1rem;font-weight:800;letter-spacing:-.01em;line-height:1.18}}
+.vmain .mono{{font-family:var(--mono)}}
+.vsub{{font-size:12px;color:var(--secondary);margin-top:3px;line-height:1.4}}
+.actions{{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}}
+.btn{{appearance:none;border:1px solid var(--border-strong);background:var(--white);color:var(--navy);
+  font:inherit;font-weight:700;font-size:13.5px;padding:10px 14px;border-radius:8px;cursor:pointer}}
+.btn:hover{{border-color:var(--teal);color:var(--teal)}}
+.btn-go{{background:var(--teal);border-color:var(--teal);color:#fff}}
+.btn-go:hover{{filter:brightness(.95);color:#fff;text-decoration:none}}
+.caveat{{font-size:13px;color:var(--secondary);background:var(--white);border:1px solid var(--border);
+  border-radius:10px;padding:11px 13px;margin:0 0 14px;line-height:1.45}}
+.chips{{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}}
+.chip{{display:inline-flex;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.03em;
+  padding:4px 9px;border-radius:999px;background:rgba(15,148,136,.12);color:var(--teal-text)}}
+.chip.out{{background:var(--red-soft);color:var(--red-text)}}
+.chip.star{{background:var(--amber-soft);color:var(--amber)}}
+.dots{{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 16px}}
+.dot{{width:10px;height:10px;border-radius:3px;background:var(--border-strong)}}
+.dot.on{{background:var(--teal)}}
+.dot-cap{{font-size:11.5px;color:var(--muted);margin:-8px 0 16px}}
+.stats{{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}}
 .stat{{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:12px}}
-.stat .v{{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.35rem;letter-spacing:-.02em}}
-.stat .k{{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-top:4px}}
-.box{{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:18px}}
-.box h2{{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}}
-.box p{{margin:0;font-size:14px;color:var(--navy)}}
-.cta{{display:inline-block;background:var(--teal);color:#fff!important;font-weight:700;padding:12px 18px;
-  border-radius:8px;text-decoration:none!important;margin-top:4px}}
-.cta:hover{{filter:brightness(.95);text-decoration:none!important}}
-.note{{font-size:12.5px;color:var(--muted);margin-top:22px;line-height:1.45}}
-.foot{{margin-top:28px;padding-top:16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted)}}
-@media(max-width:420px){{.stats{{grid-template-columns:1fr 1fr 1fr}}}}
+.stat .v{{font-family:var(--mono);font-weight:700;font-size:1.35rem;letter-spacing:-.02em;line-height:1}}
+.stat .k{{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-top:5px}}
+.box{{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px}}
+.box h2{{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px;font-weight:700}}
+.box p{{margin:0;font-size:13.5px;color:var(--navy);line-height:1.45}}
+.note{{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45}}
+.foot{{margin-top:26px;padding-top:16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted)}}
+@media(max-width:420px){{.actions .btn{{flex:1;text-align:center}}}}
 </style>
 </head>
 <body>
@@ -216,14 +270,18 @@ h1{{font-size:clamp(1.35rem,4vw,1.75rem);letter-spacing:-.03em;line-height:1.15;
   <p class="name">{esc(name)}</p>
 
   <div class="verdict {verdict_cls}">
-    <span class="vic" aria-hidden="true">{"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 13l4 4L19 7'/></svg>" if in_now else "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>"}</span>
-    <div>
+    <span class="vic" aria-hidden="true">{vic}</span>
+    <div class="vbody">
       <div class="vmain"><span class="mono">{esc(code)}</span> {esc(verdict)} di Daftar Efek Syariah</div>
-      <div class="vsub">{esc(status_line)}</div>
+      <div class="vsub">{status_line} · {esc(last["kep"])}</div>
     </div>
   </div>
 
-  <p>{lead} Sumber: OJK ({esc(last["kep"])}).</p>
+  {caveat}
+  {chips_html}
+
+  <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
+  <p class="dot-cap">{N} rilis · titik hijau = ada di DES</p>
 
   <div class="stats" aria-label="Ringkasan jejak">
     <div class="stat"><div class="v">{count}<span style="font-size:.85rem;color:var(--muted)">/{N}</span></div><div class="k">Muncul</div></div>
@@ -236,18 +294,22 @@ h1{{font-size:clamp(1.35rem,4vw,1.75rem);letter-spacing:-.03em;line-height:1.15;
     <p>{esc(period_txt)}.</p>
   </div>
 
-  <a class="cta" href="{dash}">Lihat jejak lengkap di dashboard</a>
+  <div class="actions">
+    <button type="button" class="btn" id="shareBtn" data-url="{url}" data-text="{esc(share_text)}">Bagikan</button>
+    <a class="btn btn-go" href="{dash}">Jejak di dashboard</a>
+  </div>
 
-  <p class="note">Keluar DES bukan delisting dan bukan penilaian jelek — artinya tidak lolos saringan syariah pada rilis itu.
-  Data historis tidak menjamin status berikutnya. Selalu verifikasi ke <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">sumber resmi OJK</a>.</p>
+  <p class="note">Data historis tidak menjamin status berikutnya. Selalu verifikasi ke
+  <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">sumber resmi OJK</a>
+  · <a href="/#panduan">Panduan</a> · ikuti <a href="https://t.me/lotmetrik" rel="noopener" target="_blank">@lotmetrik</a>.</p>
 
   <div class="foot">
     © {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a>
     · Data DES OJK {esc(first_y)}–{esc(last_y)} ({N} rilis)
     · Edukasi, bukan rekomendasi
-    · <a href="/#panduan">Panduan</a>
   </div>
 </div>
+<script src="/share.js" defer></script>
 </body>
 </html>
 """

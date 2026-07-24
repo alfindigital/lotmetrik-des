@@ -306,10 +306,12 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
   else if(rec.runs>=2)chips+='<span class="chip">Comeback '+rec.runs+' babak</span>';
   var dots='',srlist=[];for(var i=0;i<N;i++){var on=rec.bits[i]==='1';dots+='<span class="dot '+(on?'on':'')+'" data-tip="'+shortLabel(i)+' '+periods[i].phase+': '+(on?'ada':'tidak')+'"></span>';if(on)srlist.push(shortLabel(i)+' '+periods[i].phase);}
   var vic=inNow?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  var seo='/saham/'+code.toLowerCase();
   host.innerHTML='<div class="tr-verdict '+(inNow?'in':'out')+'">'+
       '<span class="vic" aria-hidden="true">'+vic+'</span>'+
       '<div class="vbody"><div class="vmain"><b class="mono">'+rec.t+'</b> '+(inNow?'ADA':'TIDAK ada')+' di Daftar Efek Syariah</div>'+
-        '<div class="vsub">'+esc(rec.name)+' · rilis terbaru '+shortLabel(N-1)+' · '+(inNow?'di dalam':'di luar')+' sejak '+esc(sinceLbl)+'</div></div>'+
+        '<div class="vsub">'+esc(rec.name)+' · rilis terbaru '+shortLabel(N-1)+' · '+(inNow?'di dalam':'di luar')+' sejak '+esc(sinceLbl)+'</div>'+
+        '<a class="tr-seo" href="'+seo+'">Halaman publik ›</a></div>'+
       '<button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></div>'+
     (chips?'<div class="tr-chips">'+chips+'</div>':'')+
     '<div class="dots" role="img" aria-label="'+esc(rec.t+' ada di daftar pada: '+(srlist.length?srlist.join(', '):'tidak pernah'))+'">'+dots+'</div>'+
@@ -319,7 +321,7 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
       '<div class="tr-stat"><div class="v mono" style="color:var(--down-text)">'+rec.exits+'</div><div class="k">Kali keluar</div></div>'+
     '</div>'+
     '<p class="tr-cta">Alat gratis dari <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">@lotmetrik</a>. Edukasi, bukan rekomendasi.</p>';
-  $('#trkShare').onclick=function(){var url=SITE+'/saham/'+code.toLowerCase(),txt=trackerText(rec);
+  $('#trkShare').onclick=function(){var url=SITE+seo,txt=trackerText(rec);
     if(navigator.share)navigator.share({title:'DES · '+code,text:txt,url:url}).catch(function(){});
     else{copyText(txt+' '+url);toast('Teks + link disalin');}};
 }
