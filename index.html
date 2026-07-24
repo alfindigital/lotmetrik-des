@@ -267,17 +267,6 @@ section{padding:16px 0}
 .tr-cta{font-size:12.5px;color:var(--text-muted);margin-top:13px}
 .tr-hint{color:var(--text-muted);font-size:13px;margin-top:2px;line-height:1.55}
 
-/* FACTS */
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
-.fact{text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px;
-  display:flex;flex-direction:column;gap:5px;transition:border-color var(--dur-fast),box-shadow var(--dur-fast);color:inherit;box-shadow:var(--shadow-card)}
-.fact:hover{border-color:var(--accent);box-shadow:var(--shadow-pop)}
-.fact .fv{font-weight:700;font-size:1.75rem;line-height:1;letter-spacing:-.02em}
-.fact.hl .fv{color:var(--highlight-text)} .fact.down .fv{color:var(--down-text)} .fact.up .fv{color:var(--up-text)}
-.fact .fl{font-size:12.5px;font-weight:700;color:var(--text)}
-.fact .fd{font-size:11.5px;color:var(--text-secondary);line-height:1.4}
-.fact .more{font-family:var(--font-mono);font-size:11px;font-weight:700;color:var(--accent-text);margin-top:auto;letter-spacing:.02em}
-
 /* MODAL */
 .modal-back{position:fixed;inset:0;z-index:60;background:rgba(6,18,31,.55);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center}
 .modal-back.on{display:flex}
@@ -479,8 +468,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 
 <footer>
   <div class="foot">
-    <span>© <span id="footYear">2026</span> Lotmetrik</span><span class="sep">·</span>
-    <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">@lotmetrik</a><span class="sep">·</span>
+    <span>© <span id="footYear">2026</span> <a href="https://lotmetrik.my.id/" target="_blank" rel="noopener">Lotmetrik</a></span><span class="sep">·</span>
+    <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">Instagram</a><span class="sep">·</span>
     <a href="https://t.me/lotmetrik" target="_blank" rel="noopener">Telegram</a><span class="sep">·</span>
     <span>Data: OJK</span><span class="sep">·</span>
     <span>Edukasi, bukan rekomendasi</span><span class="sep">·</span>
@@ -500,8 +489,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=247"></script>
-<script src="app.js?v=247"></script>
+<script src="data.js?v=248"></script>
+<script src="app.js?v=248"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->

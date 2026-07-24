@@ -1,7 +1,7 @@
 /* =====================================================================
-   Lotmetrik — DES Explorer (v2.2, compact layout)
+   Lotmetrik — DES Dashboard (v2.4.3+)
    Alat data Daftar Efek Syariah OJK. Zero dependencies.
-   Angka + rentang sumbu dihitung dari data.js. Panduan/sumber ada di modal.
+   Angka + rentang sumbu dihitung dari data.js. Panduan = halaman penuh.
    ===================================================================== */
 (function(){
 "use strict";
@@ -340,8 +340,6 @@ var FACTS=[
   {v:perT[revTop[0]].flips+'x',l:'Pintu putar',d:revTop.join(', ')+' — bolak-balik masuk-keluar',cls:'',kind:'revolve',title:'Si Paling Pintu Putar',sub:'Diurut dari yang paling sering ganti status masuk-keluar.'},
   {v:MINUS+maxOut.n,l:'Keluar terbanyak',d:shortLabel(maxOut.i)+' — '+fmtNum(maxOut.n)+' saham dicoret sekaligus',cls:'down',kind:'period',i:maxOut.i,title:''}
 ];
-function renderFacts(){$('#facts').innerHTML=[3,4,5].map(function(idx){var f=FACTS[idx];
-  return '<button class="fact '+f.cls+'" data-f="'+idx+'"><span class="fv mono">'+f.v+'</span><span class="fl">'+esc(f.l)+'</span><span class="fd">'+esc(f.d)+'</span><span class="more">Lihat ›</span></button>';}).join('');}
 function factClick(e){var b=e.target.closest('[data-f]');if(b)openFact(+b.dataset.f);}
 $('#heroMetrics').addEventListener('click',factClick);
 function captionFor(f){var head=f.v+' · '+f.l+' — Daftar Efek Syariah OJK '+yearOf(0)+'-'+yearOf(N-1)+'.';
@@ -399,7 +397,7 @@ function applyHash(){var h=(location.hash||'').replace(/^#/,''),m={};
   h.split('&').forEach(function(p){var kv=p.split('=');if(kv[0])m[kv[0]]=decodeURIComponent(kv[1]||'');});
   if(m.t){setPeriod(N-1);showTracker(m.t,false);scrollTo('#lacak');return;}
   if(m.p){var pi=-1;for(var i=0;i<N;i++)if(META[i].key===m.p)pi=i;if(pi>=0){setPeriod(pi);scrollTo('#periode');return;}}
-  if(m.f){var fi=+m.f;setPeriod(N-1);if(FACTS[fi]){openFact(fi);scrollTo('#fakta');}return;}
+  if(m.f){var fi=+m.f;setPeriod(N-1);if(FACTS[fi]){openFact(fi);}return;}
   setPeriod(N-1);}
 
 function copyText(t){if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).catch(function(){fb(t);});else fb(t);

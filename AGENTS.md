@@ -2,6 +2,11 @@
 
 > Pemilik project adalah NON-CODER. Jelaskan dalam Bahasa Indonesia santai, langkah "ketik ini", tanpa jargon. Laporkan hasil dengan jujur (kalau gagal bilang gagal), verifikasi sebelum klaim selesai.
 
+## Status aktif (24 Jul 2026)
+- **IDE aktif = Cursor.** Owner lanjut semua edit (fitur, UI/UX, responsive, security, sync) dari chat Cursor di folder ini.
+- **Sinkron terverifikasi:** lokal `main` = `origin/main` = commit `aad69b0`, live cache `?v=247`. Tiap ubah JS/CSS/data → naikkan `?v=` di 2 tag script, `git push` → Netlify.
+- Standar produk: **gratis lead magnet**, bukan one-time sale. Roast/audit ulang sudah dikerjakan di Cursor 24 Jul 2026.
+
 ## Apa ini
 Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**. Versi **v2.4.3 LIVE** di https://des.lotmetrik.my.id. GRATIS permanen (lead magnet) — **JANGAN pernah dipagari/paywall** (keputusan tertulis owner; data sudah publik + terindeks price:0).
 
