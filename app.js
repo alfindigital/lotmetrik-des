@@ -201,6 +201,7 @@ function bindHits(){$$('.hit',hostEl).forEach(function(h){var i=+h.dataset.i;
   h.addEventListener('pointerenter',function(){showTT(i,h);});
   h.addEventListener('pointermove',function(){showTT(i,h);});
   h.addEventListener('pointerleave',hideTT);
+  h.addEventListener('pointerdown',function(){showTT(i,h);});
   h.addEventListener('focus',function(){showTT(i,h);});
   h.addEventListener('blur',hideTT);
   h.addEventListener('click',function(){hideTT();setPeriod(i,{user:true});scrollTo('#periode');});
@@ -212,7 +213,10 @@ function showTT(i,hit){var p=periods[i],html;
   else{html='<div class="d">'+esc(p.label)+' · '+p.phase+'</div><div class="r"><span>Masuk</span><b class="up">+'+p.masuk.length+'</b></div><div class="r"><span>Keluar</span><b class="down">'+MINUS+p.keluar.length+'</b></div><div class="r"><span>Net</span><b class="'+(p.net>=0?'up':'down')+'">'+fmtSigned(p.net)+'</b></div>';}
   ttEl.innerHTML=html;ttEl.classList.add('on');
   var hr=hit.getBoundingClientRect(),wr=wrapEl.getBoundingClientRect(),cx=hr.left+hr.width/2-wr.left,cy=hr.top+Math.min(hr.height,120)/2-wr.top;
-  var tw=ttEl.offsetWidth,th=ttEl.offsetHeight,left=Math.max(4,Math.min(cx-tw/2,wrapEl.clientWidth-tw-4)),top=cy-th-14;if(top<0)top=cy+16;
+  var pad=8,tw=ttEl.offsetWidth||160,th=ttEl.offsetHeight||70;
+  var left=Math.max(pad,Math.min(cx-tw/2,wrapEl.clientWidth-tw-pad));
+  var top=cy-th-16;if(top<pad)top=Math.min(cy+18,wrapEl.clientHeight-th-pad);
+  if(top<pad)top=pad;
   ttEl.style.left=left+'px';ttEl.style.top=top+'px';}
 function hideTT(){ttEl.classList.remove('on');}
 function renderChartSR(){var sr=$('#chartSR');if(!sr)return;
@@ -231,6 +235,9 @@ function buildTimeline(){
     var nb=p.baseline?'nb':(p.net>=0?'nb pos':'nb neg');
     return '<button type="button" class="tl-box" data-i="'+p.i+'" role="tab" aria-selected="false" tabindex="-1" aria-label="'+esc(p.label+' '+p.phase+', '+p.total+' saham')+'"><span class="yr mono">'+yearOf(p.i)+'</span><span class="ph mono">'+p.phase+'</span><span class="tt2 mono">'+fmtNum(p.total)+'</span><span class="'+nb+'"></span></button>';
   }).join('');
+  var sel=$('#periodSelect');
+  if(sel){sel.innerHTML=periods.map(function(p){return '<option value="'+p.i+'">'+esc(p.label)+' '+p.phase+' · '+fmtNum(p.total)+' saham</option>';}).join('');
+    sel.onchange=function(){setPeriod(+this.value,{user:true});};}
   $('#timeline').addEventListener('click',function(e){var b=e.target.closest('[data-i]');if(b)setPeriod(+b.dataset.i,{user:true});});
   $('#timeline').addEventListener('keydown',function(e){
     if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight'&&e.key!=='Home'&&e.key!=='End')return;e.preventDefault();var ni=curPeriod;
@@ -242,6 +249,7 @@ function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;ioQuery=''
   var tl=$('#timeline'),active=null;
   $$('#timeline .tl-box').forEach(function(b){var on=+b.dataset.i===i;b.classList.toggle('active',on);b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;if(on)active=b;});
   if(active&&tl)tl.scrollTo({left:active.offsetLeft-(tl.clientWidth-active.offsetWidth)/2,behavior:reduceMotion()?'auto':'smooth'});
+  var sel=$('#periodSelect');if(sel&&String(sel.value)!==String(i))sel.value=String(i);
   $('#pPrev').disabled=i<=0;$('#pNext').disabled=i>=N-1;
   renderPSum();renderTiles();renderIO();
   if(opts.user)setHash('p='+p.key);}
@@ -293,8 +301,12 @@ function trackerText(rec){var status=rec.survivor?'setia '+N+'/'+N+' periode':(r
   return rec.t+' ('+esc(rec.name)+') di Daftar Efek Syariah OJK: '+status+', muncul '+rec.count+'/'+N+' rilis. Via @lotmetrik · edukasi, bukan rekomendasi.';}
 function showTracker(code,user){code=String(code||'').trim().toUpperCase();var rec=perT[code],host=$('#trkRes');
   if(!rec){var sug=TICKERS.filter(function(t){return t.indexOf(code)===0;}).slice(0,6);
-    host.innerHTML='<p class="tr-hint">Kode <b>'+esc(code)+'</b> tidak ditemukan dalam data DES '+yearOf(0)+'–'+yearOf(N-1)+'.'+
-      (sug.length?' Mungkin maksudmu: '+sug.map(function(t){return '<a href="#" data-trk="'+t+'">'+t+'</a>';}).join(', ')+'.':' Cek lagi ejaannya, atau coba <a href="#" data-trk="ASII">ASII</a>, <a href="#" data-trk="TLKM">TLKM</a>, <a href="#" data-trk="BUKA">BUKA</a>.')+'</p>';return;}
+    var html='<p class="tr-hint">Kode <b>'+esc(code)+'</b> tidak ditemukan dalam data DES '+yearOf(0)+'–'+yearOf(N-1)+'.';
+    if(sug.length){html+=' Mungkin maksudmu: '+sug.map(function(t){return '<a href="#" data-trk="'+t+'">'+t+'</a>';}).join(', ')+'.';
+      html+=' Atau buka halaman publik: '+sug.map(function(t){return '<a href="/saham/'+t.toLowerCase()+'">'+t+'</a>';}).join(', ')+'.';}
+    else{html+=' Cek ejaan, atau coba <a href="#" data-trk="ASII">ASII</a>, <a href="#" data-trk="TLKM">TLKM</a>, <a href="#" data-trk="BUKA">BUKA</a>.';
+      if(/^[A-Z]{4}$/.test(code))html+=' Halaman SEO untuk kode ini tidak ada karena belum pernah masuk DES dalam rentang data.';}
+    host.innerHTML=html+'</p>';return;}
   $('#trkInput').value=code; if(user)setHash('t='+code);
   var inNow=rec.statusNow, cur=rec.bits[N-1], since=N-1;
   while(since>0 && rec.bits[since-1]===cur) since--;
@@ -307,12 +319,14 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
   var dots='',srlist=[];for(var i=0;i<N;i++){var on=rec.bits[i]==='1';dots+='<span class="dot '+(on?'on':'')+'" data-tip="'+shortLabel(i)+' '+periods[i].phase+': '+(on?'ada':'tidak')+'"></span>';if(on)srlist.push(shortLabel(i)+' '+periods[i].phase);}
   var vic=inNow?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var seo='/saham/'+code.toLowerCase();
+  var caveat=inNow?'':'<p class="tr-caveat"><b>Keluar DES bukan delisting</b> dan bukan berarti sahamnya jelek — hanya tidak lolos saringan syariah pada rilis itu. <a href="#panduan" id="trkCaveatGuide">Panduan</a></p>';
   host.innerHTML='<div class="tr-verdict '+(inNow?'in':'out')+'">'+
       '<span class="vic" aria-hidden="true">'+vic+'</span>'+
       '<div class="vbody"><div class="vmain"><b class="mono">'+rec.t+'</b> '+(inNow?'ADA':'TIDAK ada')+' di Daftar Efek Syariah</div>'+
         '<div class="vsub">'+esc(rec.name)+' · rilis terbaru '+shortLabel(N-1)+' · '+(inNow?'di dalam':'di luar')+' sejak '+esc(sinceLbl)+'</div>'+
         '<a class="tr-seo" href="'+seo+'">Halaman publik ›</a></div>'+
       '<button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></div>'+
+    caveat+
     (chips?'<div class="tr-chips">'+chips+'</div>':'')+
     '<div class="dots" role="img" aria-label="'+esc(rec.t+' ada di daftar pada: '+(srlist.length?srlist.join(', '):'tidak pernah'))+'">'+dots+'</div>'+
     '<div class="tr-stats">'+
@@ -320,10 +334,11 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
       '<div class="tr-stat"><div class="v mono" style="color:var(--up-text)">'+rec.enters+'</div><div class="k">Kali masuk</div></div>'+
       '<div class="tr-stat"><div class="v mono" style="color:var(--down-text)">'+rec.exits+'</div><div class="k">Kali keluar</div></div>'+
     '</div>'+
-    '<p class="tr-cta">Alat gratis dari <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">@lotmetrik</a>. Edukasi, bukan rekomendasi.</p>';
+    '<p class="tr-cta">Alat gratis dari <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">@lotmetrik</a> · kabar rilis di <a href="https://t.me/lotmetrik" target="_blank" rel="noopener">Telegram</a>. Edukasi, bukan rekomendasi.</p>';
   $('#trkShare').onclick=function(){var url=SITE+seo,txt=trackerText(rec);
     if(navigator.share)navigator.share({title:'DES · '+code,text:txt,url:url}).catch(function(){});
     else{copyText(txt+' '+url);toast('Teks + link disalin');}};
+  var cg=$('#trkCaveatGuide');if(cg)cg.addEventListener('click',function(e){e.preventDefault();openPanduan();});
 }
 function doTrack(){var v=$('#trkInput').value;if(v)showTracker(v,true);}
 $('#trkBtn').addEventListener('click',doTrack);

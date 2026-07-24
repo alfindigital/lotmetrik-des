@@ -1,5 +1,13 @@
-/* Share button for /saham/* pages (external so CSP script-src 'self' allows it). */
+/* Share + theme boot for /saham/* pages (external so CSP script-src 'self' allows it). */
 (function () {
+  try {
+    if (localStorage.getItem("lotmetrik-des-theme") === "terminal") {
+      document.documentElement.setAttribute("data-theme", "terminal");
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.content = "#0B1F3A";
+    }
+  } catch (e) {}
+
   var btn = document.getElementById("shareBtn");
   if (!btn) return;
   var url = btn.getAttribute("data-url") || location.href;
@@ -34,7 +42,7 @@
       document.execCommand("copy");
       ta.remove();
       done("Tersalin");
-    } catch (e) {
+    } catch (err) {
       window.prompt("Salin link:", url);
     }
   });

@@ -183,9 +183,9 @@ section{padding:16px 0}
 .tl-arrow:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
 .tl-arrow:disabled{opacity:.35;cursor:not-allowed}
 .tl-wrap{position:relative;flex:1;min-width:0}
-.tl{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.tl{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 .tl-wrap::after{content:"";position:absolute;top:0;right:0;bottom:10px;width:26px;pointer-events:none;background:linear-gradient(to right,transparent,var(--surface))}
-.tl-box{flex:none;width:66px;scroll-snap-align:center;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);
+.tl-box{flex:none;width:66px;min-height:64px;scroll-snap-align:center;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);
   padding:8px 4px 9px;text-align:center;cursor:pointer;transition:border-color var(--dur-fast),background var(--dur-fast);position:relative;font:inherit;color:inherit;display:block}
 .tl-box:hover{border-color:var(--border-strong)}
 .tl-box .yr{font-weight:700;font-size:14px;line-height:1;color:var(--text);display:block}
@@ -195,6 +195,7 @@ section{padding:16px 0}
 .tl-box .nb.pos{background:var(--up)} .tl-box .nb.neg{background:var(--down)}
 .tl-box.active{border-color:var(--accent);background:var(--up-soft)}
 .tl-box.active .yr{color:var(--accent-text)}
+.tl-select{display:none;width:100%;font:inherit;font-size:16px;font-weight:700;padding:11px 12px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);margin-bottom:10px}
 
 /* PERIOD SUMMARY + TILES */
 .psum-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
@@ -269,6 +270,8 @@ section{padding:16px 0}
 .tr-stat .k{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-top:5px;font-weight:600}
 .tr-cta{font-size:12.5px;color:var(--text-muted);margin-top:13px}
 .tr-hint{color:var(--text-muted);font-size:13px;margin-top:2px;line-height:1.55}
+.tr-caveat{font-size:12.5px;color:var(--text-secondary);background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-md);padding:10px 12px;margin:0 0 12px;line-height:1.45}
+.tr-caveat b{color:var(--text)}
 
 /* MODAL */
 .modal-back{position:fixed;inset:0;z-index:60;background:rgba(6,18,31,.55);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center}
@@ -337,6 +340,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 .foot{max-width:var(--w);margin:0 auto;padding:15px 18px;font-size:12px;color:var(--text-muted);display:flex;gap:5px 12px;flex-wrap:wrap;align-items:center;justify-content:center;text-align:center}
 .foot a,.foot .link{color:var(--accent-text);background:none;border:0;font:inherit;cursor:pointer;padding:0}
 .foot .sep{opacity:.45}
+.foot-cta{width:100%;margin:0 0 6px;font-size:13px;color:var(--text-secondary)}
+.foot-cta a{font-weight:700}
 
 /* TOAST */
 .toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,12px);background:var(--navy-900);color:#fff;border:1px solid var(--navy-700);
@@ -346,11 +351,29 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 /* RESPONSIVE */
 @media(max-width:720px){
   .io-cols{grid-template-columns:1fr}
+  .pagehead{order:2}
+  #lacak{order:1;padding-top:18px}
+  #grafik{order:3}
+  #periode{order:4}
+  #app{display:flex;flex-direction:column}
+  .tracker-in{flex-direction:column;align-items:stretch}
+  .tracker-in .search{flex:1 1 auto;min-width:0;width:100%}
+  .tracker-in .btn-primary{width:100%;justify-content:center;min-height:48px;font-size:15px}
+  .tl-select{display:block}
+  .tl-box{width:76px;min-height:72px;padding:10px 6px 12px}
+  .tl-box .yr{font-size:15px}
+  .tl{gap:8px;scroll-padding-inline:12px}
+  .chart-svg .hit{stroke:transparent;stroke-width:18}
+  .tt{max-width:min(220px,calc(100vw - 28px));font-size:12.5px}
+  .sec-head .note{display:none}
 }
 @media(max-width:560px){
   .tr-stats{grid-template-columns:repeat(3,1fr)}
   .card-body{padding:13px}
   .stats{grid-template-columns:repeat(2,1fr)}
+  .tiles{grid-template-columns:1fr}
+  .tr-verdict{flex-wrap:wrap}
+  .tr-verdict .btn{width:100%}
 }
 @media(max-width:380px){ .stats{grid-template-columns:1fr 1fr} }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -438,6 +461,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
           <div class="tl-wrap"><div class="tl" id="timeline" role="tablist" aria-label="Pilih periode"></div></div>
           <button class="tl-arrow" id="pNext" aria-label="Periode berikutnya">&#8250;</button>
         </div>
+        <label class="sr-only" for="periodSelect">Pilih periode</label>
+        <select id="periodSelect" class="tl-select" aria-label="Pilih periode"></select>
         <div class="psum-head" id="pSumHead"></div>
         <div class="tiles" id="pTiles"></div>
         <div class="io-controls">
@@ -471,6 +496,7 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 
 <footer>
   <div class="foot">
+    <p class="foot-cta">Alat gratis Lotmetrik · dapatkan kabar rilis DES di <a href="https://t.me/lotmetrik" target="_blank" rel="noopener">Telegram @lotmetrik</a></p>
     <span>© <span id="footYear">2026</span> <a href="https://lotmetrik.my.id/" target="_blank" rel="noopener">Lotmetrik</a></span><span class="sep">·</span>
     <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">Instagram</a><span class="sep">·</span>
     <a href="https://t.me/lotmetrik" target="_blank" rel="noopener">Telegram</a><span class="sep">·</span>
@@ -492,8 +518,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=251"></script>
-<script src="app.js?v=251"></script>
+<script src="data.js?v=252"></script>
+<script src="app.js?v=252"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->
