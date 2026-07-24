@@ -135,23 +135,17 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
             f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. Cek jejak di Lotmetrik."
         )
 
-    first_period = short_label(meta[0]["date"])
-    last_period = short_label(meta[-1]["date"])
     if count == 0:
         seo_blurb = (
-            f"{code} ({name}) belum pernah tercatat dalam Daftar Efek Syariah (DES) OJK "
-            f"pada rentang data dari {first_period} hingga {last_period}. "
-            f"Riwayat kehadiran di daftar ini membantu melihat status syariah emiten "
-            f"di pasar modal Indonesia. Status terkini: {status_word}."
+            f"{code} ({name}) belum pernah tercatat di Daftar Efek Syariah OJK "
+            f"pada {N} rilis data. Status terkini: {status_word}. "
+            f"Cek jejak masuk-keluar saham syariah IDX di Lotmetrik."
         )
     else:
-        first_on = on_periods[0]
-        last_on = on_periods[-1]
         seo_blurb = (
-            f"{code} ({name}) tercatat dalam Daftar Efek Syariah (DES) OJK pada "
-            f"{count} periode hadir dari {first_on} hingga {last_on}. "
-            f"Riwayat kehadiran ini membantu melihat konsistensi status syariah emiten "
-            f"di pasar modal Indonesia. Status terkini: {status_word}."
+            f"{code} ({name}) tercatat di Daftar Efek Syariah OJK pada "
+            f"{count} dari {N} rilis. Status terkini: {status_word}. "
+            f"Cek jejak masuk-keluar saham syariah IDX di Lotmetrik."
         )
 
     share_text = (
@@ -262,8 +256,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
   font:inherit;font-weight:700;font-size:13.5px;padding:10px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}}
 .btn:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
 .note{{font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.45}}
-.box{{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:0 0 12px}}
-.box p{{margin:0;font-size:13.5px;color:var(--secondary);line-height:1.55}}
+.seo-blurb{{font-size:13.5px;color:var(--secondary);margin:0 0 8px;line-height:1.55}}
 .foot{{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
   display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}}
 .foot-meta{{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}}
@@ -316,7 +309,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     <button type="button" class="btn" id="shareBtn" data-url="{url}" data-text="{esc(share_text)}">Bagikan</button>
   </div>
 
-  <div class="box"><p>{esc(seo_blurb)}</p></div>
+  <p class="seo-blurb">{esc(seo_blurb)}</p>
   <p class="note">Data historis tidak menjamin status berikutnya.</p>
 
   <div class="foot">
