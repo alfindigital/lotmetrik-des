@@ -88,7 +88,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     last = meta[-1]
     first_y = meta[0]["date"].split()[-1]
     last_y = last["date"].split()[-1]
-    url = f"{SITE}/saham/{code}"
+    url = f"{SITE}/saham/{code.lower()}"
     dash = f"{SITE}/#t={code}"
 
     if in_now:
@@ -258,7 +258,7 @@ def write_sitemap(codes: list[str]) -> None:
     urls = [f"  <url>\n    <loc>{SITE}/</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
     for c in codes:
         urls.append(
-            f"  <url>\n    <loc>{SITE}/saham/{c}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
+            f"  <url>\n    <loc>{SITE}/saham/{c.lower()}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
         )
     body = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -288,7 +288,7 @@ def main() -> None:
             die(f"Panjang bitstring {code} ({len(bits)}) ≠ jumlah rilis ({len(meta)})")
         name = names.get(code) or code
         html = page_html(code, name, bits, meta)
-        path = os.path.join(SAHAM_DIR, f"{code}.html")
+        path = os.path.join(SAHAM_DIR, f"{code.lower()}.html")
         open(path, "w", encoding="utf-8", newline="\n").write(html)
 
     write_sitemap(codes)

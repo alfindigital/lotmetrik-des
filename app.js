@@ -319,7 +319,7 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
       '<div class="tr-stat"><div class="v mono" style="color:var(--down-text)">'+rec.exits+'</div><div class="k">Kali keluar</div></div>'+
     '</div>'+
     '<p class="tr-cta">Alat gratis dari <a href="https://instagram.com/lotmetrik" target="_blank" rel="noopener">@lotmetrik</a>. Edukasi, bukan rekomendasi.</p>';
-  $('#trkShare').onclick=function(){var url=SITE+'/saham/'+code,txt=trackerText(rec);
+  $('#trkShare').onclick=function(){var url=SITE+'/saham/'+code.toLowerCase(),txt=trackerText(rec);
     if(navigator.share)navigator.share({title:'DES · '+code,text:txt,url:url}).catch(function(){});
     else{copyText(txt+' '+url);toast('Teks + link disalin');}};
 }
