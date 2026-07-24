@@ -1,4 +1,4 @@
-# DES Dashboard (des.lotmetrik.my.id) — Panduan Agent
+# Dashboard Daftar Efek Syariah (des.lotmetrik.my.id) — Panduan Agent
 
 > Pemilik project adalah NON-CODER. Jelaskan dalam Bahasa Indonesia santai, langkah "ketik ini", tanpa jargon. Laporkan hasil dengan jujur (kalau gagal bilang gagal), verifikasi sebelum klaim selesai.
 
@@ -32,7 +32,7 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 - **Verdict banner** di tracker ("X ADA/TIDAK ada di Daftar Efek Syariah · sejak <rilis>") = fitur inti, jangan dihilangkan.
 - Provenance: CSV per-periode pakai tanggal + nomor KEP periode itu (csvSource(p)); teks share bawa "edukasi, bukan rekomendasi". Chart TIDAK pakai watermark (dihapus di v2.4.3 atas permintaan owner — jangan ditambahkan lagi).
 - TIDAK ada: lede/tagline di home, tombol (i) di sebelah Lacak, seksi "Fakta dekade", "Alat gratis lain" di Panduan, panah dropdown di kotak cari — semua sengaja dihapus v2.4.3, jangan dikembalikan.
-- Header: logo bulan-sabit+bintang, "DES Dashboard" dengan "by lotmetrik" DITUMPUK di bawahnya.
+- Header: logo bulan-sabit+bintang minimalis, "Dashboard Daftar Efek Syariah" dengan "by lotmetrik" DITUMPUK di bawahnya.
 - Panduan = halaman penuh `#panduan`, layout 2 kolom kartu.
 - Halaman SEO per saham: `/saham/KODE` (di-generate `_update/generate_saham.py` dari `data.js`). Tombol **Bagikan** di tracker memakai URL itu (bukan `#t=`). Jangan hapus folder `saham/` / `sitemap.xml` — ikut di-regen tiap update data.
 - Data: semua angka dihitung dari `data.js`. Jangan ubah data tanpa regenerasi dari Excel OJK asli (via `_update/`). `build_data.py` punya gate rekonsiliasi — kalau "TIDAK COCOK", berhenti, jangan dipaksa.

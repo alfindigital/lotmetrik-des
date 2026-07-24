@@ -130,7 +130,6 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
             f"{code} ({name}) ADA di Daftar Efek Syariah OJK "
             f"per {last['date']}. Jejak {count}/{N} rilis · Lotmetrik."
         )
-        caveat = ""
     else:
         verdict = "TIDAK ada"
         verdict_cls = "out"
@@ -139,15 +138,11 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
             f"{code} ({name}) TIDAK ada di Daftar Efek Syariah OJK "
             f"per {last['date']}. Jejak {count}/{N} rilis · Lotmetrik."
         )
-        caveat = (
-            '<p class="caveat"><b>Keluar DES bukan delisting</b> dan bukan berarti sahamnya jelek — '
-            "hanya tidak lolos saringan syariah pada rilis itu.</p>"
-        )
 
     share_text = (
         f"{code} ({name}) di Daftar Efek Syariah OJK: "
         f"{'ADA' if in_now else 'TIDAK ada'}, muncul {count}/{N} rilis. "
-        f"Via @lotmetrik · edukasi, bukan rekomendasi."
+        f"Via @lotmetrik."
     )
     title = f"Apakah {code} syariah? · DES OJK {last_y} · Lotmetrik"
     h1 = f"Apakah {esc(code)} masuk Daftar Efek Syariah?"
@@ -165,7 +160,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         "name": title,
         "url": url,
         "description": og_desc,
-        "isPartOf": {"@type": "WebSite", "name": "DES Dashboard", "url": SITE + "/"},
+        "isPartOf": {"@type": "WebSite", "name": "Dashboard Daftar Efek Syariah", "url": SITE + "/"},
         "about": {"@type": "Corporation", "name": name, "tickerSymbol": code},
         "dateModified": last["date"],
     }
@@ -215,7 +210,7 @@ a:hover{{text-decoration:underline}}
 .brand:hover{{text-decoration:none}}
 .brand-ic{{width:36px;height:36px;border-radius:8px;background:#0B1F3A;display:grid;place-items:center;flex:none;border:1px solid var(--border)}}
 .brand-ic svg{{width:22px;height:22px}}
-.wm{{display:block;font-weight:800;font-size:15px;letter-spacing:-.02em}}
+.wm{{display:block;font-weight:800;font-size:13px;letter-spacing:-.02em;line-height:1.15}}
 .by{{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}}
 h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;margin:0 0 8px;font-weight:800}}
 .name{{font-size:14.5px;color:var(--muted);margin:0 0 16px}}
@@ -256,9 +251,18 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
 .box h2{{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px;font-weight:700}}
 .box p{{margin:0;font-size:13.5px;color:var(--navy);line-height:1.45}}
 .note{{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45}}
-.foot{{margin-top:26px;padding-top:16px;border-top:1px solid var(--border);font-size:12.5px;color:var(--muted)}}
-.foot-cta{{margin:0 0 10px;font-size:13px;color:var(--secondary)}}
-.foot-cta a{{font-weight:700}}
+.layout{{display:grid;gap:14px}}
+@media(min-width:640px){{.layout{{grid-template-columns:1.2fr 1fr;align-items:start}}}}
+.side{{display:flex;flex-direction:column;gap:8px;min-width:0}}
+.stats-line{{font-size:13px;color:var(--secondary);display:flex;flex-wrap:wrap;gap:6px 12px}}
+.stats-line b{{font-family:var(--mono);font-size:15px;color:var(--navy)}}
+.foot{{margin-top:26px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}}
+.foot-social{{display:inline-flex;gap:6px}}
+.foot .soc{{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:6px;border:1px solid var(--border);color:var(--muted);background:var(--surface);text-decoration:none}}
+.foot .soc:hover{{color:var(--teal);border-color:var(--teal);text-decoration:none}}
+.foot .soc svg{{width:14px;height:14px}}
+.foot .sep{{opacity:.45}}
 @media(max-width:420px){{.actions .btn{{flex:1;text-align:center}}}}
 </style>
 </head>
@@ -267,40 +271,38 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
   <a class="brand" href="/">
     <span class="brand-ic" aria-hidden="true">
       <svg viewBox="0 0 24 24" fill="none">
-        <circle cx="10.6" cy="12" r="8" fill="#2DD4BF"/>
-        <circle cx="14.7" cy="9.3" r="7" fill="#0B1F3A"/>
-        <path d="M16.9 11.6L17.6 13.5L19.5 14.2L17.6 14.9L16.9 16.8L16.2 14.9L14.3 14.2L16.2 13.5Z" fill="#F59E0B"/>
+        <circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/>
+        <circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/>
+        <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
       </svg>
     </span>
-    <span><span class="wm">DES Dashboard</span><span class="by">by lotmetrik</span></span>
+    <span><span class="wm">Dashboard Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
   </a>
 
   <h1>{h1}</h1>
   <p class="name">{esc(name)}</p>
 
-  <div class="verdict {verdict_cls}">
-    <span class="vic" aria-hidden="true">{vic}</span>
-    <div class="vbody">
-      <div class="vmain"><span class="mono">{esc(code)}</span> {esc(verdict)} di Daftar Efek Syariah</div>
-      <div class="vsub">{status_line} · {esc(last["kep"])}</div>
+  <div class="layout">
+    <div class="verdict {verdict_cls}">
+      <span class="vic" aria-hidden="true">{vic}</span>
+      <div class="vbody">
+        <div class="vmain"><span class="mono">{esc(code)}</span> {esc(verdict)} di Daftar Efek Syariah</div>
+        <div class="vsub">{status_line} · {esc(last["kep"])}</div>
+      </div>
     </div>
-  </div>
-
-  {caveat}
-  {chips_html}
-
-  <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
-  <p class="dot-cap">{N} rilis · titik hijau = ada di DES</p>
-
-  <div class="stats" aria-label="Ringkasan jejak">
-    <div class="stat"><div class="v">{count}<span style="font-size:.85rem;color:var(--muted)">/{N}</span></div><div class="k">Muncul</div></div>
-    <div class="stat"><div class="v" style="color:var(--teal)">{enters}</div><div class="k">Kali masuk</div></div>
-    <div class="stat"><div class="v" style="color:var(--red)">{exits}</div><div class="k">Kali keluar</div></div>
-  </div>
-
-  <div class="box">
-    <h2>Periode hadir</h2>
-    <p>{esc(period_txt)}.</p>
+    <div class="side">
+      {chips_html}
+      <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
+      <div class="stats-line" aria-label="Ringkasan jejak">
+        <span><b>{count}/{N}</b> muncul</span>
+        <span><b style="color:var(--teal)">{enters}</b> masuk</span>
+        <span><b style="color:var(--red)">{exits}</b> keluar</span>
+      </div>
+      <div class="box">
+        <h2>Periode hadir</h2>
+        <p>{esc(period_txt)}.</p>
+      </div>
+    </div>
   </div>
 
   <div class="actions">
@@ -310,13 +312,22 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
 
   <p class="note">Data historis tidak menjamin status berikutnya. Selalu verifikasi ke
   <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">sumber resmi OJK</a>
-  · <a href="/#panduan">Panduan</a> · ikuti <a href="https://t.me/lotmetrik" rel="noopener" target="_blank">@lotmetrik</a>.</p>
+  · <a href="/#panduan">Panduan</a>.</p>
 
   <div class="foot">
-    <p class="foot-cta">Alat gratis Lotmetrik · kabar rilis DES di <a href="https://t.me/lotmetrik" rel="noopener" target="_blank">Telegram @lotmetrik</a></p>
-    © {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a>
-    · Data DES OJK {esc(first_y)}–{esc(last_y)} ({N} rilis)
-    · Edukasi, bukan rekomendasi
+    <span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a></span>
+    <span class="foot-social" aria-label="Sosial Lotmetrik">
+      <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a class="soc" href="https://t.me/lotmetrik" rel="noopener" target="_blank" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.3L2.8 11.5c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4.9 1 .9.6 0 .8-.3 1.1-.6l2.7-2.6 5.6 4.1c1 .6 1.8.3 2-.9l3.5-16.5c.4-1.5-.5-2.1-1.6-1.7zM9.3 14.7l-.2 3.3 1.1-2.2 8.7-7.8c.3-.3 0-.4-.4-.2L9.3 14.7z"/></svg>
+      </a>
+    </span>
+    <span class="sep">·</span>
+    <span>Data: OJK {esc(first_y)}–{esc(last_y)}</span>
+    <span class="sep">·</span>
+    <a href="/#panduan">Panduan</a>
   </div>
 </div>
 <script src="/share.js" defer></script>

@@ -1,4 +1,4 @@
-# DES Dashboard — Lotmetrik
+# Dashboard Daftar Efek Syariah — Lotmetrik
 
 Alat data gratis: telusuri Daftar Efek Syariah OJK 2016–2026.
 Live: **https://des.lotmetrik.my.id** · Brand: Lotmetrik (teal = naik/masuk, merah = turun/keluar).
