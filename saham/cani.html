@@ -39,20 +39,23 @@ body{margin:0;min-height:100vh;display:flex;flex-direction:column;font-family:va
   -webkit-font-smoothing:antialiased;line-height:1.5}
 a{color:var(--teal);font-weight:600;text-decoration:none}
 a:hover{text-decoration:underline}
-.wrap{flex:1;display:flex;flex-direction:column;width:100%;max-width:560px;margin:0 auto;padding:18px 16px 24px;box-sizing:border-box}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
+.wrap{flex:1;display:flex;flex-direction:column;width:100%;max-width:1180px;margin:0 auto;padding:18px 18px 24px;box-sizing:border-box}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
 .brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-width:0}
 .brand:hover{text-decoration:none}
 .brand-ic{width:36px;height:36px;border-radius:8px;background:#0B1F3A;display:grid;place-items:center;flex:none;border:1px solid var(--border)}
 .brand-ic svg{width:22px;height:22px}
 .wm{display:block;font-weight:800;font-size:13px;letter-spacing:-.02em;line-height:1.15}
 .by{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}
-.back{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--secondary);
-  display:grid;place-items:center;text-decoration:none}
-.back:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
-.back svg{width:18px;height:18px;display:block}
-h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;margin:0 0 6px;font-weight:800}
-.name{font-size:14px;color:var(--muted);margin:0 0 18px}
+.pg-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+.pg-back{flex:none;width:36px;height:36px;margin-top:4px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--secondary);
+  display:grid;place-items:center;text-decoration:none;cursor:pointer;padding:0}
+.pg-back:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.pg-back svg{width:18px;height:18px;display:block}
+.pg-head{min-width:0;flex:1}
+h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;margin:0;font-weight:800}
+.seo-blurb{font-size:13.5px;color:var(--secondary);margin:10px 0 0;line-height:1.55}
+.note{font-size:12.5px;color:var(--muted);margin:6px 0 14px;line-height:1.45}
 .verdict{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid;margin:0 0 14px}
 .verdict.in{background:var(--teal-soft);border-color:rgba(15,148,136,.35);color:var(--teal-text)}
 .verdict.out{background:var(--red-soft);border-color:rgba(220,38,38,.28);color:var(--red-text)}
@@ -70,19 +73,17 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
 .dots{display:flex;width:100%;gap:3px;margin:0 0 14px}
 .dot{flex:1;min-width:0;height:16px;border-radius:4px;background:var(--border-strong)}
 .dot.on{background:var(--teal)}
-.stats-line{display:grid;grid-template-columns:repeat(3,1fr);width:100%;gap:8px;margin:0 0 16px}
+.stats-line{display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:8px;margin:0 0 20px}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-align:left}
 .stat .sv{font-family:var(--mono);font-size:1.35rem;font-weight:800;line-height:1;letter-spacing:-.02em;color:var(--navy)}
 .stat .sv.up{color:var(--teal-text)}
 .stat .sv.down{color:var(--red-text)}
 .stat .sl{font-size:11.5px;color:var(--muted);font-weight:600}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.actions{display:flex;justify-content:center;align-items:center;margin:4px 0 16px}
 .btn{appearance:none;border:1px solid var(--border-strong);background:var(--surface);color:var(--navy);
-  font:inherit;font-weight:700;font-size:13.5px;padding:10px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+  font:inherit;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
-.note{font-size:12.5px;color:var(--muted);margin:0 0 10px;line-height:1.45}
-.seo-blurb{font-size:13.5px;color:var(--secondary);margin:0 0 8px;line-height:1.55}
-.foot{margin-top:auto;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
+.foot{margin-top:auto;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
   display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}
 .foot-meta{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}
 .foot-social{display:inline-flex;gap:6px;margin-left:auto}
@@ -90,7 +91,7 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
 .foot .soc:hover{color:var(--teal);border-color:var(--teal);text-decoration:none}
 .foot .soc svg{width:14px;height:14px}
 .foot .sep{opacity:.45}
-@media(max-width:420px){.actions .btn{flex:1;justify-content:center}}
+@media(max-width:420px){.stats-line{gap:6px}.stat{padding:8px 8px}.stat .sv{font-size:1.15rem}.stat .sl{font-size:10.5px}}
 </style>
 </head>
 <body>
@@ -106,19 +107,25 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
       </span>
       <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
     </a>
-    <a class="back" href="/" aria-label="Kembali ke dashboard" title="Kembali ke dashboard">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
-    </a>
   </div>
 
-  <h1>Apakah CANI masuk Daftar Efek Syariah?</h1>
-  <p class="name">PT Capitol Nusantara Indonesia Tbk</p>
+  <div class="pg-top">
+    <a class="pg-back" href="/" aria-label="Kembali ke dashboard" title="Kembali ke dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </a>
+    <div class="pg-head">
+      <h1>Apakah CANI (PT Capitol Nusantara Indonesia Tbk) masuk Daftar Efek Syariah?</h1>
+    </div>
+  </div>
+
+  <p class="seo-blurb">CANI (PT Capitol Nusantara Indonesia Tbk) tercatat di Daftar Efek Syariah OJK pada 19 dari 21 rilis. Status terkini: syariah. Cek jejak masuk-keluar saham syariah IDX di Lotmetrik.</p>
+  <p class="note">Data historis tidak menjamin status berikutnya.</p>
 
   <div class="verdict in">
     <span class="vic" aria-hidden="true"><svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 13l4 4L19 7'/></svg></span>
     <div class="vbody">
       <div class="vmain"><span class="mono">CANI</span> SYARIAH</div>
-      <div class="vsub">Di daftar sejak Jun 2023</div>
+      <div class="vsub">Di DES OJK sejak Jun 2023</div>
     </div>
   </div>
 
@@ -128,14 +135,12 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
     <div class="stat"><span class="sv">19/21</span><span class="sl">muncul</span></div>
     <div class="stat"><span class="sv up">2</span><span class="sl">masuk</span></div>
     <div class="stat"><span class="sv down">2</span><span class="sl">keluar</span></div>
+    <div class="stat"><span class="sv">90%</span><span class="sl">% syariah</span></div>
   </div>
 
   <div class="actions">
     <button type="button" class="btn" id="shareBtn" data-url="https://des.lotmetrik.my.id/saham/cani" data-text="CANI (PT Capitol Nusantara Indonesia Tbk) SYARIAH di Daftar Efek Syariah OJK. Via @lotmetrik.">Bagikan</button>
   </div>
-
-  <p class="seo-blurb">CANI (PT Capitol Nusantara Indonesia Tbk) tercatat di Daftar Efek Syariah OJK pada 19 dari 21 rilis. Status terkini: syariah. Cek jejak masuk-keluar saham syariah IDX di Lotmetrik.</p>
-  <p class="note">Data historis tidak menjamin status berikutnya.</p>
 
   <div class="foot">
     <div class="foot-meta">

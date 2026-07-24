@@ -124,10 +124,11 @@ button{font-family:inherit;cursor:pointer}
   display:flex;flex-direction:column;gap:3px;color:inherit;box-shadow:var(--shadow-card)}
 .scard.clk{cursor:pointer;transition:border-color var(--dur-fast),box-shadow var(--dur-fast)}
 .scard.clk:hover{border-color:var(--accent);box-shadow:var(--shadow-pop)}
-.scard .sv{font-weight:700;font-size:1.75rem;line-height:1;letter-spacing:-.02em}
-.scard .sv.hl{color:var(--highlight-text)} .scard .sv.down{color:var(--down-text)} .scard .sv.up{color:var(--up-text)}
-.scard .sl{font-size:11.5px;color:var(--text-secondary);font-weight:600}
-.scard .sl-more{font-family:var(--font-mono);font-size:10px;color:var(--accent-text);font-weight:700;letter-spacing:.02em}
+.scard .sv{font-weight:700;font-size:1.75rem;line-height:1;letter-spacing:-.02em;color:#000}
+.scard .sv.hl,.scard .sv.down,.scard .sv.up{color:#000}
+.scard .sl-row{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%}
+.scard .sl{font-size:11.5px;color:#000;font-weight:700}
+.scard .sl-more{font-size:16px;font-weight:800;color:#000;line-height:1;cursor:pointer;flex:none}
 
 /* SECTION + CARD */
 section{padding:16px 0}
@@ -287,12 +288,13 @@ section{padding:16px 0}
 #panduanPage{display:none;padding:22px 0 24px}
 body.panduan-open #app{display:none}
 body.panduan-open #panduanPage{display:block}
-.pg-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.pg-back{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);display:grid;place-items:center;cursor:pointer;padding:0}
+.pg-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
+.pg-back{flex:none;width:36px;height:36px;margin-top:4px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);display:grid;place-items:center;cursor:pointer;padding:0}
 .pg-back:hover{border-color:var(--accent);color:var(--accent)}
 .pg-back svg{width:18px;height:18px;display:block}
-.pg-title{font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.03em}
-.pg-lede{font-size:13.5px;color:var(--text-secondary);margin:6px 0 18px;max-width:none;line-height:1.55}
+.pg-head{min-width:0;flex:1}
+.pg-title{font-size:clamp(1.5rem,4vw,2rem);letter-spacing:-.03em;margin:0}
+.pg-lede{font-size:13.5px;color:var(--text-secondary);margin:6px 0 0;max-width:none;line-height:1.55}
 .pg-doc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:4px 20px 10px;box-shadow:var(--shadow-card)}
 .pg-cols{display:grid;grid-template-columns:1fr;gap:0}
 @media(min-width:760px){.pg-cols{grid-template-columns:1fr 1fr;column-gap:36px}}
@@ -311,12 +313,12 @@ body.panduan-open #panduanPage{display:block}
 .pg-sec .glossary li{padding:8px 0;border-bottom:1px solid var(--hairline);margin:0}
 .pg-sec .glossary li:last-child{border-bottom:none}
 .pg-sec .glossary b{color:var(--text)}
-.pg-sec .disc{border-left:3px solid var(--amber-500);padding-left:12px;color:var(--text-muted);margin:0}
+.pg-sec .disc{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);line-height:1.6;margin:0;border:0;padding:0}
 .pg-src{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);line-height:1.6}
 
 /* FOOTER — teks kiri, icon kanan */
 footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surface-2)}
-.foot{max-width:var(--w);margin:0 auto;padding:14px 18px;font-size:12px;color:var(--text-muted);display:flex;gap:12px 18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.foot{max-width:var(--w);margin:0 auto;padding:8px 18px;font-size:12px;color:var(--text-muted);display:flex;gap:12px 18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .foot-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-width:0}
 .foot a,.foot .link{color:var(--accent-text);background:none;border:0;font:inherit;cursor:pointer;padding:0;white-space:nowrap}
 .foot .sep{opacity:.45;flex:none}
@@ -497,8 +499,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=269"></script>
-<script src="app.js?v=269"></script>
+<script src="data.js?v=285"></script>
+<script src="app.js?v=285"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->

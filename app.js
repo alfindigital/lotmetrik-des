@@ -80,45 +80,48 @@ function nextReleaseInfo(){
 function buildPanduan(){
   var host=$('#panduanPage');if(!host)return;
   host.innerHTML='<div class="wrap">'+
-    '<div class="pg-top"><button class="pg-back" id="pgBack" type="button" aria-label="Kembali ke dashboard" title="Kembali ke dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button></div>'+
-    '<h2 class="pg-title">Panduan &amp; sumber</h2>'+
-    '<p class="pg-lede">Cara membaca data Daftar Efek Syariah OJK di dashboard ini, arti tiap istilah, dan catatan penting sebelum menyimpulkan.</p>'+
+    '<div class="pg-top">'+
+      '<button class="pg-back" id="pgBack" type="button" aria-label="Kembali ke dashboard" title="Kembali ke dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>'+
+      '<div class="pg-head"><h2 class="pg-title">Panduan &amp; sumber</h2>'+
+      '<p class="pg-lede">Ringkas: cara baca dashboard ini, arti istilahnya, dan hal yang perlu diingat sebelum menyimpulkan.</p></div>'+
+    '</div>'+
     '<div class="pg-doc"><div class="pg-cols">'+
       '<section class="pg-sec"><h4>Apa itu Daftar Efek Syariah (DES)?</h4>'+
-        '<p>DES adalah daftar resmi saham yang dinyatakan sesuai prinsip syariah oleh OJK. Diterbitkan berkala, sekitar 2x setahun (periode I pertengahan tahun, periode II akhir tahun). Sejak '+shortLabel(0)+'.</p>'+
-        '<p>Sebuah saham lolos bila kegiatan usahanya tidak bertentangan dengan prinsip syariah dan memenuhi rasio keuangan yang ditetapkan OJK. Sejak <b>POJK 8/2025</b> (menggantikan POJK 35/2017), ambang rasionya diperketat:</p>'+
+        '<p>DES adalah daftar saham yang OJK nyatakan sesuai prinsip syariah. Keluar ~2× setahun (pertengahan &amp; akhir tahun). Data di sini sejak '+shortLabel(0)+'.</p>'+
+        '<p>Saham masuk jika usaha &amp; rasio keuangannya memenuhi aturan OJK. Sejak <b>POJK 8/2025</b>, ambangnya lebih ketat:</p>'+
         '<ul>'+
-          '<li>Total utang berbasis bunga diturunkan bertahap dari 45% menuju <b>33% dari total aset</b> (dalam 10 tahun sejak 2025).</li>'+
-          '<li>Total pendapatan bunga &amp; pendapatan tidak halal lainnya turun dari 10% ke <b>di bawah 5% dari total pendapatan</b> (berlaku sekitar April 2026). Rincian lengkap ada di POJK 8/2025.</li>'+
+          '<li>Utang berbasis bunga: 45% → <b>33% dari total aset</b> (bertahap 10 tahun sejak 2025).</li>'+
+          '<li>Pendapatan bunga &amp; non-halal: 10% → <b>&lt;5% dari total pendapatan</b> (sekitar Apr 2026).</li>'+
         '</ul></section>'+
       '<section class="pg-sec"><h4>Cara pakai</h4>'+
         '<ul>'+
-          '<li><b>Statistik atas</b> — ringkasan angka: jumlah kini, puncak, setia, dan comeback. Kartu yang bisa diklik membuka daftar isinya.</li>'+
-          '<li><b>Cari saham</b> — ketik kode (mis. ASII) untuk melihat apakah saham itu ada di DES sekarang, dan jejaknya di seluruh '+N+' rilis: kapan masuk, kapan keluar.</li>'+
-          '<li><b>Grafik tren</b> — jumlah saham tiap rilis. Mode &ldquo;Net masuk-keluar&rdquo; menampilkan selisih tiap periode.</li>'+
-          '<li><b>Masuk &amp; keluar per periode</b> — pilih rilis di timeline untuk melihat siapa yang baru lolos dan siapa yang dicoret.</li>'+
+          '<li><b>Statistik atas</b> — angka ringkas: jumlah sekarang, puncak, Setia, dan Comeback. Klik kartu Setia atau Comeback untuk lihat daftarnya.</li>'+
+          '<li><b>Cari saham</b> — ketik kode (mis. ASII) untuk cek statusnya sekarang dan riwayat masuk-keluarnya di tiap rilis.</li>'+
+          '<li><b>Grafik tren</b> — jumlah saham per rilis. Mode Net menampilkan selisih masuk–keluar tiap periode.</li>'+
+          '<li><b>Masuk &amp; keluar per periode</b> — pilih rilis di timeline untuk lihat siapa yang baru masuk dan siapa yang keluar.</li>'+
         '</ul></section>'+
       '<section class="pg-sec"><h4>Istilah</h4>'+
         '<ul class="glossary">'+
-          '<li><b>Masuk</b> — saham yang tidak ada di rilis sebelumnya, muncul di rilis ini.</li>'+
-          '<li><b>Keluar</b> — saham yang ada di rilis sebelumnya, hilang di rilis ini.</li>'+
+          '<li><b>Masuk</b> — belum ada di rilis sebelumnya, muncul di rilis ini.</li>'+
+          '<li><b>Keluar</b> — ada di rilis sebelumnya, hilang di rilis ini.</li>'+
           '<li><b>Net</b> — jumlah masuk dikurangi jumlah keluar.</li>'+
-          '<li><b>Setia</b> — hadir di semua rilis tanpa pernah absen.</li>'+
-          '<li><b>Comeback</b> — pernah keluar lalu masuk lagi (dua babak atau lebih).</li>'+
+          '<li><b>Setia</b> — ada di semua rilis, tanpa pernah absen.</li>'+
+          '<li><b>Comeback</b> — pernah keluar, lalu masuk lagi (dua babak atau lebih).</li>'+
           '<li><b>1 Time</b> — muncul sekali lalu keluar (bukan pendatang baru).</li>'+
         '</ul></section>'+
-      '<section class="pg-sec"><h4>Baca hati-hati</h4>'+
+      '<section class="pg-sec"><h4>Jangan salah arti</h4>'+
         '<ul>'+
-          '<li><b>Keluar DES bukan delisting.</b> Keluar berarti saham tidak lolos saringan syariah pada rilis itu — sebabnya bisa macam-macam (rasio utang, pendapatan non-halal, ketersediaan data, dan lain-lain) dan data ini tidak membedakannya. Keluar bukan berarti sahamnya jelek atau berhenti diperdagangkan.</li>'+
-          '<li><b>&ldquo;Setia&rdquo; punya bias umur listing.</b> Hanya saham yang sudah tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori Setia. Setia bukan jaminan kinerja.</li>'+
-          '<li><b>Data historis tidak menjamin masa depan.</b> Komposisi daftar berubah tiap rilis.</li>'+
+          '<li><b>Keluar DES bukan delisting.</b> Artinya saham tidak lolos saringan syariah di rilis itu. Sebabnya bisa beda-beda (rasio utang, pendapatan non-halal, data tidak lengkap, dll.) dan dashboard ini tidak membedakannya. Keluar juga bukan berarti sahamnya jelek atau berhenti diperdagangkan.</li>'+
+          '<li><b>&ldquo;Setia&rdquo; punya bias umur listing.</b> Hanya saham yang sudah tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori ini. Setia bukan jaminan kinerja.</li>'+
+          '<li><b>Comeback bukan berarti sahamnya lebih bagus.</b> Cuma artinya pernah keluar lalu masuk lagi — bukan skor kualitas.</li>'+
+          '<li><b>Riwayat bukan ramalan.</b> Isi daftar berubah tiap rilis; lonjakan net bisa juga karena aturan POJK yang berubah.</li>'+
         '</ul></section>'+
     '</div>'+
     '<div class="pg-cols">'+
       '<section class="pg-sec"><h4>Sumber &amp; pembaruan</h4>'+
-        '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah. Selalu verifikasi ke sumber resmi OJK &amp; IDX.</div></section>'+
+        '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah. Kalau ragu, cek lagi ke situs OJK atau IDX.</div></section>'+
       '<section class="pg-sec"><h4>Disclaimer</h4>'+
-        '<p class="disc">Konten Lotmetrik untuk edukasi — bukan rekomendasi investasi. Sejalan dengan POJK 6/2026.</p></section>'+
+        '<p class="disc">Isi Lotmetrik untuk edukasi, bukan saran beli/jual. Sejalan dengan POJK 6/2026.</p></section>'+
     '</div></div>';
   var b=$('#pgBack');if(b)b.addEventListener('click',closePanduan);
 }
@@ -140,8 +143,9 @@ function renderHero(){
   var fy=$('#footYear');if(fy)fy.textContent=yearOf(N-1);
   function st(v,cls,l,f){var clk=f!=null;
     return (clk?'<button class="scard clk" data-f="'+f+'">':'<div class="scard">')+
-      '<span class="sv '+cls+' mono">'+v+'</span><span class="sl">'+esc(l)+'</span>'+
-      (clk?'<span class="sl-more">Lihat ›</span></button>':'</div>');}
+      '<span class="sv '+cls+' mono">'+v+'</span>'+
+      '<span class="sl-row"><span class="sl">'+esc(l)+'</span>'+(clk?'<span class="sl-more" aria-hidden="true">›</span>':'')+'</span>'+
+      (clk?'</button>':'</div>');}
 }
 
 /* =====================================================================
@@ -151,7 +155,7 @@ var W=1000,H=380,padL=46,padR=16,padT=18,padB=46,plotW=W-62,plotH=H-64,chartMode
 var ttEl=$('#chartTt'),hostEl=$('#chartHost'),wrapEl=hostEl.parentNode;
 function xAt(i){return padL+plotW*(i/(N-1));}
 function svgOpen(){return '<svg class="chart-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="xMidYMid meet" role="group" aria-label="Grafik daftar efek syariah '+yearOf(0)+' sampai '+yearOf(N-1)+'. Detail angka ada di tabel di bawah.">';}
-function gridYears(){var s='';for(var i=0;i<N;i+=4){var anc=i===0?'start':(i>=N-2?'end':'middle'),x=i===0?padL:(i>=N-2?(W-padR):xAt(i));s+='<text x="'+x.toFixed(1)+'" y="'+(H-12)+'" font-size="21" text-anchor="'+anc+'">'+yearOf(i)+'</text>';}return s;}
+function gridYears(){var s='';for(var i=0;i<N;i+=4){var anc=i===0?'start':(i>=N-2?'end':'middle'),x=i===0?padL:(i>=N-2?(W-padR):xAt(i));s+='<text x="'+x.toFixed(1)+'" y="'+(H-12)+'" font-size="14" text-anchor="'+anc+'">'+yearOf(i)+'</text>';}return s;}
 function watermark(){return '';}
 function hitRect(i){var w=plotW/N;return '<rect class="hit" tabindex="0" role="button" aria-label="'+esc(periods[i].label+' '+periods[i].phase+', total '+periods[i].total+' saham')+'" data-i="'+i+'" x="'+(xAt(i)-w/2).toFixed(1)+'" y="'+padT+'" width="'+w.toFixed(1)+'" height="'+plotH+'" fill="transparent" style="cursor:pointer"/>';}
 function renderChart(){chartMode==='total'?renderTotal():renderNet();}
@@ -159,31 +163,36 @@ function renderTotal(){
   var ax=AX_TOTAL;function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
   var grid='';ax.ticks.forEach(function(g){var yy=y(g).toFixed(1);
     grid+='<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="var(--grid-line)" stroke-width="1"/>';
-    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="20" text-anchor="end">'+g+'</text>';});
+    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="13" text-anchor="end">'+g+'</text>';});
   var pts=[];for(var i=0;i<N;i++)pts.push([xAt(i),y(META[i].total)]);
   var line=pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1);}).join(' ');
   var area=line+' L'+pts[N-1][0].toFixed(1)+' '+(H-padB)+' L'+pts[0][0].toFixed(1)+' '+(H-padB)+' Z';
   var drop='M'+pts[peak.i][0].toFixed(1)+' '+pts[peak.i][1].toFixed(1);
   for(var i=peak.i+1;i<N;i++)drop+=' L'+pts[i][0].toFixed(1)+' '+pts[i][1].toFixed(1);
-  var dots='',hits='';
+  var dots='',labs='',hits='';
   for(var i=0;i<N;i++){var isP=i===peak.i,isL=i===N-1,c=isL?'var(--down)':'var(--up)',r=isP||isL?6:3;
-    dots+='<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)+'" r="'+r+'" fill="'+c+'"/>';hits+=hitRect(i);}
+    dots+='<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)+'" r="'+r+'" fill="'+c+'"/>';
+    labs+='<text x="'+pts[i][0].toFixed(1)+'" y="'+Math.max(12,pts[i][1]-10).toFixed(1)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--text)">'+fmtNum(META[i].total)+'</text>';
+    hits+=hitRect(i);}
   hostEl.innerHTML=svgOpen()+grid+gridYears()+watermark()+
     '<path d="'+area+'" fill="var(--up-soft)"/>'+
     '<path d="'+line+'" fill="none" stroke="var(--up)" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+
-    '<path d="'+drop+'" fill="none" stroke="var(--down)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'+dots+hits+'</svg>';
+    '<path d="'+drop+'" fill="none" stroke="var(--down)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'+dots+labs+hits+'</svg>';
   bindHits();
 }
 function renderNet(){
   var ax=AX_NET;function y(v){v=Math.max(ax.min,Math.min(ax.max,v));return padT+plotH*(1-(v-ax.min)/(ax.max-ax.min));}
   var grid='';ax.ticks.forEach(function(g){var yy=y(g).toFixed(1);
     grid+='<line x1="'+padL+'" y1="'+yy+'" x2="'+(W-padR)+'" y2="'+yy+'" stroke="var(--grid-line)" stroke-width="'+(g===0?1.4:1)+'"/>';
-    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="20" text-anchor="end">'+(g>0?'+':g<0?MINUS:'')+Math.abs(g)+'</text>';});
-  var bw=plotW/N*0.56,bars='',hits='';
+    grid+='<text x="'+(padL-8)+'" y="'+(+yy+8)+'" font-size="13" text-anchor="end">'+(g>0?'+':g<0?MINUS:'')+Math.abs(g)+'</text>';});
+  var bw=plotW/N*0.56,bars='',labs='',hits='';
   for(var i=1;i<N;i++){var v=periods[i].net,cx=xAt(i),top=y(Math.max(0,v)),bot=y(Math.min(0,v)),h=Math.abs(bot-top),c=v>=0?'var(--up)':'var(--down)';
-    bars+='<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,h).toFixed(1)+'" fill="'+c+'" rx="1"/>';hits+=hitRect(i);}
+    bars+='<rect x="'+(cx-bw/2).toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1,h).toFixed(1)+'" fill="'+c+'" rx="1"/>';
+    var ly=v>=0?Math.max(12,top-6):Math.min(H-padB+2,bot+14);
+    labs+='<text x="'+cx.toFixed(1)+'" y="'+ly.toFixed(1)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--text)">'+fmtSigned(v)+'</text>';
+    hits+=hitRect(i);}
   hostEl.innerHTML=svgOpen()+grid+gridYears()+watermark()+
-    '<line x1="'+padL+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y(0).toFixed(1)+'" stroke="var(--border-strong)" stroke-width="1.2"/>'+bars+hits+'</svg>';
+    '<line x1="'+padL+'" y1="'+y(0).toFixed(1)+'" x2="'+(W-padR)+'" y2="'+y(0).toFixed(1)+'" stroke="var(--border-strong)" stroke-width="1.2"/>'+bars+labs+hits+'</svg>';
   bindHits();
 }
 function bindHits(){$$('.hit',hostEl).forEach(function(h){var i=+h.dataset.i;
@@ -307,9 +316,9 @@ $('#trkRes').addEventListener('click',function(e){var a=e.target.closest('[data-
    FACTS + MODAL
    ===================================================================== */
 var FACTS=[
-  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Hadir di seluruh rilis tanpa pernah absen. Catatan: hanya saham yang tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori Setia (bias umur listing), bukan rekomendasi.'},
+  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Ada di semua rilis tanpa absen. Hanya yang listing sejak '+shortLabel(0)+' (bias umur) — bukan rekomendasi.'},
   {v:fmtNum(TICKERS.length),l:'Saham unik',d:'Pernah masuk DES minimal sekali',cls:'',kind:'list',list:TICKERS.slice(),title:fmtNum(TICKERS.length)+' Saham Unik',sub:'Semua emiten yang pernah mampir di DES.'},
-  {v:String(comeback.length),l:'Comeback',d:'Keluar lalu masuk daftar lagi',cls:'up',kind:'list',list:comeback,title:comeback.length+' Saham Comeback',sub:'Pernah keluar, lalu balik lagi ke daftar.'},
+  {v:String(comeback.length),l:'Comeback',d:'Keluar lalu masuk daftar lagi',cls:'up',kind:'list',list:comeback,title:comeback.length+' Saham Comeback',sub:'Pernah keluar, lalu masuk lagi — bukan skor kualitas.'},
   {v:String(oneHit.length),l:'1 Time',d:'Cuma 1 periode lalu keluar lagi',cls:'',kind:'list',list:oneHit,title:oneHit.length+' Saham 1 Time',sub:'Muncul cuma 1 periode lalu keluar. (Pendatang baru yang masih di dalam tidak dihitung.)'},
   {v:perT[revTop[0]].flips+'x',l:'Pintu putar',d:revTop.join(', ')+' — bolak-balik masuk-keluar',cls:'',kind:'revolve',title:'Si Paling Pintu Putar',sub:'Diurut dari yang paling sering ganti status masuk-keluar.'},
   {v:MINUS+maxOut.n,l:'Keluar terbanyak',d:shortLabel(maxOut.i)+' — '+fmtNum(maxOut.n)+' saham dicoret sekaligus',cls:'down',kind:'period',i:maxOut.i,title:''}
@@ -325,7 +334,7 @@ function openFact(idx){var f=FACTS[idx];
     showModal(f.title,f.sub,body);return;}
   var list=f.list;
   var body='<div class="taglist">'+list.map(function(t){return '<button class="tag2" data-trk="'+t+'" title="'+esc(NAMES[t]||'')+'">'+t+'</button>';}).join('')+'</div>';
-  showModal(f.title,f.sub+' Tap kode untuk lacak jejaknya.',body);}
+  showModal(f.title,f.sub+' Ketuk kode untuk lacak.',body);}
 var modalBack=$('#modalBack'),lastFocus=null;
 function focusables(){return $$('.modal button, .modal [href], .modal input, .modal [tabindex]:not([tabindex="-1"])',modalBack);}
 function showModal(title,sub,body){lastFocus=document.activeElement;$('#modalTitle').textContent=title;$('#modalSub').textContent=sub||'';$('#modalBody').innerHTML=body;
