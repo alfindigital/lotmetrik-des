@@ -20,6 +20,7 @@ function fmtNum(n){return Math.round(Number(n)).toLocaleString('id-ID');}
 function fmtSigned(n){var v=Number(n);return (v>0?'+':v<0?MINUS:'')+fmtNum(Math.abs(v));}
 function shortLabel(i){var p=META[i].date.split(' ');return p[1]+' '+p[2];}
 function yearOf(i){return META[i].date.split(' ')[2];}
+function monthAbbr(i){return META[i].date.split(' ')[1].toUpperCase();}
 function phase(i){return META[i].key.indexOf('_P1')>-1?'P1':'P2';}
 function bits(t){return PRES[t];}
 function reduceMotion(){try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}}
@@ -75,8 +76,6 @@ function nextReleaseInfo(){
   var target=new Date(ny,nm,1),now=new Date();
   return {when:BLN[nm]+' '+ny, months:(target.getFullYear()-now.getFullYear())*12+(target.getMonth()-now.getMonth())};
 }
-function setPeriodeNote(){var e=$('#periodeNote');if(!e)return;e.textContent='2× setahun · Jun & Des';}
-
 /* ---------- PANDUAN (full page) ---------- */
 function buildPanduan(){
   var host=$('#panduanPage');if(!host)return;
@@ -91,8 +90,7 @@ function buildPanduan(){
         '<ul>'+
           '<li>Total utang berbasis bunga diturunkan bertahap dari 45% menuju <b>33% dari total aset</b> (dalam 10 tahun sejak 2025).</li>'+
           '<li>Total pendapatan bunga &amp; pendapatan tidak halal lainnya turun dari 10% ke <b>di bawah 5% dari total pendapatan</b> (berlaku sekitar April 2026). Rincian lengkap ada di POJK 8/2025.</li>'+
-        '</ul>'+
-        '<p>Rilis <b>'+shortLabel(N-1)+'</b> ('+esc(META[N-1].kep)+') mencoret '+periods[N-1].keluar.length+' saham sekaligus — keluar terbanyak sepanjang '+N+' rilis, dan ini rilis pertama setelah ambang pendapatan non-halal diperketat ke 5%. Besar kemungkinan terkait aturan baru itu, tapi data ini tidak merinci sebab keluar per saham.</p></section>'+
+        '</ul></section>'+
       '<section class="pg-sec"><h4>Cara pakai</h4>'+
         '<ul>'+
           '<li><b>Statistik atas</b> — ringkasan angka: jumlah kini, puncak, awal, saham unik, setia, dan comeback. Kartu yang bisa diklik membuka daftar isinya.</li>'+
@@ -104,25 +102,24 @@ function buildPanduan(){
         '<ul class="glossary">'+
           '<li><b>Masuk</b> — saham yang tidak ada di rilis sebelumnya, muncul di rilis ini.</li>'+
           '<li><b>Keluar</b> — saham yang ada di rilis sebelumnya, hilang di rilis ini.</li>'+
-          '<li><b>Bersih (net)</b> — jumlah masuk dikurangi jumlah keluar.</li>'+
-          '<li><b>Setia '+N+'/'+N+'</b> — hadir di semua '+N+' rilis tanpa pernah absen.</li>'+
+          '<li><b>Net</b> — jumlah masuk dikurangi jumlah keluar.</li>'+
+          '<li><b>Setia</b> — hadir di semua rilis tanpa pernah absen.</li>'+
           '<li><b>Comeback</b> — pernah keluar lalu masuk lagi (dua babak atau lebih).</li>'+
-          '<li><b>Sekali lewat</b> — muncul cuma satu periode lalu keluar. Pendatang baru yang masih di dalam tidak dihitung.</li>'+
+          '<li><b>1 Time</b> — muncul cuma satu periode lalu keluar. Pendatang baru yang masih di dalam tidak dihitung.</li>'+
         '</ul></section>'+
       '<section class="pg-sec"><h4>Baca hati-hati</h4>'+
         '<ul>'+
           '<li><b>Keluar DES bukan delisting.</b> Keluar berarti saham tidak lolos saringan syariah pada rilis itu — sebabnya bisa macam-macam (rasio utang, pendapatan non-halal, ketersediaan data, dan lain-lain) dan data ini tidak membedakannya. Keluar bukan berarti sahamnya jelek atau berhenti diperdagangkan.</li>'+
-          '<li><b>&ldquo;Setia&rdquo; punya bias umur listing.</b> Hanya saham yang sudah tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori setia '+N+'/'+N+'. Setia bukan jaminan kinerja.</li>'+
+          '<li><b>&ldquo;Setia&rdquo; punya bias umur listing.</b> Hanya saham yang sudah tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori Setia. Setia bukan jaminan kinerja.</li>'+
           '<li><b>Data historis tidak menjamin masa depan.</b> Komposisi daftar berubah tiap rilis.</li>'+
         '</ul></section>'+
-      '<section class="pg-sec"><h4>Sumber &amp; pembaruan</h4>'+
-        '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah.<br>Data per '+esc(META[N-1].date)+' ('+esc(META[N-1].kep)+').<br>'+fmtNum(TICKERS.length)+' emiten unik (basis: saham berkode IDX).<br>Selalu verifikasi ke sumber resmi OJK &amp; IDX.</div>'+
-        '<p style="margin-top:9px"><a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" target="_blank" rel="noopener">Buka data resmi OJK &#8594;</a></p></section>'+
-      '<section class="pg-sec"><h4>Kabar rilis</h4>'+
-        '<p>Data DES berubah sekitar 2x setahun. Ikuti <a href="https://t.me/lotmetrik" target="_blank" rel="noopener">@lotmetrik di Telegram</a> agar tidak ketinggalan.</p></section>'+
-      '<section class="pg-sec"><h4>Disclaimer</h4>'+
-        '<p class="disc">Konten Lotmetrik adalah edukasi berbasis data — bukan rekomendasi, ajakan, atau nasihat investasi. Lotmetrik bukan penasihat investasi berizin. Data historis tidak menjamin kinerja masa depan. Sejalan dengan POJK 6/2026.</p></section>'+
-    '</div></div>';
+    '</div>'+
+    '<section class="pg-sec pg-foot"><h4>Sumber &amp; pembaruan</h4>'+
+      '<div class="pg-src">Sumber: OJK — Daftar Efek Syariah. Selalu verifikasi ke sumber resmi OJK &amp; IDX.</div>'+
+      '<p style="margin-top:9px"><a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" target="_blank" rel="noopener">Buka data resmi OJK &#8594;</a></p></section>'+
+    '<section class="pg-sec pg-foot"><h4>Disclaimer</h4>'+
+      '<p class="disc">Konten Lotmetrik untuk edukasi — bukan rekomendasi investasi. Sejalan dengan POJK 6/2026.</p></section>'+
+    '</div>';
   var b=$('#pgBack');if(b)b.addEventListener('click',closePanduan);
 }
 function openPanduan(){document.body.classList.add('panduan-open');try{history.replaceState(null,'','#panduan');}catch(e){}
@@ -139,10 +136,9 @@ function renderHero(){
     st(fmtNum(peak.total),'up','Puncak · '+shortLabel(peak.i)),
     st(fmtNum(first.total),'','Awal · '+shortLabel(first.i)),
     st(fmtNum(TICKERS.length),'','Saham unik',1),
-    st(String(survivors.length),'up','Setia '+N+'/'+N,0),
+    st(String(survivors.length),'up','Setia',0),
     st(String(comeback.length),'up','Comeback',2)
   ].join('');
-  var cr=$('#chartRange');if(cr)cr.textContent=yearOf(0)+'–'+yearOf(N-1)+' · '+N+' rilis';
   var fy=$('#footYear');if(fy)fy.textContent=yearOf(N-1);
   function st(v,cls,l,f){var clk=f!=null;
     return (clk?'<button class="scard clk" data-f="'+f+'">':'<div class="scard">')+
@@ -232,11 +228,11 @@ $$('#chartSeg .seg-btn').forEach(function(b){b.addEventListener('click',function
 var curPeriod=N-1,ioQuery='';
 function buildTimeline(){
   $('#timeline').innerHTML=periods.map(function(p){
-    var nb=p.baseline?'nb':(p.net>=0?'nb pos':'nb neg');
-    return '<button type="button" class="tl-box" data-i="'+p.i+'" role="tab" aria-selected="false" tabindex="-1" aria-label="'+esc(p.label+' '+p.phase+', '+p.total+' saham')+'"><span class="yr mono">'+yearOf(p.i)+'</span><span class="ph mono">'+p.phase+'</span><span class="tt2 mono">'+fmtNum(p.total)+'</span><span class="'+nb+'"></span></button>';
+    var nb=p.baseline?'nb':(p.net>=0?'nb pos':'nb neg'),mo=monthAbbr(p.i);
+    return '<button type="button" class="tl-box" data-i="'+p.i+'" role="tab" aria-selected="false" tabindex="-1" aria-label="'+esc(yearOf(p.i)+' '+mo+', '+p.total+' saham')+'"><span class="yr mono">'+yearOf(p.i)+'</span><span class="ph mono">'+mo+'</span><span class="tt2 mono">'+fmtNum(p.total)+'</span><span class="'+nb+'"></span></button>';
   }).join('');
   var sel=$('#periodSelect');
-  if(sel){sel.innerHTML=periods.map(function(p){return '<option value="'+p.i+'">'+esc(p.label)+' '+p.phase+' · '+fmtNum(p.total)+' saham</option>';}).join('');
+  if(sel){sel.innerHTML=periods.map(function(p){return '<option value="'+p.i+'">'+esc(yearOf(p.i)+' '+monthAbbr(p.i))+' · '+fmtNum(p.total)+' saham</option>';}).join('');
     sel.onchange=function(){setPeriod(+this.value,{user:true});};}
   $('#timeline').addEventListener('click',function(e){var b=e.target.closest('[data-i]');if(b)setPeriod(+b.dataset.i,{user:true});});
   $('#timeline').addEventListener('keydown',function(e){
@@ -254,13 +250,13 @@ function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;ioQuery=''
   renderPSum();renderTiles();renderIO();
   if(opts.user)setHash('p='+p.key);}
 function renderPSum(){var p=periods[curPeriod],host=$('#pSumRow');if(!host)return;
-  function tile(c,l,v,s,extra){return '<div class="tile '+c+(extra||'')+'"><div class="tl2">'+l+'</div><div class="tv mono">'+v+'</div><div class="ts">'+s+'</div></div>';}
-  if(p.baseline){host.innerHTML=tile('net','Total',fmtNum(p.total),'efektif '+esc(p.date))+tile('net','Baseline',fmtNum(p.total),'titik mulai daftar',' wide');return;}
+  function tile(c,l,v,extra){return '<div class="tile '+c+(extra||'')+'"><div class="tl2">'+l+'</div><div class="tv mono">'+v+'</div></div>';}
+  if(p.baseline){host.innerHTML=tile('net','Total',fmtNum(p.total))+tile('net','Baseline',fmtNum(p.total),' wide');return;}
   host.innerHTML=
-    tile('net','Total',fmtNum(p.total),'efektif '+esc(p.date))+
-    tile('in','Masuk','+'+fmtNum(p.masuk.length),'saham baru lolos')+
-    tile('out','Keluar',MINUS+fmtNum(p.keluar.length),'saham dicoret')+
-    tile('net','Bersih',fmtSigned(p.net),'selisih masuk-keluar');}
+    tile('net','Total',fmtNum(p.total))+
+    tile('in','Masuk','+'+fmtNum(p.masuk.length))+
+    tile('out','Keluar',MINUS+fmtNum(p.keluar.length))+
+    tile('net','Net',fmtSigned(p.net));}
 function renderTiles(){/* digabung ke renderPSum */}
 function renderIO(){var p=periods[curPeriod],q=ioQuery.trim().toUpperCase();
   function filt(a){return q?a.filter(function(t){return t.indexOf(q)>-1||(NAMES[t]||'').toUpperCase().indexOf(q)>-1;}):a;}
@@ -280,19 +276,13 @@ function ioActivate(e){var r=e.target.closest('[data-trk]');if(r){showTracker(r.
 $('#pPrev').addEventListener('click',function(){if(curPeriod>0)setPeriod(curPeriod-1,{user:true});});
 $('#pNext').addEventListener('click',function(){if(curPeriod<N-1)setPeriod(curPeriod+1,{user:true});});
 $('#ioSearch').addEventListener('input',function(){ioQuery=this.value;renderIO();});
-function csvSource(p){var per=p?('Per: '+p.date+' ('+p.kep+')'):('Per: '+META[N-1].date);
-  return '# Sumber: OJK Daftar Efek Syariah · '+per+' · '+SITE+' · @lotmetrik · edukasi, bukan rekomendasi';}
-function downloadCSV(name,rows,src){
-  var body=rows.map(function(r){return r.map(function(c){c=String(c);return /[",\n]/.test(c)?'"'+c.replace(/"/g,'""')+'"':c;}).join(',');}).join('\n');
-  var blob=new Blob(['﻿'+(src||csvSource())+'\n'+body],{type:'text/csv;charset=utf-8'}),a=el('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
-  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},200);}
 
 /* =====================================================================
    STOCK TRACKER
    ===================================================================== */
 function buildDatalist(){$('#trkList').innerHTML=TICKERS.map(function(t){return '<option value="'+t+'">'+esc(NAMES[t]||'')+'</option>';}).join('');}
-function trackerText(rec){var status=rec.survivor?'setia '+N+'/'+N+' periode':(rec.newcomer?'pendatang baru':(rec.oneHit?'cuma 1 periode':(rec.statusNow?'di dalam':'di luar')));
-  return rec.t+' ('+esc(rec.name)+') di Daftar Efek Syariah OJK: '+status+', muncul '+rec.count+'/'+N+' rilis. Via @lotmetrik.';}
+function trackerText(rec){var status=rec.statusNow?'SYARIAH':'TIDAK SYARIAH';
+  return rec.t+' ('+esc(rec.name)+') '+status+' di Daftar Efek Syariah OJK. Via @lotmetrik.';}
 function showTracker(code,user){code=String(code||'').trim().toUpperCase();var rec=perT[code],host=$('#trkRes');
   if(!rec){var sug=TICKERS.filter(function(t){return t.indexOf(code)===0;}).slice(0,6);
     var html='<p class="tr-hint">Kode <b>'+esc(code)+'</b> tidak ditemukan dalam data DES '+yearOf(0)+'–'+yearOf(N-1)+'.';
@@ -302,33 +292,17 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
       if(/^[A-Z]{4}$/.test(code))html+=' Halaman SEO untuk kode ini tidak ada karena belum pernah masuk DES dalam rentang data.';}
     host.innerHTML=html+'</p>';return;}
   $('#trkInput').value=code; if(user)setHash('t='+code);
-  var inNow=rec.statusNow, cur=rec.bits[N-1], since=N-1;
-  while(since>0 && rec.bits[since-1]===cur) since--;
-  var sinceLbl=shortLabel(since);
-  var chips='';
-  if(rec.survivor)chips+='<span class="chip star">Setia '+N+'/'+N+'</span>';
-  else if(rec.newcomer)chips+='<span class="chip">Pendatang baru</span>';
-  else if(rec.oneHit)chips+='<span class="chip out">Sekali lewat</span>';
-  else if(rec.runs>=2)chips+='<span class="chip">Comeback '+rec.runs+' babak</span>';
-  var dots='',srlist=[];for(var i=0;i<N;i++){var on=rec.bits[i]==='1';dots+='<span class="dot '+(on?'on':'')+'" data-tip="'+shortLabel(i)+' '+periods[i].phase+': '+(on?'ada':'tidak')+'"></span>';if(on)srlist.push(shortLabel(i)+' '+periods[i].phase);}
+  var inNow=rec.statusNow;
   var vic=inNow?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
   var seo='/saham/'+code.toLowerCase();
-  host.innerHTML='<div class="tr-layout">'+
-    '<div class="tr-verdict '+(inNow?'in':'out')+'">'+
+  host.innerHTML='<div class="tr-verdict '+(inNow?'in':'out')+'">'+
       '<span class="vic" aria-hidden="true">'+vic+'</span>'+
-      '<div class="vbody"><div class="vmain"><b class="mono">'+rec.t+'</b> '+(inNow?'ADA':'TIDAK ada')+' di Daftar Efek Syariah</div>'+
-        '<div class="vsub">'+esc(rec.name)+' · rilis terbaru '+shortLabel(N-1)+' · '+(inNow?'di dalam':'di luar')+' sejak '+esc(sinceLbl)+'</div>'+
-        '<a class="tr-seo" href="'+seo+'">Halaman publik ›</a></div>'+
-      '<button class="btn btn-ghost btn-sm" id="trkShare">Bagikan</button></div>'+
-    '<div class="tr-side">'+
-      (chips?'<div class="tr-chips">'+chips+'</div>':'')+
-      '<div class="dots" role="img" aria-label="'+esc(rec.t+' ada di daftar pada: '+(srlist.length?srlist.join(', '):'tidak pernah'))+'">'+dots+'</div>'+
-      '<div class="tr-stats-line">'+
-        '<span><b class="mono">'+rec.count+'/'+N+'</b> muncul</span>'+
-        '<span class="up"><b class="mono">'+rec.enters+'</b> masuk</span>'+
-        '<span class="down"><b class="mono">'+rec.exits+'</b> keluar</span>'+
-      '</div>'+
-    '</div></div>';
+      '<div class="vbody"><div class="vmain"><b class="mono">'+rec.t+'</b> '+(inNow?'SYARIAH':'TIDAK SYARIAH')+'</div>'+
+        '<div class="vsub">'+esc(rec.name)+'</div>'+
+        '<div class="tr-acts">'+
+          '<a class="btn btn-ghost btn-sm" href="'+seo+'">Halaman publik</a>'+
+          '<button class="btn btn-ghost btn-sm" id="trkShare" type="button">Bagikan</button>'+
+        '</div></div></div>';
   $('#trkShare').onclick=function(){var url=SITE+seo,txt=trackerText(rec);
     if(navigator.share)navigator.share({title:'DES · '+code,text:txt,url:url}).catch(function(){});
     else{copyText(txt+' '+url);toast('Teks + link disalin');}};
@@ -343,34 +317,25 @@ $('#trkRes').addEventListener('click',function(e){var a=e.target.closest('[data-
    FACTS + MODAL
    ===================================================================== */
 var FACTS=[
-  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua '+N+' periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Hadir di seluruh '+N+' rilis. Catatan: hanya saham yang tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori ini (bias umur listing), bukan rekomendasi.'},
-  {v:fmtNum(TICKERS.length),l:'Saham unik',d:'Pernah masuk DES minimal sekali',cls:'',kind:'list',list:TICKERS.slice(),title:fmtNum(TICKERS.length)+' Saham Unik',sub:'Semua emiten yang pernah mampir di DES sepanjang '+N+' rilis.'},
+  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Hadir di seluruh rilis tanpa pernah absen. Catatan: hanya saham yang tercatat sejak '+shortLabel(0)+' yang bisa masuk kategori Setia (bias umur listing), bukan rekomendasi.'},
+  {v:fmtNum(TICKERS.length),l:'Saham unik',d:'Pernah masuk DES minimal sekali',cls:'',kind:'list',list:TICKERS.slice(),title:fmtNum(TICKERS.length)+' Saham Unik',sub:'Semua emiten yang pernah mampir di DES.'},
   {v:String(comeback.length),l:'Comeback',d:'Keluar lalu masuk daftar lagi',cls:'up',kind:'list',list:comeback,title:comeback.length+' Saham Comeback',sub:'Pernah keluar, lalu balik lagi ke daftar.'},
-  {v:String(oneHit.length),l:'Sekali lewat',d:'Cuma 1 periode lalu keluar lagi',cls:'',kind:'list',list:oneHit,title:oneHit.length+' Saham Sekali Lewat',sub:'Muncul cuma 1 periode lalu keluar. (Pendatang baru yang masih di dalam tidak dihitung.)'},
+  {v:String(oneHit.length),l:'1 Time',d:'Cuma 1 periode lalu keluar lagi',cls:'',kind:'list',list:oneHit,title:oneHit.length+' Saham 1 Time',sub:'Muncul cuma 1 periode lalu keluar. (Pendatang baru yang masih di dalam tidak dihitung.)'},
   {v:perT[revTop[0]].flips+'x',l:'Pintu putar',d:revTop.join(', ')+' — bolak-balik masuk-keluar',cls:'',kind:'revolve',title:'Si Paling Pintu Putar',sub:'Diurut dari yang paling sering ganti status masuk-keluar.'},
   {v:MINUS+maxOut.n,l:'Keluar terbanyak',d:shortLabel(maxOut.i)+' — '+fmtNum(maxOut.n)+' saham dicoret sekaligus',cls:'down',kind:'period',i:maxOut.i,title:''}
 ];
 function factClick(e){var b=e.target.closest('[data-f]');if(b)openFact(+b.dataset.f);}
 $('#heroMetrics').addEventListener('click',factClick);
-function captionFor(f){var head=f.v+' · '+f.l+' — Daftar Efek Syariah OJK '+yearOf(0)+'-'+yearOf(N-1)+'.';
-  var sample=(f.list?f.list.slice(0,6).join(', '):revTop.join(', '));
-  return head+'\nContoh: '+sample+'.\nCek sendiri: '+SITE+'/#f='+FACTS.indexOf(f)+'\nvia @lotmetrik.';}
 function openFact(idx){var f=FACTS[idx];
   if(f.kind==='period'){setPeriod(f.i,{user:true});scrollTo('#periode');toast('Dibuka: '+shortLabel(f.i)+' (keluar '+periods[f.i].keluar.length+')');return;}
   setHash('f='+idx);
   if(f.kind==='revolve'){var top=revolving.slice(0,18);
-    var body=captionTools(f)+'<ul class="mlist">'+top.map(function(t){var r=perT[t];
+    var body='<ul class="mlist">'+top.map(function(t){var r=perT[t];
       return '<li class="mrow" role="button" tabindex="0" data-trk="'+t+'" aria-label="'+esc(t+' '+r.name)+'"><span class="tk mono">'+t+'</span><span class="nm">'+esc(r.name)+'</span><span class="ct mono">'+r.flips+'x ganti · '+r.count+'/'+N+'</span></li>';}).join('')+'</ul>';
-    showModal(f.title,f.sub,body);wireCsv(function(){var rows=[['kode','nama','ganti_status','muncul']];top.forEach(function(t){var r=perT[t];rows.push([t,r.name,r.flips,r.count]);});downloadCSV('DES_pintu_putar.csv',rows);},f);return;}
+    showModal(f.title,f.sub,body);return;}
   var list=f.list;
-  var body=captionTools(f)+'<div class="taglist">'+list.map(function(t){return '<button class="tag2" data-trk="'+t+'" title="'+esc(NAMES[t]||'')+'">'+t+'</button>';}).join('')+'</div>';
-  showModal(f.title,f.sub+' Tap kode untuk lacak jejaknya.',body);
-  $('#mCopy').onclick=function(){copyText(list.join(', ')+'\n\n— '+list.length+' kode · '+SITE+' · @lotmetrik');toast('Daftar disalin ('+list.length+' kode)');};
-  wireCsv(function(){var rows=[['kode','nama']];list.forEach(function(t){rows.push([t,NAMES[t]||t]);});downloadCSV('DES_'+f.title.replace(/[^a-z0-9]+/gi,'_').toLowerCase()+'.csv',rows);},f);}
-function captionTools(f){var rev=f.kind==='revolve';return '<div class="modal-tools">'+
-  (rev?'':'<button class="btn btn-go btn-sm" id="mCopy">Salin daftar</button>')+
-  '<button class="btn '+(rev?'btn-go':'btn-ghost')+' btn-sm" id="mCap">Salin caption</button></div>';}
-function wireCsv(fn,f){var cap=$('#mCap');if(cap)cap.onclick=function(){copyText(captionFor(f));toast('Caption disalin, siap posting');};}
+  var body='<div class="taglist">'+list.map(function(t){return '<button class="tag2" data-trk="'+t+'" title="'+esc(NAMES[t]||'')+'">'+t+'</button>';}).join('')+'</div>';
+  showModal(f.title,f.sub+' Tap kode untuk lacak jejaknya.',body);}
 var modalBack=$('#modalBack'),lastFocus=null;
 function focusables(){return $$('.modal button, .modal [href], .modal input, .modal [tabindex]:not([tabindex="-1"])',modalBack);}
 function showModal(title,sub,body){lastFocus=document.activeElement;$('#modalTitle').textContent=title;$('#modalSub').textContent=sub||'';$('#modalBody').innerHTML=body;
@@ -413,5 +378,5 @@ var toastT;function toast(m){var e=$('#toast');e.textContent=m;e.classList.add('
 function scrollTo(s){var t=$(s);if(t)t.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'});}
 
 /* ---------- INIT ---------- */
-renderHero();setPeriodeNote();buildPanduan();renderChart();renderChartSR();buildTimeline();buildDatalist();applyHash();
+renderHero();buildPanduan();renderChart();renderChartSR();buildTimeline();buildDatalist();applyHash();
 })();

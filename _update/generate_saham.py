@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import json
 import os
-import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -93,29 +92,28 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
 
     chips = []
     if survivor:
-        chips.append(f'<span class="chip star">Setia {N}/{N}</span>')
+        chips.append('<span class="chip star">Setia</span>')
     elif newcomer:
         chips.append('<span class="chip">Pendatang baru</span>')
     elif one_hit:
-        chips.append('<span class="chip out">Sekali lewat</span>')
+        chips.append('<span class="chip out">1 Time</span>')
     elif comeback:
         chips.append(f'<span class="chip">Comeback {runs} babak</span>')
-    chips_html = ("<div class=\"chips\">" + "".join(chips) + "</div>") if chips else ""
+    chips_html = ('<div class="chips">' + "".join(chips) + "</div>") if chips else ""
 
     dots = []
     on_periods = []
     for i in range(N):
         on = bits[i] == "1"
         lab = short_label(meta[i]["date"])
-        ph = "P1" if "_P1" in meta[i]["key"] else "P2"
-        tip = f"{lab} {ph}: {'ada' if on else 'tidak'}"
+        tip = f"{lab}: {'ada' if on else 'tidak'}"
         dots.append(
             f'<span class="dot{" on" if on else ""}" title="{esc(tip)}"></span>'
         )
         if on:
-            on_periods.append(f"{lab} {ph}")
+            on_periods.append(lab)
     dots_html = "".join(dots)
-    period_txt = ", ".join(on_periods) if on_periods else "tidak pernah masuk dalam rentang data"
+    period_txt = ", ".join(on_periods) if on_periods else "Tidak pernah masuk dalam rentang data"
     aria_dots = (
         f"{code} ada di daftar pada: {', '.join(on_periods)}"
         if on_periods
@@ -123,28 +121,25 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     )
 
     if in_now:
-        verdict = "ADA"
+        verdict = "SYARIAH"
         verdict_cls = "in"
-        status_line = f"Di dalam sejak {esc(since)} · rilis terbaru {esc(short_label(last['date']))}"
+        status_line = f"Di daftar sejak {esc(since)}"
         og_desc = (
-            f"{code} ({name}) ADA di Daftar Efek Syariah OJK "
-            f"per {last['date']}. Jejak {count}/{N} rilis · Lotmetrik."
+            f"{code} ({name}) SYARIAH di Daftar Efek Syariah OJK. Cek jejak di Lotmetrik."
         )
     else:
-        verdict = "TIDAK ada"
+        verdict = "TIDAK SYARIAH"
         verdict_cls = "out"
-        status_line = f"Di luar sejak {esc(since)} · rilis terbaru {esc(short_label(last['date']))}"
+        status_line = f"Di luar daftar sejak {esc(since)}"
         og_desc = (
-            f"{code} ({name}) TIDAK ada di Daftar Efek Syariah OJK "
-            f"per {last['date']}. Jejak {count}/{N} rilis · Lotmetrik."
+            f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. Cek jejak di Lotmetrik."
         )
 
     share_text = (
-        f"{code} ({name}) di Daftar Efek Syariah OJK: "
-        f"{'ADA' if in_now else 'TIDAK ada'}, muncul {count}/{N} rilis. "
-        f"Via @lotmetrik."
+        f"{code} ({name}) {'SYARIAH' if in_now else 'TIDAK SYARIAH'} "
+        f"di Daftar Efek Syariah OJK. Via @lotmetrik."
     )
-    title = f"Apakah {code} syariah? · DES OJK {last_y} · Lotmetrik"
+    title = f"Apakah {code} syariah? · DES OJK · Lotmetrik"
     h1 = f"Apakah {esc(code)} masuk Daftar Efek Syariah?"
     vic = (
         "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.4' "
@@ -160,7 +155,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         "name": title,
         "url": url,
         "description": og_desc,
-        "isPartOf": {"@type": "WebSite", "name": "Dashboard Daftar Efek Syariah", "url": SITE + "/"},
+        "isPartOf": {"@type": "WebSite", "name": "Daftar Efek Syariah", "url": SITE + "/"},
         "about": {"@type": "Corporation", "name": name, "tickerSymbol": code},
         "dateModified": last["date"],
     }
@@ -192,10 +187,10 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
 :root{{--navy:#0B1F3A;--teal:#0F9488;--teal-text:#0D7A70;--teal-soft:rgba(20,184,166,.12);
   --red:#DC2626;--red-text:#B91C1C;--red-soft:rgba(239,68,68,.10);
   --amber:#D97706;--amber-soft:rgba(245,158,11,.14);
-  --off:#F5F7FA;--muted:#5F7186;--secondary:#44566B;--border:#D7DEE7;--border-strong:#B9C4D2;--white:#fff;--surface:#fff;--surface-2:#F5F7FA;
+  --off:#F5F7FA;--muted:#5F7186;--secondary:#44566B;--border:#D7DEE7;--border-strong:#B9C4D2;--white:#fff;--surface:#fff;
   --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
   --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif}}
-[data-theme="terminal"]{{--off:#0B1F3A;--white:#122A4A;--surface:#122A4A;--surface-2:#0E2643;--navy:#F5F7FA;
+[data-theme="terminal"]{{--off:#0B1F3A;--white:#122A4A;--surface:#122A4A;--navy:#F5F7FA;
   --muted:#8A99AD;--secondary:#B9C4D2;--border:#1B3A60;--border-strong:#284B76;
   --teal:#2DD4BF;--teal-text:#2DD4BF;--teal-soft:rgba(45,212,191,.14);
   --red:#F87171;--red-text:#F87171;--red-soft:rgba(248,113,113,.14);
@@ -205,57 +200,45 @@ body{{margin:0;font-family:var(--sans);background:var(--off);color:var(--navy);
   -webkit-font-smoothing:antialiased;line-height:1.5}}
 a{{color:var(--teal);font-weight:600;text-decoration:none}}
 a:hover{{text-decoration:underline}}
-.wrap{{max-width:640px;margin:0 auto;padding:18px 16px 52px}}
+.wrap{{max-width:560px;margin:0 auto;padding:18px 16px 40px}}
 .brand{{display:inline-flex;align-items:center;gap:10px;margin-bottom:22px;color:inherit;text-decoration:none}}
 .brand:hover{{text-decoration:none}}
 .brand-ic{{width:36px;height:36px;border-radius:8px;background:#0B1F3A;display:grid;place-items:center;flex:none;border:1px solid var(--border)}}
 .brand-ic svg{{width:22px;height:22px}}
 .wm{{display:block;font-weight:800;font-size:13px;letter-spacing:-.02em;line-height:1.15}}
 .by{{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}}
-h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;margin:0 0 8px;font-weight:800}}
-.name{{font-size:14.5px;color:var(--muted);margin:0 0 16px}}
-.verdict{{display:flex;gap:12px;align-items:center;padding:14px 14px;border-radius:12px;border:1px solid;
-  margin-bottom:12px}}
+h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;margin:0 0 6px;font-weight:800}}
+.name{{font-size:14px;color:var(--muted);margin:0 0 18px}}
+.verdict{{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid;margin:0 0 14px}}
 .verdict.in{{background:var(--teal-soft);border-color:rgba(15,148,136,.35);color:var(--teal-text)}}
 .verdict.out{{background:var(--red-soft);border-color:rgba(220,38,38,.28);color:var(--red-text)}}
 .vic{{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--surface)}}
 .vic svg{{width:20px;height:20px}}
 .vbody{{flex:1;min-width:0}}
-.vmain{{font-size:1.1rem;font-weight:800;letter-spacing:-.01em;line-height:1.18}}
+.vmain{{font-size:1.2rem;font-weight:800;letter-spacing:-.01em;line-height:1.2}}
 .vmain .mono{{font-family:var(--mono)}}
-.vsub{{font-size:12px;color:var(--secondary);margin-top:3px;line-height:1.4}}
-.actions{{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}}
-.btn{{appearance:none;border:1px solid var(--border-strong);background:var(--surface);color:var(--navy);
-  font:inherit;font-weight:700;font-size:13.5px;padding:10px 14px;border-radius:8px;cursor:pointer}}
-.btn:hover{{border-color:var(--teal);color:var(--teal)}}
-.btn-go{{background:var(--teal);border-color:var(--teal);color:#fff}}
-.btn-go:hover{{filter:brightness(.95);color:#fff;text-decoration:none}}
-[data-theme="terminal"] .btn-go{{color:#0B1F3A}}
-.caveat{{font-size:13px;color:var(--secondary);background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:11px 13px;margin:0 0 14px;line-height:1.45}}
-.caveat b{{color:var(--navy)}}
-.chips{{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}}
+.vsub{{font-size:12.5px;color:var(--secondary);margin-top:4px;line-height:1.4}}
+.chips{{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}}
 .chip{{display:inline-flex;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.03em;
   padding:4px 9px;border-radius:999px;background:var(--teal-soft);color:var(--teal-text)}}
 .chip.out{{background:var(--red-soft);color:var(--red-text)}}
 .chip.star{{background:var(--amber-soft);color:var(--amber)}}
-.dots{{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 16px}}
+.dots{{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 12px}}
 .dot{{width:10px;height:10px;border-radius:3px;background:var(--border-strong)}}
 .dot.on{{background:var(--teal)}}
-.dot-cap{{font-size:11.5px;color:var(--muted);margin:-8px 0 16px}}
-.stats{{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}}
-.stat{{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px}}
-.stat .v{{font-family:var(--mono);font-weight:700;font-size:1.35rem;letter-spacing:-.02em;line-height:1}}
-.stat .k{{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;margin-top:5px}}
-.box{{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:16px}}
-.box h2{{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px;font-weight:700}}
-.box p{{margin:0;font-size:13.5px;color:var(--navy);line-height:1.45}}
-.note{{font-size:12.5px;color:var(--muted);margin-top:8px;line-height:1.45}}
-.layout{{display:grid;gap:14px}}
-@media(min-width:640px){{.layout{{grid-template-columns:1.2fr 1fr;align-items:start}}}}
-.side{{display:flex;flex-direction:column;gap:8px;min-width:0}}
-.stats-line{{font-size:13px;color:var(--secondary);display:flex;flex-wrap:wrap;gap:6px 12px}}
+.stats-line{{font-size:13px;color:var(--secondary);display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 14px}}
 .stats-line b{{font-family:var(--mono);font-size:15px;color:var(--navy)}}
+.box{{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:0 0 18px}}
+.box h2{{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 6px;font-weight:700}}
+.box p{{margin:0;font-size:13px;color:var(--navy);line-height:1.5}}
+.actions{{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}}
+.btn{{appearance:none;border:1px solid var(--border-strong);background:var(--surface);color:var(--navy);
+  font:inherit;font-weight:700;font-size:13.5px;padding:10px 14px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}}
+.btn:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
+.btn-go{{background:var(--teal);border-color:var(--teal);color:#fff}}
+.btn-go:hover{{filter:brightness(.95);color:#fff}}
+[data-theme="terminal"] .btn-go{{color:#0B1F3A}}
+.note{{font-size:12.5px;color:var(--muted);margin:0;line-height:1.45}}
 .foot{{margin-top:26px;padding-top:14px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
   display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}}
 .foot-meta{{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}}
@@ -264,7 +247,7 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
 .foot .soc:hover{{color:var(--teal);border-color:var(--teal);text-decoration:none}}
 .foot .soc svg{{width:14px;height:14px}}
 .foot .sep{{opacity:.45}}
-@media(max-width:420px){{.actions .btn{{flex:1;text-align:center}}}}
+@media(max-width:420px){{.actions .btn{{flex:1;justify-content:center}}}}
 </style>
 </head>
 <body>
@@ -277,33 +260,30 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
         <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
       </svg>
     </span>
-    <span><span class="wm">Dashboard Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
+    <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
   </a>
 
   <h1>{h1}</h1>
   <p class="name">{esc(name)}</p>
 
-  <div class="layout">
-    <div class="verdict {verdict_cls}">
-      <span class="vic" aria-hidden="true">{vic}</span>
-      <div class="vbody">
-        <div class="vmain"><span class="mono">{esc(code)}</span> {esc(verdict)} di Daftar Efek Syariah</div>
-        <div class="vsub">{status_line} · {esc(last["kep"])}</div>
-      </div>
+  <div class="verdict {verdict_cls}">
+    <span class="vic" aria-hidden="true">{vic}</span>
+    <div class="vbody">
+      <div class="vmain"><span class="mono">{esc(code)}</span> {esc(verdict)}</div>
+      <div class="vsub">{status_line}</div>
     </div>
-    <div class="side">
-      {chips_html}
-      <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
-      <div class="stats-line" aria-label="Ringkasan jejak">
-        <span><b>{count}/{N}</b> muncul</span>
-        <span><b style="color:var(--teal)">{enters}</b> masuk</span>
-        <span><b style="color:var(--red)">{exits}</b> keluar</span>
-      </div>
-      <div class="box">
-        <h2>Periode hadir</h2>
-        <p>{esc(period_txt)}.</p>
-      </div>
-    </div>
+  </div>
+
+  {chips_html}
+  <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
+  <div class="stats-line" aria-label="Ringkasan jejak">
+    <span><b>{count}/{N}</b> muncul</span>
+    <span><b style="color:var(--teal)">{enters}</b> masuk</span>
+    <span><b style="color:var(--red)">{exits}</b> keluar</span>
+  </div>
+  <div class="box">
+    <h2>Periode hadir</h2>
+    <p>{esc(period_txt)}.</p>
   </div>
 
   <div class="actions">
@@ -319,16 +299,19 @@ h1{{font-size:clamp(1.3rem,4vw,1.65rem);letter-spacing:-.03em;line-height:1.15;m
     <div class="foot-meta">
       <span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a></span>
       <span class="sep">·</span>
-      <span>Data: OJK {esc(first_y)}–{esc(last_y)}</span>
+      <span>Data: <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">OJK</a></span>
       <span class="sep">·</span>
       <a href="/#panduan">Panduan</a>
     </div>
     <span class="foot-social" aria-label="Sosial Lotmetrik">
-      <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram">
+      <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram Lotmetrik" title="Instagram">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
       </a>
-      <a class="soc" href="https://t.me/lotmetrik" rel="noopener" target="_blank" aria-label="Telegram">
+      <a class="soc" href="https://t.me/lotmetrik" rel="noopener" target="_blank" aria-label="Telegram Lotmetrik" title="Telegram">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.3L2.8 11.5c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4.9 1 .9.6 0 .8-.3 1.1-.6l2.7-2.6 5.6 4.1c1 .6 1.8.3 2-.9l3.5-16.5c.4-1.5-.5-2.1-1.6-1.7zM9.3 14.7l-.2 3.3 1.1-2.2 8.7-7.8c.3-.3 0-.4-.4-.2L9.3 14.7z"/></svg>
+      </a>
+      <a class="soc" href="https://tiktok.com/@lotmetrik" rel="noopener" target="_blank" aria-label="TikTok Lotmetrik" title="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64c.29-.02.58.02.86.1V9.4a6.37 6.37 0 00-1-.08A6.34 6.34 0 003.15 15.8a6.34 6.34 0 0010.86-4.43V7.65a8.16 8.16 0 004.76 1.52V5.72a4.85 4.85 0 01-.82-.03z"/></svg>
       </a>
     </span>
   </div>
@@ -364,7 +347,6 @@ def main() -> None:
         die("data.js tidak punya saham.")
 
     os.makedirs(SAHAM_DIR, exist_ok=True)
-    # Hapus file lama (jangan rmtree folder — di Windows sering PermissionError / case-fold).
     for old in os.listdir(SAHAM_DIR):
         if old.lower().endswith(".html"):
             try:
