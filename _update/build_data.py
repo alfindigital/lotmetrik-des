@@ -136,6 +136,11 @@ def main():
 
     print(f"\n[OK] data.js ditulis: {N} rilis · {len(union)} saham unik.")
     print(f"     Kini={last}  Puncak={peak}  Awal={first}  · index.html cache ?v={newv}")
+
+    # ---- halaman SEO per saham + sitemap ----
+    from generate_saham import main as gen_saham
+    gen_saham()
+
     print("     og.png belum digambar ulang — jalankan: python _update/render_og.py")
 
 

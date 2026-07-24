@@ -20,18 +20,21 @@ set "PY=python"
 where python >nul 2>nul || set "PY=C:\Python314\python.exe"
 
 echo.
-echo [1/3] Menghitung ulang data...
+echo [1/4] Menghitung ulang data...
 "%PY%" _update\build_data.py
 if errorlevel 1 goto :err
 
 echo.
-echo [2/3] Menggambar ulang gambar preview (og.png)...
+echo [2/4] Menggambar ulang gambar preview (og.png)...
 "%PY%" _update\render_og.py
 if errorlevel 1 goto :err
 
 echo.
-echo [3/3] Publish ke GitHub (Netlify akan deploy otomatis)...
-git add data.js index.html og.png _update\ojk_excel
+echo [3/4] (halaman SEO per saham sudah digenerate di langkah 1)
+echo.
+
+echo [4/4] Publish ke GitHub (Netlify akan deploy otomatis)...
+git add data.js index.html og.png sitemap.xml saham _update\ojk_excel
 git diff --cached --quiet
 if not errorlevel 1 (
   echo Tidak ada perubahan data - tidak ada yang perlu di-publish.

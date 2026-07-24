@@ -1,0 +1,2 @@
+# Pretty URL halaman saham: /saham/ASII → saham/ASII.html
+/saham/:code  /saham/:code.html  200

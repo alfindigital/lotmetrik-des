@@ -30,7 +30,7 @@ jobs:
       - name: Install deps
         run: pip install openpyxl pillow
 
-      - name: Regenerasi data.js + sinkron angka statis
+      - name: Regenerasi data.js + sinkron angka + halaman SEO saham
         run: python _update/build_data.py
 
       - name: Gambar ulang og.png
@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name "des-updater[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data.js index.html og.png
+          git add data.js index.html og.png sitemap.xml saham
           if git diff --cached --quiet; then
             echo "Tidak ada perubahan untuk di-commit."
           else

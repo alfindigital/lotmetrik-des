@@ -24,8 +24,8 @@ Ringkas:
 3. Salah satu:
    - **PC:** taruh di `_update/ojk_excel/` → double-click `update.bat`
    - **Browser:** upload file itu ke folder yang sama di GitHub → Actions regen + deploy
-4. Script otomatis: regenerasi `data.js`, samakan angka meta, gambar ulang `og.png`, naikkan `?v=`.
-5. Cek live (Ctrl+Shift+R).
+4. Script otomatis: regenerasi `data.js`, **850 halaman `/saham/KODE`**, `sitemap.xml`, samakan angka meta, gambar ulang `og.png`, naikkan `?v=`.
+5. Cek live (Ctrl+Shift+R). Contoh halaman: https://des.lotmetrik.my.id/saham/ASII
 
 Checklist hari-H: `RELEASE-PLAYBOOK.md`. Reminder Telegram otomatis 29 Mei & 29 Nov (Cloudflare Worker).
 

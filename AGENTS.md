@@ -34,6 +34,7 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 - TIDAK ada: lede/tagline di home, tombol (i) di sebelah Lacak, seksi "Fakta dekade", "Alat gratis lain" di Panduan, panah dropdown di kotak cari — semua sengaja dihapus v2.4.3, jangan dikembalikan.
 - Header: logo bulan-sabit+bintang, "DES Dashboard" dengan "by lotmetrik" DITUMPUK di bawahnya.
 - Panduan = halaman penuh `#panduan`, layout 2 kolom kartu.
+- Halaman SEO per saham: `/saham/KODE` (di-generate `_update/generate_saham.py` dari `data.js`). Tombol **Bagikan** di tracker memakai URL itu (bukan `#t=`). Jangan hapus folder `saham/` / `sitemap.xml` — ikut di-regen tiap update data.
 - Data: semua angka dihitung dari `data.js`. Jangan ubah data tanpa regenerasi dari Excel OJK asli (via `_update/`). `build_data.py` punya gate rekonsiliasi — kalau "TIDAK COCOK", berhenti, jangan dipaksa.
 - Angka statis yang TIDAK auto-update dari JS: meta description / og:description / og:image:alt ("307 jadi 688 lalu 622"), JSON-LD "21 rilis" — `build_data.py` sudah menyamakan otomatis saat update; jangan edit manual asal-asalan.
 - Jangan menambah klaim/opini/prediksi syariah; situs hanya menampilkan data resmi OJK. Banned words brand: cuan/pasti naik/beli sekarang/target price/dijamin.
