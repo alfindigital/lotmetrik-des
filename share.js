@@ -1,12 +1,37 @@
-/* Share + theme boot for /saham/* pages (external so CSP script-src 'self' allows it). */
+/* Share + theme for /saham/* pages (external so CSP script-src 'self' allows it). */
 (function () {
-  try {
-    if (localStorage.getItem("lotmetrik-des-theme") === "terminal") {
+  var TKEY = "lotmetrik-des-theme";
+  var meta = document.querySelector('meta[name="theme-color"]');
+
+  function applyTheme(m) {
+    var t = document.getElementById("themeBtn");
+    if (m === "terminal") {
       document.documentElement.setAttribute("data-theme", "terminal");
-      var meta = document.querySelector('meta[name="theme-color"]');
       if (meta) meta.content = "#0B1F3A";
+      if (t) t.setAttribute("aria-pressed", "true");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      if (meta) meta.content = "#F5F7FA";
+      if (t) t.setAttribute("aria-pressed", "false");
     }
+  }
+
+  try {
+    var saved = localStorage.getItem(TKEY);
+    if (saved) applyTheme(saved);
   } catch (e) {}
+
+  var themeBtn = document.getElementById("themeBtn");
+  if (themeBtn) {
+    themeBtn.addEventListener("click", function () {
+      var term = document.documentElement.getAttribute("data-theme") === "terminal";
+      var next = term ? "light" : "terminal";
+      applyTheme(next);
+      try {
+        localStorage.setItem(TKEY, next);
+      } catch (err) {}
+    });
+  }
 
   var btn = document.getElementById("shareBtn");
   if (!btn) return;
@@ -25,7 +50,7 @@
       return;
     }
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text + " " + url).then(function () {
+      navigator.clipboard.writeText(text).then(function () {
         done("Tersalin");
       }).catch(function () {
         done("Gagal salin");
@@ -34,7 +59,7 @@
     }
     try {
       var ta = document.createElement("textarea");
-      ta.value = text + " " + url;
+      ta.value = text;
       ta.style.position = "fixed";
       ta.style.opacity = "0";
       document.body.appendChild(ta);
@@ -43,7 +68,7 @@
       ta.remove();
       done("Tersalin");
     } catch (err) {
-      window.prompt("Salin link:", url);
+      window.prompt("Salin teks:", text);
     }
   });
 })();

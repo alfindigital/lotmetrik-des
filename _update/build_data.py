@@ -124,7 +124,7 @@ def main():
         (r'\d+ jadi \d+ lalu \d+', f'{first} jadi {peak} lalu {last}'),          # og:description
         (r'dari \d+ ke puncak \d+ lalu \d+', f'dari {first} ke puncak {peak} lalu {last}'),  # og:image:alt
         (r'Riwayat \d+ rilis', f'Riwayat {N} rilis'),                             # JSON-LD
-        (r'2016([–\-/])20\d\d', r'2016\g<1>' + yEnd),                        # rentang tahun (en-dash/hyphen/slash)
+        (r'2016([–\-/])20\d\d', r'2016-' + yEnd),                        # rentang tahun → hyphen
     ]
     for pat, rep in subs:
         html = re.sub(pat, rep, html)

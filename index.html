@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Daftar Efek Syariah — IDX 2016–2026 · Lotmetrik</title>
+<title>Daftar Efek Syariah - IDX 2016-2026 · Lotmetrik</title>
 <meta name="description" content="Telusuri Daftar Efek Syariah OJK: saham masuk & keluar tiap rilis, tren jumlah, dan jejak tiap emiten. Gratis dari Lotmetrik.">
 <meta name="theme-color" content="#0B1F3A">
 <meta name="google-site-verification" content="7EO77GIvBUN_mJX4xEfJTJlEgb9G5nfcDDBgyiBulVw" />
@@ -12,16 +12,16 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lotmetrik">
 <meta property="og:url" content="https://des.lotmetrik.my.id/">
-<meta property="og:title" content="Daftar Efek Syariah — IDX 2016–2026 · Lotmetrik">
-<meta property="og:description" content="307 jadi 688 lalu 622. Telusuri tiap saham yang masuk & keluar daftar syariah OJK, 2016–2026. Gratis dari Lotmetrik.">
+<meta property="og:title" content="Daftar Efek Syariah - IDX 2016-2026 · Lotmetrik">
+<meta property="og:description" content="307 jadi 688 lalu 622. Telusuri tiap saham yang masuk & keluar daftar syariah OJK, 2016-2026. Gratis dari Lotmetrik.">
 <meta property="og:image" content="https://des.lotmetrik.my.id/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Grafik jumlah saham Daftar Efek Syariah OJK 2016–2026, dari 307 ke puncak 688 lalu 622.">
+<meta property="og:image:alt" content="Grafik jumlah saham Daftar Efek Syariah OJK 2016-2026, dari 307 ke puncak 688 lalu 622.">
 <meta property="og:locale" content="id_ID">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Daftar Efek Syariah — IDX 2016–2026 · Lotmetrik">
-<meta name="twitter:description" content="Telusuri saham yang masuk & keluar daftar syariah OJK, 2016–2026. Gratis dari Lotmetrik.">
+<meta name="twitter:title" content="Daftar Efek Syariah - IDX 2016-2026 · Lotmetrik">
+<meta name="twitter:description" content="Telusuri saham yang masuk & keluar daftar syariah OJK, 2016-2026. Gratis dari Lotmetrik.">
 <meta name="twitter:image" content="https://des.lotmetrik.my.id/og.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" type="image/png" sizes="96x96" href="favicon-96.png">
@@ -31,7 +31,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
-{"@type":"Dataset","name":"Daftar Efek Syariah (DES) OJK 2016–2026","description":"Riwayat 21 rilis Daftar Efek Syariah OJK: saham yang masuk dan keluar tiap periode, 2016 sampai 2026.","temporalCoverage":"2016/2026","url":"https://des.lotmetrik.my.id/","isBasedOn":"https://www.ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/","creator":{"@type":"Organization","name":"Lotmetrik","url":"https://lotmetrik.my.id/"}},
+{"@type":"Dataset","name":"Daftar Efek Syariah (DES) OJK 2016-2026","description":"Riwayat 21 rilis Daftar Efek Syariah OJK: saham yang masuk dan keluar tiap periode, 2016 sampai 2026.","temporalCoverage":"2016/2026","url":"https://des.lotmetrik.my.id/","isBasedOn":"https://www.ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/","creator":{"@type":"Organization","name":"Lotmetrik","url":"https://lotmetrik.my.id/"}},
 {"@type":"WebApplication","name":"Daftar Efek Syariah by Lotmetrik","url":"https://des.lotmetrik.my.id/","applicationCategory":"FinanceApplication","operatingSystem":"Web","offers":{"@type":"Offer","price":"0","priceCurrency":"IDR"},"publisher":{"@type":"Organization","name":"Lotmetrik"}}
 ]}
 </script>
@@ -124,11 +124,15 @@ button{font-family:inherit;cursor:pointer}
   display:flex;flex-direction:column;gap:3px;color:inherit;box-shadow:var(--shadow-card)}
 .scard.clk{cursor:pointer;transition:border-color var(--dur-fast),box-shadow var(--dur-fast)}
 .scard.clk:hover{border-color:var(--accent);box-shadow:var(--shadow-pop)}
-.scard .sv{font-weight:700;font-size:1.75rem;line-height:1;letter-spacing:-.02em;color:#000}
-.scard .sv.hl,.scard .sv.down,.scard .sv.up{color:#000}
+.scard .sv{font-weight:700;font-size:1.75rem;line-height:1;letter-spacing:-.02em;color:var(--text)}
+.scard .sv.m-now{color:var(--up-text)}
+.scard .sv.m-peak{color:var(--highlight-text)}
+.scard .sv.m-setia{color:var(--up-text)}
+.scard .sv.m-back{color:var(--navy-600)}
+[data-theme="terminal"] .scard .sv.m-back{color:var(--slate-300)}
 .scard .sl-row{display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%}
-.scard .sl{font-size:11.5px;color:#000;font-weight:700}
-.scard .sl-more{font-size:16px;font-weight:800;color:#000;line-height:1;cursor:pointer;flex:none}
+.scard .sl{font-size:11.5px;color:var(--text-secondary);font-weight:700}
+.scard .sl-more{font-size:16px;font-weight:800;color:var(--text-muted);line-height:1;cursor:pointer;flex:none}
 
 /* SECTION + CARD */
 section{padding:16px 0}
@@ -188,7 +192,7 @@ section{padding:16px 0}
 .tl-box.active .yr{color:var(--accent-text)}
 .tl-select{display:none;width:100%;font:inherit;font-size:16px;font-weight:700;padding:11px 12px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);margin-bottom:10px}
 
-/* PERIOD SUMMARY — total + masuk/keluar/bersih satu baris, kolom sama */
+/* PERIOD SUMMARY - total + masuk/keluar/bersih satu baris, kolom sama */
 .psum-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:14px;align-items:stretch}
 .psum-row .tile{margin:0;min-width:0}
 .psum-row .tile.wide{grid-column:2/-1}
@@ -284,12 +288,12 @@ section{padding:16px 0}
 .guide-links a{font-size:12.5px;font-weight:700;border:1px solid var(--border-strong);border-radius:var(--r-pill);padding:6px 12px}
 .guide-links a:hover{text-decoration:none;border-color:var(--accent);color:var(--accent)}
 
-/* PANDUAN — dokumen kontinyu (bukan pulau kartu) */
+/* PANDUAN - dokumen kontinyu (bukan pulau kartu) */
 #panduanPage{display:none;padding:22px 0 24px}
 body.panduan-open #app{display:none}
 body.panduan-open #panduanPage{display:block}
-.pg-top{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}
-.pg-back{flex:none;width:36px;height:36px;margin-top:4px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);display:grid;place-items:center;cursor:pointer;padding:0}
+.pg-top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.pg-back{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-secondary);display:grid;place-items:center;cursor:pointer;padding:0}
 .pg-back:hover{border-color:var(--accent);color:var(--accent)}
 .pg-back svg{width:18px;height:18px;display:block}
 .pg-head{min-width:0;flex:1}
@@ -316,7 +320,7 @@ body.panduan-open #panduanPage{display:block}
 .pg-sec .disc{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);line-height:1.6;margin:0;border:0;padding:0}
 .pg-src{font-family:var(--font-mono);font-size:12px;color:var(--text-muted);line-height:1.6}
 
-/* FOOTER — teks kiri, icon kanan */
+/* FOOTER - teks kiri, icon kanan */
 footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surface-2)}
 .foot{max-width:var(--w);margin:0 auto;padding:8px 18px;font-size:12px;color:var(--text-muted);display:flex;gap:12px 18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
 .foot-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-width:0}
@@ -393,7 +397,7 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 
 <a id="top"></a>
 <main class="wrap" id="app">
-  <h1 class="sr-only">Daftar Efek Syariah — IDX 2016–2026 dari Lotmetrik</h1>
+  <h1 class="sr-only">Daftar Efek Syariah - IDX 2016-2026 dari Lotmetrik</h1>
 
   <section class="pagehead">
     <div class="stats" id="heroMetrics"></div>
@@ -405,8 +409,7 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
         <div class="tracker-in">
           <div class="search">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3" stroke-linecap="round"/></svg>
-            <input id="trkInput" type="search" list="trkList" placeholder="Cari kode saham, mis. ASII, TLKM, BUKA" autocomplete="off" aria-label="Cari saham">
-            <datalist id="trkList"></datalist>
+            <input id="trkInput" type="search" placeholder="Cari kode saham, mis. ASII, TLKM, BUKA" autocomplete="off" aria-label="Cari saham">
           </div>
           <button class="btn btn-primary" id="trkBtn">Lacak</button>
         </div>
@@ -418,6 +421,7 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
   <section id="grafik">
     <div class="card">
       <div class="card-head">
+        <div class="card-title">Tren jumlah saham</div>
         <div class="chart-head-right">
           <div class="seg" id="chartSeg" role="group" aria-label="Mode grafik">
             <button class="seg-btn is-active" data-mode="total" aria-pressed="true">Total</button>
@@ -499,8 +503,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=285"></script>
-<script src="app.js?v=285"></script>
+<script src="data.js?v=289"></script>
+<script src="app.js?v=289"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->

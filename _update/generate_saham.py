@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-generate_saham.py — Buat halaman SEO /saham/KODE.html dari data.js + sitemap.xml.
+generate_saham.py - Buat halaman SEO /saham/KODE.html dari data.js + sitemap.xml.
 
 Setiap saham unik dapat 1 halaman statis (jawab "apakah KODE syariah?" untuk Google).
 Dipanggil otomatis dari build_data.py / update.bat / GitHub Action.
@@ -61,6 +61,66 @@ def since_index(bits: str) -> int:
     return i
 
 
+def summarize_on_periods(on_idxs: list[int], meta: list) -> str:
+    """Ringkas periode on-DES: daftar pendek, atau rentang/blok jika banyak."""
+    if not on_idxs:
+        return ""
+    labs = [short_label(meta[i]["date"]) for i in on_idxs]
+    if len(labs) <= 4:
+        if len(labs) == 1:
+            return f"pada rilis {labs[0]}"
+        if len(labs) == 2:
+            return f"pada rilis {labs[0]} dan {labs[1]}"
+        return "pada rilis " + ", ".join(labs[:-1]) + f", dan {labs[-1]}"
+
+    # Gabungkan indeks beruntun jadi blok
+    blocks: list[tuple[int, int]] = []
+    start = prev = on_idxs[0]
+    for i in on_idxs[1:]:
+        if i == prev + 1:
+            prev = i
+            continue
+        blocks.append((start, prev))
+        start = prev = i
+    blocks.append((start, prev))
+
+    if len(blocks) == 1:
+        a, b = blocks[0]
+        return (
+            f"dari {short_label(meta[a]['date'])} sampai {short_label(meta[b]['date'])}"
+        )
+    if len(blocks) <= 3:
+        parts = []
+        for a, b in blocks:
+            if a == b:
+                parts.append(short_label(meta[a]["date"]))
+            else:
+                parts.append(
+                    f"{short_label(meta[a]['date'])} sampai {short_label(meta[b]['date'])}"
+                )
+        if len(parts) == 2:
+            return f"antara {parts[0]}, lalu {parts[1]}"
+        return "antara " + "; ".join(parts)
+
+    a0, b0 = blocks[0]
+    aL, bL = blocks[-1]
+    return (
+        f"antara {short_label(meta[a0]['date'])} sampai {short_label(meta[bL]['date'])} "
+        f"({len(on_idxs)} rilis, {len(blocks)} babak)"
+    )
+
+
+def last_transition(bits: str, meta: list, to_on: bool) -> str | None:
+    """Label rilis terakhir masuk (0->1) atau keluar (1->0)."""
+    target_prev, target_cur = ("0", "1") if to_on else ("1", "0")
+    for i in range(len(bits) - 1, 0, -1):
+        if bits[i] == target_cur and bits[i - 1] == target_prev:
+            return short_label(meta[i]["date"])
+    if to_on and bits[0] == "1":
+        return short_label(meta[0]["date"])
+    return None
+
+
 def page_html(code: str, name: str, bits: str, meta: list) -> str:
     N = len(meta)
     in_now = bits[-1] == "1"
@@ -79,6 +139,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
 
     si = since_index(bits)
     since = short_label(meta[si]["date"])
+    first_lab = short_label(meta[0]["date"])
     last = meta[-1]
     first_y = meta[0]["date"].split()[-1]
     last_y = last["date"].split()[-1]
@@ -102,6 +163,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
 
     dots = []
     on_periods = []
+    on_idxs: list[int] = []
     for i in range(N):
         on = bits[i] == "1"
         lab = short_label(meta[i]["date"])
@@ -111,6 +173,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         )
         if on:
             on_periods.append(lab)
+            on_idxs.append(i)
     dots_html = "".join(dots)
     aria_dots = (
         f"{code} ada di daftar pada: {', '.join(on_periods)}"
@@ -124,7 +187,8 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         status_line = f"Di DES OJK sejak {esc(since)}"
         status_word = "syariah"
         og_desc = (
-            f"{code} ({name}) SYARIAH di Daftar Efek Syariah OJK. Cek jejak di Lotmetrik."
+            f"{code} ({name}) SYARIAH di Daftar Efek Syariah OJK. "
+            f"Tercatat {count} dari {N} rilis."
         )
     elif count == 0:
         verdict = "TIDAK SYARIAH"
@@ -132,7 +196,8 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         status_line = "Belum pernah masuk DES OJK"
         status_word = "tidak syariah"
         og_desc = (
-            f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. Cek jejak di Lotmetrik."
+            f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. "
+            f"Belum pernah tercatat dalam {N} rilis data."
         )
     else:
         verdict = "TIDAK SYARIAH"
@@ -140,26 +205,52 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         status_line = f"Di luar DES OJK sejak {esc(since)}"
         status_word = "tidak syariah"
         og_desc = (
-            f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. Cek jejak di Lotmetrik."
+            f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. "
+            f"Pernah tercatat {count} dari {N} rilis."
         )
+
+    last_in = last_transition(bits, meta, True)
+    last_out = last_transition(bits, meta, False)
+    when_on = summarize_on_periods(on_idxs, meta)
 
     if count == 0:
         seo_blurb = (
-            f"{code} ({name}) belum pernah tercatat di Daftar Efek Syariah OJK "
-            f"pada {N} rilis data. Status terkini: {status_word}. "
-            f"Cek jejak masuk-keluar saham syariah IDX di Lotmetrik."
+            f"{code} ({name}) saat ini berstatus {status_word}. "
+            f"Emiten ini belum pernah tercatat di Daftar Efek Syariah OJK "
+            f"pada {N} rilis data sejak {first_lab}."
         )
     else:
-        seo_blurb = (
-            f"{code} ({name}) tercatat di Daftar Efek Syariah OJK pada "
-            f"{count} dari {N} rilis. Status terkini: {status_word}. "
-            f"Cek jejak masuk-keluar saham syariah IDX di Lotmetrik."
-        )
+        parts = [
+            f"{code} ({name}) saat ini berstatus {status_word}.",
+            f"Tercatat di Daftar Efek Syariah OJK pada {count} dari {N} rilis",
+        ]
+        if when_on:
+            parts[-1] += f", {when_on}."
+        else:
+            parts[-1] += "."
+        move = []
+        if enters:
+            move.append(f"masuk {enters}x" + (f" (terakhir {last_in})" if last_in else ""))
+        if exits:
+            move.append(f"keluar {exits}x" + (f" (terakhir {last_out})" if last_out else ""))
+        if move:
+            parts.append("Riwayat: " + ", ".join(move) + ".")
+        elif survivor:
+            parts.append(f"Ada di semua rilis sejak {first_lab}, tanpa pernah keluar.")
+        seo_blurb = " ".join(parts)
 
-    share_text = (
-        f"{code} ({name}) {'SYARIAH' if in_now else 'TIDAK SYARIAH'} "
-        f"di Daftar Efek Syariah OJK. Via @lotmetrik."
-    )
+    if in_now:
+        share_text = (
+            f"{code} ({name}) saat ini berstatus SYARIAH. "
+            f"Terdaftar di Daftar Efek Syariah OJK. "
+            f"Cek: des.lotmetrik.my.id/saham/{code.lower()}"
+        )
+    else:
+        share_text = (
+            f"{code} ({name}) saat ini berstatus TIDAK SYARIAH. "
+            f"Tidak ada di Daftar Efek Syariah OJK saat ini. "
+            f"Cek: des.lotmetrik.my.id/saham/{code.lower()}"
+        )
     pct = round(100 * count / N) if N else 0
     title = f"Apakah {code} syariah? · DES OJK · Lotmetrik"
     h1 = f"Apakah {esc(code)} ({esc(name)}) masuk Daftar Efek Syariah?"
@@ -231,15 +322,20 @@ a:hover{{text-decoration:underline}}
 .brand-ic svg{{width:22px;height:22px}}
 .wm{{display:block;font-weight:800;font-size:13px;letter-spacing:-.02em;line-height:1.15}}
 .by{{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}}
-.pg-top{{display:flex;align-items:flex-start;gap:12px;margin-bottom:18px}}
-.pg-back{{flex:none;width:36px;height:36px;margin-top:4px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--secondary);
+.nav-act{{display:flex;align-items:center;gap:8px;flex:none}}
+.icon-btn{{background:var(--surface);border:1px solid var(--border);width:36px;height:36px;border-radius:8px;
+  display:grid;place-items:center;color:var(--navy);text-decoration:none;cursor:pointer;padding:0}}
+.icon-btn:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
+.icon-btn svg{{width:18px;height:18px;display:block}}
+.pg-top{{display:flex;align-items:center;gap:12px;margin-bottom:18px}}
+.pg-back{{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--secondary);
   display:grid;place-items:center;text-decoration:none;cursor:pointer;padding:0}}
 .pg-back:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
 .pg-back svg{{width:18px;height:18px;display:block}}
 .pg-head{{min-width:0;flex:1}}
 h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;margin:0;font-weight:800}}
-.seo-blurb{{font-size:13.5px;color:var(--secondary);margin:10px 0 0;line-height:1.55}}
-.note{{font-size:12.5px;color:var(--muted);margin:6px 0 14px;line-height:1.45}}
+.seo-blurb{{font-size:13.5px;color:var(--secondary);margin:0 0 14px;line-height:1.55}}
+.caveat{{font-size:12.5px;color:var(--muted);margin:0 0 16px;line-height:1.45}}
 .verdict{{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid;margin:0 0 14px}}
 .verdict.in{{background:var(--teal-soft);border-color:rgba(15,148,136,.35);color:var(--teal-text)}}
 .verdict.out{{background:var(--red-soft);border-color:rgba(220,38,38,.28);color:var(--red-text)}}
@@ -254,10 +350,10 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
   padding:4px 9px;border-radius:999px;background:var(--teal-soft);color:var(--teal-text)}}
 .chip.out{{background:var(--red-soft);color:var(--red-text)}}
 .chip.star{{background:var(--amber-soft);color:var(--amber)}}
-.dots{{display:flex;width:100%;gap:3px;margin:0 0 14px}}
-.dot{{flex:1;min-width:0;height:16px;border-radius:4px;background:var(--border-strong)}}
+.dots{{display:flex;width:100%;gap:4px;margin:0 0 14px}}
+.dot{{flex:1;min-width:0;height:32px;border-radius:6px;background:var(--border-strong)}}
 .dot.on{{background:var(--teal)}}
-.stats-line{{display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:8px;margin:0 0 20px}}
+.stats-line{{display:grid;grid-template-columns:repeat(4,1fr);width:100%;gap:8px;margin:0 0 10px}}
 .stat{{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-align:left}}
 .stat .sv{{font-family:var(--mono);font-size:1.35rem;font-weight:800;line-height:1;letter-spacing:-.02em;color:var(--navy)}}
 .stat .sv.up{{color:var(--teal-text)}}
@@ -291,6 +387,14 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
       </span>
       <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
     </a>
+    <div class="nav-act">
+      <a class="icon-btn" href="/#panduan" aria-label="Panduan &amp; sumber" title="Panduan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </a>
+      <button type="button" class="icon-btn" id="themeBtn" aria-label="Ganti tema terang atau terminal" aria-pressed="false" title="Terang / Terminal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
   </div>
 
   <div class="pg-top">
@@ -302,9 +406,6 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     </div>
   </div>
 
-  <p class="seo-blurb">{esc(seo_blurb)}</p>
-  <p class="note">Data historis tidak menjamin status berikutnya.</p>
-
   <div class="verdict {verdict_cls}">
     <span class="vic" aria-hidden="true">{vic}</span>
     <div class="vbody">
@@ -313,13 +414,16 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     </div>
   </div>
 
+  <p class="seo-blurb">{esc(seo_blurb)}</p>
+  <p class="caveat">Angka muncul &amp; % syariah dihitung dari seluruh rilis DES sejak {esc(first_lab)}. Kalau emiten baru IPO, cek dulu kapan listing-nya biar tidak salah baca.</p>
+
   {chips_html}
   <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
   <div class="stats-line" aria-label="Ringkasan jejak">
+    <div class="stat"><span class="sv">{pct}%</span><span class="sl">% syariah</span></div>
     <div class="stat"><span class="sv">{count}/{N}</span><span class="sl">muncul</span></div>
     <div class="stat"><span class="sv up">{enters}</span><span class="sl">masuk</span></div>
     <div class="stat"><span class="sv down">{exits}</span><span class="sl">keluar</span></div>
-    <div class="stat"><span class="sv">{pct}%</span><span class="sl">% syariah</span></div>
   </div>
 
   <div class="actions">
@@ -347,7 +451,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     </span>
   </div>
 </div>
-<script src="/share.js" defer></script>
+<script src="/share.js?v=289" defer></script>
 </body>
 </html>
 """
