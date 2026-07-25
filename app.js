@@ -119,9 +119,9 @@ function buildPanduan(){
     '</div>'+
     '<div class="pg-cols">'+
       '<section class="pg-sec"><h4>Sumber &amp; pembaruan</h4>'+
-        '<div class="pg-src">Sumber: OJK, Daftar Efek Syariah. Kalau ragu, cek lagi ke situs OJK atau IDX.</div></section>'+
+        '<div class="pg-src">Sumber: OJK · Daftar Efek Syariah. Verifikasi di OJK/IDX.</div></section>'+
       '<section class="pg-sec"><h4>Disclaimer</h4>'+
-        '<p class="disc">Isi Lotmetrik untuk edukasi, bukan saran beli/jual. Sejalan dengan POJK 6/2026.</p></section>'+
+        '<p class="disc">Edukasi saja, bukan saran beli/jual · POJK 6/2026.</p></section>'+
     '</div></div>';
   var b=$('#pgBack');if(b)b.addEventListener('click',closePanduan);
 }
@@ -285,7 +285,7 @@ $('#pNext').addEventListener('click',function(){if(curPeriod<N-1)setPeriod(curPe
    STOCK TRACKER
    ===================================================================== */
 function trackerText(rec){
-  var code=rec.t, name=rec.name, path='des.lotmetrik.my.id/saham/'+code.toLowerCase();
+  var code=rec.t, name=rec.name, path=SITE+'/saham/'+code.toLowerCase();
   if(rec.statusNow)return code+' ('+name+') saat ini berstatus SYARIAH. Terdaftar di Daftar Efek Syariah OJK. Cek: '+path;
   return code+' ('+name+') saat ini berstatus TIDAK SYARIAH. Tidak ada di Daftar Efek Syariah OJK saat ini. Cek: '+path;
 }
@@ -323,9 +323,9 @@ $('#trkRes').addEventListener('click',function(e){var a=e.target.closest('[data-
    FACTS + MODAL
    ===================================================================== */
 var FACTS=[
-  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Ada di semua rilis tanpa absen. Hanya yang listing sejak '+shortLabel(0)+' (bias umur), bukan rekomendasi.'},
+  {v:String(survivors.length),l:'Saham setia',d:'Lolos di semua periode tanpa absen',cls:'hl',kind:'list',list:survivors,title:survivors.length+' Saham Paling Setia',sub:'Ada di semua rilis tanpa absen. Hanya yang listing sejak '+shortLabel(0)+'.'},
   {v:fmtNum(TICKERS.length),l:'Saham unik',d:'Pernah masuk DES minimal sekali',cls:'',kind:'list',list:TICKERS.slice(),title:fmtNum(TICKERS.length)+' Saham Unik',sub:'Semua emiten yang pernah mampir di DES.'},
-  {v:String(comeback.length),l:'Comeback',d:'Keluar lalu masuk daftar lagi',cls:'up',kind:'list',list:comeback,title:comeback.length+' Saham Comeback',sub:'Pernah keluar, lalu masuk lagi, bukan skor kualitas.'},
+  {v:String(comeback.length),l:'Comeback',d:'Keluar lalu masuk daftar lagi',cls:'up',kind:'list',list:comeback,title:comeback.length+' Saham Comeback',sub:'Pernah keluar, lalu masuk lagi.'},
   {v:String(oneHit.length),l:'1 Time',d:'Cuma 1 periode lalu keluar lagi',cls:'',kind:'list',list:oneHit,title:oneHit.length+' Saham 1 Time',sub:'Muncul cuma 1 periode lalu keluar. (Pendatang baru yang masih di dalam tidak dihitung.)'},
   {v:perT[revTop[0]].flips+'x',l:'Pintu putar',d:revTop.join(', ')+', bolak-balik masuk-keluar',cls:'',kind:'revolve',title:'Si Paling Pintu Putar',sub:'Diurut dari yang paling sering ganti status masuk-keluar.'},
   {v:MINUS+maxOut.n,l:'Keluar terbanyak',d:shortLabel(maxOut.i)+': '+fmtNum(maxOut.n)+' saham dicoret sekaligus',cls:'down',kind:'period',i:maxOut.i,title:''}

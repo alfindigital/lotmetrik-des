@@ -46,10 +46,33 @@ def load_des() -> dict:
         die(f"data.js tidak bisa dibaca: {e}")
 
 
+MONTH_ID = {
+    "Jan": "Januari",
+    "Feb": "Februari",
+    "Mar": "Maret",
+    "Apr": "April",
+    "Mei": "Mei",
+    "May": "Mei",
+    "Jun": "Juni",
+    "Jul": "Juli",
+    "Agu": "Agustus",
+    "Aug": "Agustus",
+    "Sep": "September",
+    "Okt": "Oktober",
+    "Oct": "Oktober",
+    "Nov": "November",
+    "Des": "Desember",
+    "Dec": "Desember",
+}
+
+
 def short_label(date: str) -> str:
-    # "1 Jun 2026" -> "Jun 2026"
+    # "1 Jun 2026" -> "Juni 2026" (bulan penuh Bahasa Indonesia)
     p = date.split()
-    return f"{p[1]} {p[2]}" if len(p) >= 3 else date
+    if len(p) < 3:
+        return date
+    mon = MONTH_ID.get(p[1], p[1])
+    return f"{mon} {p[2]}"
 
 
 def since_index(bits: str) -> int:
@@ -184,7 +207,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     if in_now:
         verdict = "SYARIAH"
         verdict_cls = "in"
-        status_line = f"Di DES OJK sejak {esc(since)}"
+        status_line = "Di Daftar Efek Syariah OJK terbaru"
         status_word = "syariah"
         og_desc = (
             f"{code} ({name}) SYARIAH di Daftar Efek Syariah OJK. "
@@ -193,7 +216,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     elif count == 0:
         verdict = "TIDAK SYARIAH"
         verdict_cls = "out"
-        status_line = "Belum pernah masuk DES OJK"
+        status_line = "Belum pernah masuk Daftar Efek Syariah OJK"
         status_word = "tidak syariah"
         og_desc = (
             f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. "
@@ -202,7 +225,7 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
     else:
         verdict = "TIDAK SYARIAH"
         verdict_cls = "out"
-        status_line = f"Di luar DES OJK sejak {esc(since)}"
+        status_line = "Di luar Daftar Efek Syariah OJK terbaru"
         status_word = "tidak syariah"
         og_desc = (
             f"{code} ({name}) TIDAK SYARIAH di Daftar Efek Syariah OJK. "
@@ -243,13 +266,13 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         share_text = (
             f"{code} ({name}) saat ini berstatus SYARIAH. "
             f"Terdaftar di Daftar Efek Syariah OJK. "
-            f"Cek: des.lotmetrik.my.id/saham/{code.lower()}"
+            f"Cek: {SITE}/saham/{code.lower()}"
         )
     else:
         share_text = (
             f"{code} ({name}) saat ini berstatus TIDAK SYARIAH. "
             f"Tidak ada di Daftar Efek Syariah OJK saat ini. "
-            f"Cek: des.lotmetrik.my.id/saham/{code.lower()}"
+            f"Cek: {SITE}/saham/{code.lower()}"
         )
     pct = round(100 * count / N) if N else 0
     title = f"Apakah {code} syariah? · DES OJK · Lotmetrik"
@@ -415,7 +438,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
   </div>
 
   <p class="seo-blurb">{esc(seo_blurb)}</p>
-  <p class="caveat">Angka muncul &amp; % syariah dihitung dari seluruh rilis DES sejak {esc(first_lab)}. Kalau emiten baru IPO, cek dulu kapan listing-nya biar tidak salah baca.</p>
+  <p class="caveat">Angka muncul &amp; % syariah dihitung dari seluruh rilis DES sejak {esc(first_lab)}. Kalau emiten baru IPO, cek dulu kapan listing-nya agar tidak salah baca.</p>
 
   {chips_html}
   <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
@@ -435,8 +458,6 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
       <span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a></span>
       <span class="sep">·</span>
       <span>Sumber: <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">DES OJK</a></span>
-      <span class="sep">·</span>
-      <a href="/#panduan">Panduan</a>
     </div>
     <span class="foot-social" aria-label="Sosial Lotmetrik">
       <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram Lotmetrik" title="Instagram">
@@ -451,7 +472,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     </span>
   </div>
 </div>
-<script src="/share.js?v=289" defer></script>
+<script src="/share.js?v=292" defer></script>
 </body>
 </html>
 """
@@ -492,7 +513,7 @@ def main() -> None:
     for code in codes:
         bits = present[code]
         if len(bits) != len(meta):
-            die(f"Panjang bitstring {code} ({len(bits)}) ≠ jumlah rilis ({len(meta)})")
+            die(f"Panjang bitstring {code} ({len(bits)}) != jumlah rilis ({len(meta)})")
         name = names.get(code) or code
         html = page_html(code, name, bits, meta)
         path = os.path.join(SAHAM_DIR, f"{code.lower()}.html")

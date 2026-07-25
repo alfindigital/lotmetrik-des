@@ -257,7 +257,7 @@ section{padding:16px 0}
 .modal{background:var(--surface);border:1px solid var(--border-strong);border-radius:14px 14px 0 0;width:100%;max-width:600px;max-height:88vh;display:flex;flex-direction:column;box-shadow:var(--shadow-pop)}
 .modal:focus{outline:none}
 @media(min-width:640px){.modal{border-radius:var(--r-lg)}}
-.modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 18px 12px;border-bottom:1px solid var(--border)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 18px 12px;border-bottom:1px solid var(--border)}
 .modal-head h3{font-size:1.3rem;letter-spacing:-.02em;margin-bottom:3px}
 .modal-head p{font-family:var(--font-sans);font-size:13px;line-height:1.5;color:var(--text-secondary)}
 .modal-x{flex:none;width:42px;height:42px;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);color:var(--text);
@@ -309,6 +309,18 @@ body.panduan-open #panduanPage{display:block}
 }
 .pg-cols .pg-sec:last-child{border-bottom:none}
 .pg-sec h4{font-size:15px;margin:0 0 9px;letter-spacing:-.01em;color:var(--text);font-weight:700}
+.pg-cols:first-child .pg-sec:nth-child(1) h4{color:#0F9488}
+.pg-cols:first-child .pg-sec:nth-child(2) h4{color:#0B1F3A}
+.pg-cols:first-child .pg-sec:nth-child(3) h4{color:#D97706}
+.pg-cols:first-child .pg-sec:nth-child(4) h4{color:#0D7A70}
+.pg-cols:nth-child(2) .pg-sec:nth-child(1) h4{color:#44566B}
+.pg-cols:nth-child(2) .pg-sec:nth-child(2) h4{color:#B91C1C}
+[data-theme="terminal"] .pg-cols:first-child .pg-sec:nth-child(1) h4{color:#2DD4BF}
+[data-theme="terminal"] .pg-cols:first-child .pg-sec:nth-child(2) h4{color:#F5F7FA}
+[data-theme="terminal"] .pg-cols:first-child .pg-sec:nth-child(3) h4{color:#FBBF24}
+[data-theme="terminal"] .pg-cols:first-child .pg-sec:nth-child(4) h4{color:#2DD4BF}
+[data-theme="terminal"] .pg-cols:nth-child(2) .pg-sec:nth-child(1) h4{color:#B9C4D2}
+[data-theme="terminal"] .pg-cols:nth-child(2) .pg-sec:nth-child(2) h4{color:#F87171}
 .pg-sec p,.pg-sec li{font-size:13.5px;line-height:1.6;color:var(--text-secondary)}
 .pg-sec p+p{margin-top:9px}
 .pg-sec ul{margin:6px 0 0;padding-left:18px}
@@ -474,8 +486,6 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
       <span>© <span id="footYear">2026</span> <a href="https://lotmetrik.my.id/" target="_blank" rel="noopener">Lotmetrik</a></span>
       <span class="sep">·</span>
       <span>Sumber: <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" target="_blank" rel="noopener">DES OJK</a></span>
-      <span class="sep">·</span>
-      <button class="link" id="guideBtn2">Panduan</button>
     </div>
     <span class="foot-social" aria-label="Sosial Lotmetrik">
       <a class="soc" href="https://instagram.com/lotmetrik" target="_blank" rel="noopener" aria-label="Instagram Lotmetrik" title="Instagram">
@@ -503,8 +513,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=289"></script>
-<script src="app.js?v=289"></script>
+<script src="data.js?v=292"></script>
+<script src="app.js?v=292"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->
