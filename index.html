@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -63,13 +63,13 @@
 }
 [data-theme="terminal"]{
   --bg:var(--navy-900); --surface:var(--navy-800); --surface-2:var(--navy-850); --surface-inset:var(--navy-950);
-  --border:var(--navy-700); --border-strong:var(--navy-600); --hairline:rgba(255,255,255,.08);
-  --text:var(--off-white); --text-secondary:var(--slate-300); --text-muted:var(--slate-400);
+  --border:var(--navy-600); --border-strong:var(--navy-500); --hairline:rgba(255,255,255,.12);
+  --text:var(--off-white); --text-secondary:var(--slate-200); --text-muted:var(--slate-300);
   --accent:var(--teal-400); --accent-hover:var(--teal-300); --accent-text:var(--teal-300); --on-accent:var(--navy-900);
-  --up:var(--teal-400); --up-text:var(--teal-400); --up-soft:rgba(45,212,191,.14);
-  --down:var(--red-400); --down-text:var(--red-400); --down-soft:rgba(248,113,113,.14);
-  --highlight:var(--amber-400); --highlight-text:var(--amber-400); --highlight-soft:rgba(251,191,36,.16);
-  --grid-line:rgba(255,255,255,.05);
+  --up:var(--teal-400); --up-text:var(--teal-300); --up-soft:rgba(45,212,191,.18);
+  --down:var(--red-400); --down-text:var(--red-300); --down-soft:rgba(248,113,113,.18);
+  --highlight:var(--amber-400); --highlight-text:var(--amber-300); --highlight-soft:rgba(251,191,36,.20);
+  --grid-line:rgba(255,255,255,.09);
   --shadow-card:none; --shadow-pop:0 8px 24px rgba(0,0,0,.5);
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -83,8 +83,21 @@ p{margin:0}
 a{color:var(--accent-text);text-decoration:none}
 a:hover{text-decoration:underline}
 button{font-family:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:3px}
+.scard.clk:focus-visible,.icon-btn:focus-visible,.btn:focus-visible,.seg-btn:focus-visible,
+.tl-box:focus-visible,.chart-toggle:focus-visible,.pg-back:focus-visible,.link:focus-visible,
+.foot .soc:focus-visible,.mrow:focus-visible,.io-row:focus-visible{
+  outline:2px solid var(--accent-text);outline-offset:3px
+}
+[data-theme="terminal"] :focus-visible,
+[data-theme="terminal"] .scard.clk:focus-visible,
+[data-theme="terminal"] .icon-btn:focus-visible,
+[data-theme="terminal"] .btn:focus-visible{
+  outline-color:var(--teal-300)
+}
 ::selection{background:var(--teal-100);color:var(--navy-900)}
+[data-theme="terminal"] ::selection{background:rgba(45,212,191,.35);color:var(--off-white)}
 .mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums lining-nums;font-feature-settings:"tnum" 1,"lnum" 1,"zero" 1;letter-spacing:.01em}
 .wrap{max-width:var(--w);margin:0 auto;padding:0 18px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
@@ -376,9 +389,10 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 }
 @media(max-width:560px){
   .card-body{padding:13px}
-  .stats{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .scard{padding:11px 12px}
+  .scard .sv{font-size:1.45rem}
 }
-@media(max-width:380px){ .stats{grid-template-columns:1fr 1fr} }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
@@ -513,8 +527,8 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=292"></script>
-<script src="app.js?v=292"></script>
+<script src="data.js?v=293"></script>
+<script src="app.js?v=293"></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->
