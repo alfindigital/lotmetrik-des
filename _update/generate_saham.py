@@ -75,6 +75,21 @@ def short_label(date: str) -> str:
     return f"{mon} {p[2]}"
 
 
+MONTH_NUM = {
+    "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "Mei": "05", "May": "05",
+    "Jun": "06", "Jul": "07", "Agu": "08", "Aug": "08", "Sep": "09",
+    "Okt": "10", "Oct": "10", "Nov": "11", "Des": "12", "Dec": "12",
+}
+
+
+def iso_date(date: str) -> str:
+    # "1 Jun 2026" -> "2026-06-01" (untuk schema.org / sitemap lastmod)
+    p = date.split()
+    if len(p) < 3 or p[1] not in MONTH_NUM:
+        return date
+    return f"{p[2]}-{MONTH_NUM[p[1]]}-{p[0].zfill(2)}"
+
+
 def since_index(bits: str) -> int:
     """Indeks rilis pertama status terkini (blok akhir yang sama)."""
     cur = bits[-1]
@@ -285,15 +300,38 @@ def page_html(code: str, name: str, bits: str, meta: list) -> str:
         "stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>"
     )
 
+    faq_question = f"Apakah {code} ({name}) masuk Daftar Efek Syariah?"
     ld = {
         "@context": "https://schema.org",
-        "@type": "WebPage",
-        "name": title,
-        "url": url,
-        "description": og_desc,
-        "isPartOf": {"@type": "WebSite", "name": "Daftar Efek Syariah", "url": SITE + "/"},
-        "about": {"@type": "Corporation", "name": name, "tickerSymbol": code},
-        "dateModified": last["date"],
+        "@graph": [
+            {
+                "@type": "WebPage",
+                "name": title,
+                "url": url,
+                "description": og_desc,
+                "inLanguage": "id-ID",
+                "isPartOf": {"@type": "WebSite", "name": "Daftar Efek Syariah", "url": SITE + "/"},
+                "about": {"@type": "Corporation", "name": name, "tickerSymbol": code},
+                "dateModified": iso_date(last["date"]),
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Daftar Efek Syariah", "item": SITE + "/"},
+                    {"@type": "ListItem", "position": 2, "name": code, "item": url},
+                ],
+            },
+            {
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": faq_question,
+                        "acceptedAnswer": {"@type": "Answer", "text": seo_blurb},
+                    }
+                ],
+            },
+        ],
     }
 
     return f"""<!doctype html>
@@ -495,11 +533,12 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
 """
 
 
-def write_sitemap(codes: list[str]) -> None:
-    urls = [f"  <url>\n    <loc>{SITE}/</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
+def write_sitemap(codes: list[str], lastmod: str = "") -> None:
+    lm = f"\n    <lastmod>{lastmod}</lastmod>" if lastmod else ""
+    urls = [f"  <url>\n    <loc>{SITE}/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
     for c in codes:
         urls.append(
-            f"  <url>\n    <loc>{SITE}/saham/{c.lower()}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
+            f"  <url>\n    <loc>{SITE}/saham/{c.lower()}</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
         )
     body = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -536,8 +575,9 @@ def main() -> None:
         path = os.path.join(SAHAM_DIR, f"{code.lower()}.html")
         open(path, "w", encoding="utf-8", newline="\n").write(html)
 
-    write_sitemap(codes)
-    print(f"[OK] {len(codes)} halaman di saham/ + sitemap.xml ({len(codes) + 1} URL)")
+    lastmod = iso_date(meta[-1]["date"]) if meta else ""
+    write_sitemap(codes, lastmod)
+    print(f"[OK] {len(codes)} halaman di saham/ + sitemap.xml ({len(codes) + 1} URL, lastmod {lastmod})")
 
 
 if __name__ == "__main__":
