@@ -18,11 +18,18 @@ function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
 function fmtNum(n){return Math.round(Number(n)).toLocaleString('id-ID');}
 function fmtSigned(n){var v=Number(n);return (v>0?'+':v<0?MINUS:'')+fmtNum(Math.abs(v));}
-function shortLabel(i){var p=META[i].date.split(' ');return p[1]+' '+p[2];}
+function publicMonth(i){if(META[i].key==='2026_P1')return {short:'Jul',full:'Juli'};var m=META[i].date.split(' ')[1],full={Jan:'Januari',Feb:'Februari',Mar:'Maret',Apr:'April',Mei:'Mei',May:'Mei',Jun:'Juni',Jul:'Juli',Agu:'Agustus',Aug:'Agustus',Sep:'September',Okt:'Oktober',Oct:'Oktober',Nov:'November',Des:'Desember',Dec:'Desember'};return {short:m,full:full[m]||m};}
+function shortLabel(i){return publicMonth(i).full+' '+yearOf(i);}
 function yearOf(i){return META[i].date.split(' ')[2];}
-function monthAbbr(i){return META[i].date.split(' ')[1].toUpperCase();}
+function monthAbbr(i){return publicMonth(i).short.toUpperCase();}
 function phase(i){return META[i].key.indexOf('_P1')>-1?'P1':'P2';}
 function bits(t){return PRES[t];}
+function monthSlug(i){
+  var m=publicMonth(i).short;
+  var map={Jan:'januari',Feb:'februari',Mar:'maret',Apr:'april',Mei:'mei',May:'mei',Jun:'juni',Jul:'juli',Agu:'agustus',Aug:'agustus',Sep:'september',Okt:'oktober',Oct:'oktober',Nov:'november',Des:'desember',Dec:'desember'};
+  return 'rilis-'+(map[m]||m.toLowerCase())+'-'+yearOf(i);
+}
+function releaseUrl(i){return '/rilis/'+monthSlug(i);}
 function reduceMotion(){try{return window.matchMedia('(prefers-reduced-motion: reduce)').matches;}catch(e){return false;}}
 
 /* ---------- derive periods ---------- */
@@ -258,12 +265,13 @@ function setPeriod(i,opts){opts=opts||{};var p=periods[i];curPeriod=i;
   if(opts.user)setHash('p='+p.key);}
 function renderPSum(){var p=periods[curPeriod],host=$('#pSumRow');if(!host)return;
   function tile(c,l,v,extra){return '<div class="tile '+c+(extra||'')+'"><div class="tl2">'+l+'</div><div class="tv mono">'+v+'</div></div>';}
-  if(p.baseline){host.innerHTML=tile('net','Total',fmtNum(p.total))+tile('net','Baseline',fmtNum(p.total),' wide');return;}
+  if(p.baseline){host.innerHTML=tile('net','Total',fmtNum(p.total))+tile('net','Baseline',fmtNum(p.total),' wide')+'<a class="release-link" href="'+releaseUrl(p.i)+'">Buka halaman rilis '+esc(p.label)+' →</a>';return;}
   host.innerHTML=
     tile('net','Total',fmtNum(p.total))+
     tile('in','Masuk','+'+fmtNum(p.masuk.length))+
     tile('out','Keluar',MINUS+fmtNum(p.keluar.length))+
-    tile('net','Net',fmtSigned(p.net));}
+    tile('net','Net',fmtSigned(p.net))+
+    '<a class="release-link" href="'+releaseUrl(p.i)+'">Buka halaman rilis '+esc(p.label)+' →</a>';}
 function renderTiles(){/* digabung ke renderPSum */}
 function renderIO(){var p=periods[curPeriod],out=p.keluar.slice(),inn=p.masuk.slice();
   col($('#ioListOut'),out,'out',p.baseline?'Periode awal, tidak ada data keluar.':null);

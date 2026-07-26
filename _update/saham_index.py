@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 
 SITE = "https://des.lotmetrik.my.id"
-CACHE_V = "294"
+CACHE_V = "295"
 
 
 def esc(s: str) -> str:
@@ -26,6 +26,7 @@ def build_saham_index(
     entered: list[str],
     exited: list[str],
     total_now: int,
+    latest_release_url: str,
 ) -> str:
     url = f"{SITE}/saham/"
     title = "Cek status saham di Daftar Efek Syariah · Lotmetrik"
@@ -39,6 +40,15 @@ def build_saham_index(
     samples_in = "".join(
         f'<a class="tk in" href="/saham/{c.lower()}">{esc(c)}</a>' for c in entered[:12]
     )
+    social = """
+    <span class="foot-social" aria-label="Sosial Lotmetrik">
+      <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram Lotmetrik" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+      <a class="soc" href="https://t.me/lotmetrik" rel="noopener" target="_blank" aria-label="Telegram Lotmetrik" title="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.3L2.8 11.5c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4.9 1 .9.6 0 .8-.3 1.1-.6l2.7-2.6 5.6 4.1c1 .6 1.8.3 2-.9l3.5-16.5c.4-1.5-.5-2.1-1.6-1.7z"/></svg></a>
+      <a class="soc" href="https://tiktok.com/@lotmetrik" rel="noopener" target="_blank" aria-label="TikTok Lotmetrik" title="TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.278 4.278 0 0 1-1.62-3.52h-3.18v13.44a2.83 2.83 0 1 1-2.4-2.8V10.2a6.16 6.16 0 1 0 5.04 10.36 6.04 6.04 0 0 0 1.12-3.52V8.36a8.13 8.13 0 0 0 4.76 1.53V6.7a4.77 4.77 0 0 1-2.76-.01z"/></svg></a>
+      <a class="soc" href="https://x.com/lotmetrik" rel="noopener" target="_blank" aria-label="X Lotmetrik" title="X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 2.8h3.2l-7 8 8.2 10.4h-6.3l-4.9-6.3-5.6 6.3H2l7.3-8.3L1.4 2.8h6.4l4.6 5.9 5.2-5.9zm-1.1 16.5h1.8L7.3 4.6H5.4l11.1 14.7z"/></svg></a>
+      <a class="soc" href="https://www.youtube.com/@lotmetrik" rel="noopener" target="_blank" aria-label="YouTube Lotmetrik" title="YouTube"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.5 7.2a3 3 0 0 0-2.1-2.1C18.6 4.6 12 4.6 12 4.6s-6.6 0-8.4.5A3 3 0 0 0 1.5 7.2C1 9 1 12 1 12s0 3 .5 4.8a3 3 0 0 0 2.1 2.1c1.8.5 8.4.5 8.4.5s6.6 0 8.4-.5a3 3 0 0 0 2.1-2.1c.5-1.8.5-4.8.5-4.8s0-3-.5-4.8zM9.8 15.4V8.6l5.9 3.4-5.9 3.4z"/></svg></a>
+    </span>
+    """.strip()
     ld = {
         "@context": "https://schema.org",
         "@graph": [
@@ -115,7 +125,10 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;margin:0 0 12px;f
   border:1px solid rgba(220,38,38,.28);color:var(--red-text);background:var(--off);text-decoration:none}}
 .tk.in{{border-color:rgba(15,148,136,.35);color:var(--teal-text)}}
 .tk:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
-.foot{{margin-top:22px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted)}}
+.foot{{margin-top:22px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}}
+.foot-social{{display:inline-flex;gap:6px;margin-left:auto}}
+.soc{{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:6px;border:1px solid var(--border);color:var(--muted);background:var(--surface)}}
+.soc svg{{width:14px;height:14px}}
 </style>
 </head>
 <body>
@@ -137,7 +150,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;margin:0 0 12px;f
   <p class="caveat">Data rilis {esc(last_lab)}: {total_now} efek syariah, {len(entered)} masuk, {len(exited)} keluar. Edukasi berbasis data, bukan rekomendasi beli/jual.</p>
   <div class="cta">
     <a class="btn p" href="/#lacak">Cari kode saham di dashboard</a>
-    <a class="btn" href="/rilis-terbaru">Lihat masuk &amp; keluar rilis terbaru</a>
+    <a class="btn" href="{latest_release_url}">Lihat masuk &amp; keluar rilis terbaru</a>
   </div>
   <section class="box">
     <h2>Contoh saham keluar di rilis terbaru</h2>
@@ -147,8 +160,9 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;margin:0 0 12px;f
     <h2>Contoh saham masuk di rilis terbaru</h2>
     <div class="links">{samples_in}</div>
   </section>
-  <div class="foot">© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a>
-    · Sumber: <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">DES OJK</a></div>
+  <div class="foot"><span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a>
+    · Sumber: <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">DES OJK</a></span>
+    {social}</div>
 </div>
 <script src="/share.js?v={CACHE_V}" defer></script>
 </body>

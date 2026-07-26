@@ -7,15 +7,141 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://des.lotmetrik.my.id/rilis-terbaru</loc>
+    <loc>https://des.lotmetrik.my.id/saham/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://des.lotmetrik.my.id/saham/</loc>
+    <loc>https://des.lotmetrik.my.id/rilis/</loc>
     <lastmod>2026-06-01</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2016</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2016</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2017</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2017</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2018</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2018</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2019</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2019</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-agustus-2020</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2020</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-agustus-2021</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2021</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juli-2022</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2022</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2023</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2023</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2024</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2024</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juni-2025</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-desember-2025</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://des.lotmetrik.my.id/rilis/rilis-juli-2026</loc>
+    <lastmod>2026-06-01</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>

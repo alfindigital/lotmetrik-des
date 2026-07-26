@@ -18,9 +18,8 @@ ROOT = os.path.dirname(HERE)
 DATA_JS = os.path.join(ROOT, "data.js")
 SAHAM_DIR = os.path.join(ROOT, "saham")
 SITEMAP = os.path.join(ROOT, "sitemap.xml")
-RILIS_PATH = os.path.join(ROOT, "rilis-terbaru.html")
 SITE = "https://des.lotmetrik.my.id"
-CACHE_V = "294"
+CACHE_V = "295"
 
 
 def die(msg: str) -> None:
@@ -182,6 +181,7 @@ def related_block_html(
     names: dict,
     entered: list[str],
     exited: list[str],
+    latest_release_url: str,
 ) -> str:
     """Blok link internal ke saham senasib + pintu ke /rilis-terbaru."""
     limit = 8
@@ -212,8 +212,8 @@ def related_block_html(
             peers = peers[:limit]
 
     more = (
-        '<p class="more"><a href="/rilis-terbaru">'
-        "Lihat semua masuk &amp; keluar rilis terbaru →</a></p>"
+        f'<p class="more"><a href="{latest_release_url}">'
+        "Lihat semua masuk &amp; keluar pada rilis terbaru →</a></p>"
     )
     if not peers:
         return (
@@ -615,6 +615,12 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
       <a class="soc" href="https://tiktok.com/@lotmetrik" rel="noopener" target="_blank" aria-label="TikTok Lotmetrik" title="TikTok">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.278 4.278 0 0 1-1.62-3.52h-3.18v13.44a2.83 2.83 0 1 1-2.4-2.8V10.2a6.16 6.16 0 0 0-.96-.07 6.06 6.06 0 1 0 5.04 10.36 6.04 6.04 0 0 0 1.12-3.52V8.36a8.13 8.13 0 0 0 4.76 1.53V6.7a4.77 4.77 0 0 1-2.76-.01z"/></svg>
       </a>
+      <a class="soc" href="https://x.com/lotmetrik" rel="noopener" target="_blank" aria-label="X Lotmetrik" title="X">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 2.8h3.2l-7 8 8.2 10.4h-6.3l-4.9-6.3-5.6 6.3H2l7.3-8.3L1.4 2.8h6.4l4.6 5.9 5.2-5.9zm-1.1 16.5h1.8L7.3 4.6H5.4l11.1 14.7z"/></svg>
+      </a>
+      <a class="soc" href="https://www.youtube.com/@lotmetrik" rel="noopener" target="_blank" aria-label="YouTube Lotmetrik" title="YouTube">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.5 7.2a3 3 0 0 0-2.1-2.1C18.6 4.6 12 4.6 12 4.6s-6.6 0-8.4.5A3 3 0 0 0 1.5 7.2C1 9 1 12 1 12s0 3 .5 4.8a3 3 0 0 0 2.1 2.1c1.8.5 8.4.5 8.4.5s6.6 0 8.4-.5a3 3 0 0 0 2.1-2.1c.5-1.8.5-4.8.5-4.8s0-3-.5-4.8zM9.8 15.4V8.6l5.9 3.4-5.9 3.4z"/></svg>
+      </a>
     </span>
   </div>
 </div>
@@ -868,13 +874,22 @@ def rilis_terbaru_html(
 """
 
 
-def write_sitemap(codes: list[str], lastmod: str = "") -> None:
+def write_sitemap(
+    codes: list[str],
+    release_records: list[dict],
+    lastmod: str = "",
+) -> None:
     lm = f"\n    <lastmod>{lastmod}</lastmod>" if lastmod else ""
     urls = [
         f"  <url>\n    <loc>{SITE}/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>",
-        f"  <url>\n    <loc>{SITE}/rilis-terbaru</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>",
         f"  <url>\n    <loc>{SITE}/saham/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>",
+        f"  <url>\n    <loc>{SITE}/rilis/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.9</priority>\n  </url>",
     ]
+    for record in release_records:
+        urls.append(
+            f"  <url>\n    <loc>{SITE}{record['url']}</loc>{lm}\n"
+            f"    <changefreq>yearly</changefreq>\n    <priority>0.8</priority>\n  </url>"
+        )
     for c in codes:
         urls.append(
             f"  <url>\n    <loc>{SITE}/saham/{c.lower()}</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
@@ -890,6 +905,13 @@ def write_sitemap(codes: list[str], lastmod: str = "") -> None:
 
 def main() -> None:
     from saham_index import build_saham_index
+    from release_pages import (
+        cache_version_from_index,
+        generate_release_pages,
+        public_label,
+        release_url,
+        write_redirects,
+    )
 
     des = load_des()
     meta = des["meta"]
@@ -901,6 +923,8 @@ def main() -> None:
 
     entered, exited = compute_deltas(present)
     total_now = sum(1 for b in present.values() if b and b[-1] == "1")
+    cache_version = cache_version_from_index(ROOT, CACHE_V)
+    latest_release_url = release_url(meta[-1])
 
     os.makedirs(SAHAM_DIR, exist_ok=True)
     for old in os.listdir(SAHAM_DIR):
@@ -915,13 +939,21 @@ def main() -> None:
         if len(bits) != len(meta):
             die(f"Panjang bitstring {code} ({len(bits)}) != jumlah rilis ({len(meta)})")
         name = names.get(code) or code
-        related = related_block_html(code, bits, present, names, entered, exited)
+        related = related_block_html(
+            code,
+            bits,
+            present,
+            names,
+            entered,
+            exited,
+            latest_release_url,
+        )
         html = page_html(code, name, bits, meta, related)
         path = os.path.join(SAHAM_DIR, f"{code.lower()}.html")
         open(path, "w", encoding="utf-8", newline="\n").write(html)
 
     lastmod = iso_date(meta[-1]["date"]) if meta else ""
-    last_lab = short_label(meta[-1]["date"])
+    last_lab = public_label(meta[-1])
     last_y = meta[-1]["date"].split()[-1]
     open(os.path.join(SAHAM_DIR, "index.html"), "w", encoding="utf-8", newline="\n").write(
         build_saham_index(
@@ -931,17 +963,23 @@ def main() -> None:
             entered=entered,
             exited=exited,
             total_now=total_now,
+            latest_release_url=latest_release_url,
         )
     )
 
-    open(RILIS_PATH, "w", encoding="utf-8", newline="\n").write(
-        rilis_terbaru_html(meta, names, entered, exited, present)
+    release_records = generate_release_pages(
+        ROOT, meta, present, names, cache_version
     )
+    write_redirects(ROOT, meta)
+    legacy_latest = os.path.join(ROOT, "rilis-terbaru.html")
+    if os.path.exists(legacy_latest):
+        os.remove(legacy_latest)
 
-    write_sitemap(codes, lastmod)
+    write_sitemap(codes, release_records, lastmod)
     print(
-        f"[OK] {len(codes)} halaman di saham/ + index + rilis-terbaru.html + sitemap.xml "
-        f"({len(codes) + 3} URL, lastmod {lastmod}, masuk={len(entered)} keluar={len(exited)})"
+        f"[OK] {len(codes)} halaman saham + {len(release_records)} halaman rilis "
+        f"+ 2 hub + sitemap.xml ({len(codes) + len(release_records) + 3} URL, "
+        f"lastmod {lastmod}, masuk={len(entered)} keluar={len(exited)})"
     )
 
 
