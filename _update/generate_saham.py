@@ -873,6 +873,7 @@ def write_sitemap(codes: list[str], lastmod: str = "") -> None:
     urls = [
         f"  <url>\n    <loc>{SITE}/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>",
         f"  <url>\n    <loc>{SITE}/rilis-terbaru</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>",
+        f"  <url>\n    <loc>{SITE}/saham/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>",
     ]
     for c in codes:
         urls.append(
@@ -888,6 +889,8 @@ def write_sitemap(codes: list[str], lastmod: str = "") -> None:
 
 
 def main() -> None:
+    from saham_index import build_saham_index
+
     des = load_des()
     meta = des["meta"]
     names = des.get("names") or {}
@@ -897,6 +900,7 @@ def main() -> None:
         die("data.js tidak punya saham.")
 
     entered, exited = compute_deltas(present)
+    total_now = sum(1 for b in present.values() if b and b[-1] == "1")
 
     os.makedirs(SAHAM_DIR, exist_ok=True)
     for old in os.listdir(SAHAM_DIR):
@@ -916,15 +920,28 @@ def main() -> None:
         path = os.path.join(SAHAM_DIR, f"{code.lower()}.html")
         open(path, "w", encoding="utf-8", newline="\n").write(html)
 
+    lastmod = iso_date(meta[-1]["date"]) if meta else ""
+    last_lab = short_label(meta[-1]["date"])
+    last_y = meta[-1]["date"].split()[-1]
+    open(os.path.join(SAHAM_DIR, "index.html"), "w", encoding="utf-8", newline="\n").write(
+        build_saham_index(
+            last_lab=last_lab,
+            last_y=last_y,
+            lastmod=lastmod,
+            entered=entered,
+            exited=exited,
+            total_now=total_now,
+        )
+    )
+
     open(RILIS_PATH, "w", encoding="utf-8", newline="\n").write(
         rilis_terbaru_html(meta, names, entered, exited, present)
     )
 
-    lastmod = iso_date(meta[-1]["date"]) if meta else ""
     write_sitemap(codes, lastmod)
     print(
-        f"[OK] {len(codes)} halaman di saham/ + rilis-terbaru.html + sitemap.xml "
-        f"({len(codes) + 2} URL, lastmod {lastmod}, masuk={len(entered)} keluar={len(exited)})"
+        f"[OK] {len(codes)} halaman di saham/ + index + rilis-terbaru.html + sitemap.xml "
+        f"({len(codes) + 3} URL, lastmod {lastmod}, masuk={len(entered)} keluar={len(exited)})"
     )
 
 

@@ -38,5 +38,5 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 - Data hanya dari `data.js` / Excel OJK. Gate rekonsiliasi di `build_data.py` — kalau TIDAK COCOK, berhenti.
 - Banned words: cuan/pasti naik/beli sekarang/target price/dijamin.
 - Warna: teal = naik/masuk, merah = turun/keluar. Angka font mono.
-- `/saham/` kosong di-redirect ke `/` (lihat `_redirects`). Jangan bikin index tipis yang duplikat home.
+- `/saham/` = hub berbrand (`saham/index.html`, ikut di-regen). JANGAN redirect `/saham/` ke `/` di `_redirects` (Netlify pernah nyasar ke ticker HOME).
 - `generate_saham.py` pakai f-string dengan CSS/JS: kurung kurawal literal digandakan `{{ }}`. Hati-hati saat edit template.

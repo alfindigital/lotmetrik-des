@@ -1,8 +1,4 @@
-# Pretty URL halaman saham: /saham/asii → saham/asii.html
-# /saham/ kosong → dashboard (ada kotak cari)
-/saham/       /                    301
-/saham        /                    301
-/saham/:code  /saham/:code.html    200
-
-# Halaman ringkasan masuk/keluar rilis terbaru
-/rilis-terbaru  /rilis-terbaru.html  200
+# Pretty URLs (tanpa unicode di komentar - aman untuk parser Netlify)
+# /saham/ dilayani oleh saham/index.html (di-generate, jangan redirect ke /)
+/saham/:code    /saham/:code.html      200
+/rilis-terbaru  /rilis-terbaru.html    200
