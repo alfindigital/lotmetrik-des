@@ -13,6 +13,8 @@ import json
 import os
 import sys
 
+from release_pages import public_label
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 DATA_JS = os.path.join(ROOT, "data.js")
@@ -104,7 +106,7 @@ def summarize_on_periods(on_idxs: list[int], meta: list) -> str:
     """Ringkas periode on-DES: daftar pendek, atau rentang/blok jika banyak."""
     if not on_idxs:
         return ""
-    labs = [short_label(meta[i]["date"]) for i in on_idxs]
+    labs = [public_label(meta[i]) for i in on_idxs]
     if len(labs) <= 4:
         if len(labs) == 1:
             return f"pada rilis {labs[0]}"
@@ -126,16 +128,16 @@ def summarize_on_periods(on_idxs: list[int], meta: list) -> str:
     if len(blocks) == 1:
         a, b = blocks[0]
         return (
-            f"dari {short_label(meta[a]['date'])} sampai {short_label(meta[b]['date'])}"
+            f"dari {public_label(meta[a])} sampai {public_label(meta[b])}"
         )
     if len(blocks) <= 3:
         parts = []
         for a, b in blocks:
             if a == b:
-                parts.append(short_label(meta[a]["date"]))
+                parts.append(public_label(meta[a]))
             else:
                 parts.append(
-                    f"{short_label(meta[a]['date'])} sampai {short_label(meta[b]['date'])}"
+                    f"{public_label(meta[a])} sampai {public_label(meta[b])}"
                 )
         if len(parts) == 2:
             return f"antara {parts[0]}, lalu {parts[1]}"
@@ -144,7 +146,7 @@ def summarize_on_periods(on_idxs: list[int], meta: list) -> str:
     a0, b0 = blocks[0]
     aL, bL = blocks[-1]
     return (
-        f"antara {short_label(meta[a0]['date'])} sampai {short_label(meta[bL]['date'])} "
+        f"antara {public_label(meta[a0])} sampai {public_label(meta[bL])} "
         f"({len(on_idxs)} rilis, {len(blocks)} babak)"
     )
 
@@ -154,9 +156,9 @@ def last_transition(bits: str, meta: list, to_on: bool) -> str | None:
     target_prev, target_cur = ("0", "1") if to_on else ("1", "0")
     for i in range(len(bits) - 1, 0, -1):
         if bits[i] == target_cur and bits[i - 1] == target_prev:
-            return short_label(meta[i]["date"])
+            return public_label(meta[i])
     if to_on and bits[0] == "1":
-        return short_label(meta[0]["date"])
+        return public_label(meta[0])
     return None
 
 
@@ -256,8 +258,8 @@ def page_html(
             exits += 1
 
     si = since_index(bits)
-    since = short_label(meta[si]["date"])
-    first_lab = short_label(meta[0]["date"])
+    since = public_label(meta[si])
+    first_lab = public_label(meta[0])
     last = meta[-1]
     first_y = meta[0]["date"].split()[-1]
     last_y = last["date"].split()[-1]
@@ -284,7 +286,7 @@ def page_html(
     on_idxs: list[int] = []
     for i in range(N):
         on = bits[i] == "1"
-        lab = short_label(meta[i]["date"])
+        lab = public_label(meta[i])
         tip = f"{lab}: {'ada' if on else 'tidak'}"
         dots.append(
             f'<span class="dot{" on" if on else ""}" title="{esc(tip)}"></span>'
@@ -716,7 +718,7 @@ def rilis_terbaru_html(
     present: dict[str, str],
 ) -> str:
     last = meta[-1]
-    last_lab = short_label(last["date"])
+    last_lab = public_label(last)
     last_y = last["date"].split()[-1]
     kep = last.get("kep") or last.get("KEP") or ""
     # hitung total kini dari bitstring
@@ -886,8 +888,14 @@ def write_sitemap(
         f"  <url>\n    <loc>{SITE}/rilis/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.9</priority>\n  </url>",
     ]
     for record in release_records:
+        release_lastmod = iso_date(record["meta"]["date"])
+        release_lm = (
+            f"\n    <lastmod>{release_lastmod}</lastmod>"
+            if release_lastmod
+            else ""
+        )
         urls.append(
-            f"  <url>\n    <loc>{SITE}{record['url']}</loc>{lm}\n"
+            f"  <url>\n    <loc>{SITE}{record['url']}</loc>{release_lm}\n"
             f"    <changefreq>yearly</changefreq>\n    <priority>0.8</priority>\n  </url>"
         )
     for c in codes:

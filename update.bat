@@ -30,11 +30,12 @@ echo [2/4] Menggambar ulang gambar preview (og.png)...
 if errorlevel 1 goto :err
 
 echo.
-echo [3/4] (halaman SEO per saham sudah digenerate di langkah 1)
+echo [3/4] (halaman SEO per saham dan per rilis sudah digenerate di langkah 1)
 echo.
 
 echo [4/4] Publish ke GitHub (Netlify akan deploy otomatis)...
-git add data.js index.html og.png sitemap.xml saham _update\ojk_excel
+git add data.js index.html app.js og.png sitemap.xml _redirects saham rilis _update\ojk_excel
+git ls-files --error-unmatch rilis-terbaru.html >nul 2>nul && git add -u rilis-terbaru.html
 git diff --cached --quiet
 if not errorlevel 1 (
   echo Tidak ada perubahan data - tidak ada yang perlu di-publish.

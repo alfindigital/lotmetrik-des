@@ -45,4 +45,5 @@
 /rilis-desember-2025               /rilis/rilis-desember-2025         301
 /rilis-juli-2026                   /rilis/rilis-juli-2026             301
 /rilis-terbaru        /rilis/rilis-juli-2026             301
+/rilis-terbaru.html   /rilis/rilis-juli-2026             301
 /rilis/:slug          /rilis/:slug.html          200

@@ -487,6 +487,7 @@ def write_redirects(root: str, meta: list) -> None:
 {chr(10).join(legacy_aliases)}
 {chr(10).join(public_aliases)}
 /rilis-terbaru        {latest_canonical:<34} 301
+/rilis-terbaru.html   {latest_canonical:<34} 301
 /rilis/:slug          /rilis/:slug.html          200
 """
     with open(os.path.join(root, "_redirects"), "w", encoding="utf-8", newline="\n") as file:
