@@ -18,7 +18,9 @@ ROOT = os.path.dirname(HERE)
 DATA_JS = os.path.join(ROOT, "data.js")
 SAHAM_DIR = os.path.join(ROOT, "saham")
 SITEMAP = os.path.join(ROOT, "sitemap.xml")
+RILIS_PATH = os.path.join(ROOT, "rilis-terbaru.html")
 SITE = "https://des.lotmetrik.my.id"
+CACHE_V = "294"
 
 
 def die(msg: str) -> None:
@@ -159,7 +161,85 @@ def last_transition(bits: str, meta: list, to_on: bool) -> str | None:
     return None
 
 
-def page_html(code: str, name: str, bits: str, meta: list) -> str:
+def compute_deltas(present: dict[str, str]) -> tuple[list[str], list[str]]:
+    """Saham masuk/keluar di rilis terakhir (dibanding rilis sebelumnya)."""
+    entered: list[str] = []
+    exited: list[str] = []
+    for code, bits in present.items():
+        if len(bits) < 2:
+            continue
+        if bits[-1] == "1" and bits[-2] == "0":
+            entered.append(code)
+        elif bits[-1] == "0" and bits[-2] == "1":
+            exited.append(code)
+    return sorted(entered), sorted(exited)
+
+
+def related_block_html(
+    code: str,
+    bits: str,
+    present: dict[str, str],
+    names: dict,
+    entered: list[str],
+    exited: list[str],
+) -> str:
+    """Blok link internal ke saham senasib + pintu ke /rilis-terbaru."""
+    limit = 8
+    peers: list[str] = []
+    title = "Saham lain dengan status serupa"
+    kind = "in" if bits[-1] == "1" else "out"
+
+    if code in entered:
+        peers = [c for c in entered if c != code][:limit]
+        title = "Saham lain yang masuk di rilis terbaru"
+        kind = "in"
+    elif code in exited:
+        peers = [c for c in exited if c != code][:limit]
+        title = "Saham lain yang keluar di rilis terbaru"
+        kind = "out"
+    else:
+        same = sorted(c for c, b in present.items() if b[-1] == bits[-1] and c != code)
+        if same:
+            after = [c for c in same if c > code]
+            before = [c for c in same if c < code]
+            peers = before[-4:] + after[:4]
+            if len(peers) < limit:
+                for c in list(reversed(before[:-4])) + after[4:]:
+                    if len(peers) >= limit:
+                        break
+                    if c not in peers:
+                        peers.append(c)
+            peers = peers[:limit]
+
+    more = (
+        '<p class="more"><a href="/rilis-terbaru">'
+        "Lihat semua masuk &amp; keluar rilis terbaru →</a></p>"
+    )
+    if not peers:
+        return (
+            f'<section class="related" aria-label="Rilis terkait">{more}</section>'
+        )
+
+    links = "".join(
+        f'<a class="tk-link {kind}" href="/saham/{c.lower()}" '
+        f'title="{esc(names.get(c) or c)}">{esc(c)}</a>'
+        for c in peers
+    )
+    return (
+        f'<section class="related" aria-label="{esc(title)}">'
+        f"<h2>{esc(title)}</h2>"
+        f'<div class="links">{links}</div>'
+        f"{more}</section>"
+    )
+
+
+def page_html(
+    code: str,
+    name: str,
+    bits: str,
+    meta: list,
+    related_html: str = "",
+) -> str:
     N = len(meta)
     in_now = bits[-1] == "1"
     count = bits.count("1")
@@ -430,6 +510,15 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
 .btn{{appearance:none;border:1px solid var(--border-strong);background:var(--surface);color:var(--navy);
   font:inherit;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}}
 .btn:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
+.related{{margin:0 0 18px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}}
+.related h2{{font-size:13px;margin:0 0 10px;font-weight:800;letter-spacing:-.01em;color:var(--navy)}}
+.related .links{{display:flex;flex-wrap:wrap;gap:8px}}
+.related a.tk-link{{font-family:var(--mono);font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--off);color:var(--navy);text-decoration:none}}
+.related a.tk-link:hover{{border-color:var(--teal);color:var(--teal);text-decoration:none}}
+.related a.tk-link.in{{color:var(--teal-text);border-color:rgba(15,148,136,.35)}}
+.related a.tk-link.out{{color:var(--red-text);border-color:rgba(220,38,38,.28)}}
+.related .more{{display:block;margin:10px 0 0;font-size:12.5px}}
 .foot{{margin-top:auto;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
   display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}}
 .foot-meta{{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}}
@@ -498,7 +587,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
   {chips_html}
   <div class="dots" role="img" aria-label="{esc(aria_dots)}">{dots_html}</div>
   <div class="stats-line" aria-label="Ringkasan jejak">
-    <div class="stat"><span class="sv">{pct}%</span><span class="sl">% syariah</span></div>
+    <div class="stat"><span class="sv">{pct}%</span><span class="sl">rilis syariah</span></div>
     <div class="stat"><span class="sv">{count}/{N}</span><span class="sl">muncul</span></div>
     <div class="stat"><span class="sv up">{enters}</span><span class="sl">masuk</span></div>
     <div class="stat"><span class="sv down">{exits}</span><span class="sl">keluar</span></div>
@@ -506,6 +595,252 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
 
   <div class="actions">
     <button type="button" class="btn" id="shareBtn" data-url="{url}" data-text="{esc(share_text)}">Bagikan</button>
+  </div>
+
+  {related_html}
+
+  <div class="foot">
+    <div class="foot-meta">
+      <span>© {esc(last_y)} <a href="https://lotmetrik.my.id/" rel="noopener" target="_blank">Lotmetrik</a></span>
+      <span class="sep">·</span>
+      <span>Sumber: <a href="https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/" rel="noopener" target="_blank">DES OJK</a></span>
+    </div>
+    <span class="foot-social" aria-label="Sosial Lotmetrik">
+      <a class="soc" href="https://instagram.com/lotmetrik" rel="noopener" target="_blank" aria-label="Instagram Lotmetrik" title="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a class="soc" href="https://t.me/lotmetrik" rel="noopener" target="_blank" aria-label="Telegram Lotmetrik" title="Telegram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 4.3L2.8 11.5c-1.3.5-1.3 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.7.4.9 1 .9.6 0 .8-.3 1.1-.6l2.7-2.6 5.6 4.1c1 .6 1.8.3 2-.9l3.5-16.5c.4-1.5-.5-2.1-1.6-1.7zM9.3 14.7l-.2 3.3 1.1-2.2 8.7-7.8c.3-.3 0-.4-.4-.2L9.3 14.7z"/></svg>
+      </a>
+      <a class="soc" href="https://tiktok.com/@lotmetrik" rel="noopener" target="_blank" aria-label="TikTok Lotmetrik" title="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.278 4.278 0 0 1-1.62-3.52h-3.18v13.44a2.83 2.83 0 1 1-2.4-2.8V10.2a6.16 6.16 0 0 0-.96-.07 6.06 6.06 0 1 0 5.04 10.36 6.04 6.04 0 0 0 1.12-3.52V8.36a8.13 8.13 0 0 0 4.76 1.53V6.7a4.77 4.77 0 0 1-2.76-.01z"/></svg>
+      </a>
+    </span>
+  </div>
+</div>
+<script src="/share.js?v={CACHE_V}" defer></script>
+</body>
+</html>
+"""
+
+
+def _shell_css() -> str:
+    """CSS bersama halaman saham & rilis-terbaru (f-string siap pakai)."""
+    return """
+:root{--navy:#0B1F3A;--teal:#0F9488;--teal-text:#0D7A70;--teal-soft:rgba(20,184,166,.12);
+  --red:#DC2626;--red-text:#B91C1C;--red-soft:rgba(239,68,68,.10);
+  --amber:#D97706;--amber-soft:rgba(245,158,11,.14);
+  --off:#F5F7FA;--muted:#5F7186;--secondary:#44566B;--border:#D7DEE7;--border-strong:#B9C4D2;--white:#fff;--surface:#fff;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --sans:'Plus Jakarta Sans',ui-sans-serif,system-ui,sans-serif}
+[data-theme="terminal"]{--off:#0B1F3A;--white:#122A4A;--surface:#122A4A;--navy:#F5F7FA;
+  --muted:#B9C4D2;--secondary:#EAEEF3;--border:#284B76;--border-strong:#3A5E8C;
+  --teal:#2DD4BF;--teal-text:#5EEAD4;--teal-soft:rgba(45,212,191,.18);
+  --red:#FCA5A5;--red-text:#FCA5A5;--red-soft:rgba(248,113,113,.18);
+  --amber:#FBBF24;--amber-soft:rgba(251,191,36,.20)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;font-family:var(--sans);background:var(--off);color:var(--navy);
+  -webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:var(--teal);font-weight:600;text-decoration:none}
+a:hover{text-decoration:underline}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--teal-text);outline-offset:3px}
+.icon-btn:focus-visible,.pg-back:focus-visible,.btn:focus-visible,.foot .soc:focus-visible{outline:2px solid var(--teal-text);outline-offset:3px}
+.wrap{flex:1;display:flex;flex-direction:column;width:100%;max-width:1180px;margin:0 auto;padding:18px 18px 24px;box-sizing:border-box}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;min-width:0}
+.brand:hover{text-decoration:none}
+.brand-ic{width:36px;height:36px;border-radius:8px;background:#0B1F3A;display:grid;place-items:center;flex:none;border:1px solid var(--border)}
+.brand-ic svg{width:22px;height:22px}
+.wm{display:block;font-weight:800;font-size:13px;letter-spacing:-.02em;line-height:1.15}
+.by{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:lowercase}
+.nav-act{display:flex;align-items:center;gap:8px;flex:none}
+.icon-btn{background:var(--surface);border:1px solid var(--border);width:36px;height:36px;border-radius:8px;
+  display:grid;place-items:center;color:var(--navy);text-decoration:none;cursor:pointer;padding:0}
+.icon-btn:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.icon-btn svg{width:18px;height:18px;display:block}
+.pg-top{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.pg-back{flex:none;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--secondary);
+  display:grid;place-items:center;text-decoration:none;cursor:pointer;padding:0}
+.pg-back:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.pg-back svg{width:18px;height:18px;display:block}
+.pg-head{min-width:0;flex:1}
+h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;margin:0;font-weight:800}
+.lead{font-size:13.5px;color:var(--secondary);margin:0 0 16px;line-height:1.55}
+.caveat{font-size:12.5px;color:var(--muted);margin:0 0 18px;line-height:1.45}
+.stats-line{display:grid;grid-template-columns:repeat(3,1fr);width:100%;gap:8px;margin:0 0 18px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;text-align:left}
+.stat .sv{font-family:var(--mono);font-size:1.35rem;font-weight:800;line-height:1;letter-spacing:-.02em;color:var(--navy)}
+.stat .sv.up{color:var(--teal-text)}
+.stat .sv.down{color:var(--red-text)}
+.stat .sl{font-size:11.5px;color:var(--muted);font-weight:600}
+.io-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 18px}
+.io-col{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;min-width:0}
+.io-col h2{font-size:13px;font-weight:800;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.io-col.in h2{color:var(--teal-text)}
+.io-col.out h2{color:var(--red-text)}
+.io-col h2 .c{font-family:var(--mono);font-weight:700;color:var(--muted)}
+.io-links{display:flex;flex-wrap:wrap;gap:8px}
+.io-links a{font-family:var(--mono);font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--off);text-decoration:none}
+.io-col.in .io-links a{color:var(--teal-text);border-color:rgba(15,148,136,.35)}
+.io-col.out .io-links a{color:var(--red-text);border-color:rgba(220,38,38,.28)}
+.io-links a:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.io-empty{font-size:13px;color:var(--muted);margin:0}
+.foot{margin-top:auto;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
+  display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}
+.foot-meta{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}
+.foot-social{display:inline-flex;gap:6px;margin-left:auto}
+.foot .soc{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:6px;border:1px solid var(--border);color:var(--muted);background:var(--surface);text-decoration:none}
+.foot .soc:hover{color:var(--teal);border-color:var(--teal);text-decoration:none}
+.foot .soc svg{width:14px;height:14px}
+.foot .sep{opacity:.45}
+@media(max-width:720px){.io-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.stats-line{grid-template-columns:1fr;gap:8px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+""".strip()
+
+
+def rilis_terbaru_html(
+    meta: list,
+    names: dict,
+    entered: list[str],
+    exited: list[str],
+    present: dict[str, str],
+) -> str:
+    last = meta[-1]
+    last_lab = short_label(last["date"])
+    last_y = last["date"].split()[-1]
+    kep = last.get("kep") or last.get("KEP") or ""
+    # hitung total kini dari bitstring
+    total_now = sum(1 for b in present.values() if b and b[-1] == "1")
+    url = f"{SITE}/rilis-terbaru"
+    title = "Saham masuk & keluar Daftar Efek Syariah (rilis terbaru) · Lotmetrik"
+    desc = (
+        f"Rilis Daftar Efek Syariah OJK {last_lab}: "
+        f"{len(entered)} saham masuk, {len(exited)} saham keluar. "
+        f"Total kini {total_now} efek. Data resmi OJK, edukasi Lotmetrik."
+    )
+    lead = (
+        f"Ringkasan pergerakan Daftar Efek Syariah OJK pada rilis {last_lab}"
+        + (f" ({kep})" if kep else "")
+        + f". Ada {len(entered)} saham masuk dan {len(exited)} saham keluar. "
+        f"Total efek syariah di rilis ini: {total_now}."
+    )
+
+    def links(codes: list[str], cls: str) -> str:
+        if not codes:
+            return '<p class="io-empty">Tidak ada.</p>'
+        return (
+            '<div class="io-links">'
+            + "".join(
+                f'<a href="/saham/{c.lower()}" title="{esc(names.get(c) or c)}">{esc(c)}</a>'
+                for c in codes
+            )
+            + "</div>"
+        )
+
+    ld = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebPage",
+                "name": title,
+                "url": url,
+                "description": desc,
+                "inLanguage": "id-ID",
+                "isPartOf": {"@type": "WebSite", "name": "Daftar Efek Syariah", "url": SITE + "/"},
+                "dateModified": iso_date(last["date"]),
+            },
+            {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {"@type": "ListItem", "position": 1, "name": "Daftar Efek Syariah", "item": SITE + "/"},
+                    {"@type": "ListItem", "position": 2, "name": "Rilis terbaru", "item": url},
+                ],
+            },
+        ],
+    }
+
+    return f"""<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="/analytics.js"></script>
+<title>{esc(title)}</title>
+<meta name="description" content="{esc(desc)}">
+<meta name="theme-color" content="#0B1F3A">
+<link rel="canonical" href="{url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lotmetrik">
+<meta property="og:url" content="{url}">
+<meta property="og:title" content="{esc(title)}">
+<meta property="og:description" content="{esc(desc)}">
+<meta property="og:image" content="{SITE}/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{esc(title)}">
+<meta name="twitter:description" content="{esc(desc)}">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
+<script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
+<style>
+{_shell_css()}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="/">
+      <span class="brand-ic" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none">
+          <circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/>
+          <circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/>
+          <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
+        </svg>
+      </span>
+      <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
+    </a>
+    <div class="nav-act">
+      <a class="icon-btn" href="/#panduan" aria-label="Panduan &amp; sumber" title="Panduan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </a>
+      <button type="button" class="icon-btn" id="themeBtn" aria-label="Ganti tema terang atau terminal" aria-pressed="false" title="Terang / Terminal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="pg-top">
+    <a class="pg-back" href="/" aria-label="Kembali ke dashboard" title="Kembali ke dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </a>
+    <div class="pg-head">
+      <h1>Saham yang masuk &amp; keluar Daftar Efek Syariah di rilis terbaru</h1>
+    </div>
+  </div>
+
+  <p class="lead">{esc(lead)}</p>
+  <p class="caveat">Keluar dari Daftar Efek Syariah bukan berarti delisting dari bursa. Status bisa berubah lagi di rilis berikutnya. Edukasi berbasis data, bukan rekomendasi beli/jual.</p>
+
+  <div class="stats-line" aria-label="Ringkasan rilis terbaru">
+    <div class="stat"><span class="sv">{total_now}</span><span class="sl">efek di rilis ini</span></div>
+    <div class="stat"><span class="sv up">{len(entered)}</span><span class="sl">saham masuk</span></div>
+    <div class="stat"><span class="sv down">{len(exited)}</span><span class="sl">saham keluar</span></div>
+  </div>
+
+  <div class="io-grid">
+    <section class="io-col out" aria-label="Saham keluar">
+      <h2>Keluar <span class="c">{len(exited)}</span></h2>
+      {links(exited, "out")}
+    </section>
+    <section class="io-col in" aria-label="Saham masuk">
+      <h2>Masuk <span class="c">{len(entered)}</span></h2>
+      {links(entered, "in")}
+    </section>
   </div>
 
   <div class="foot">
@@ -527,7 +862,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     </span>
   </div>
 </div>
-<script src="/share.js?v=293" defer></script>
+<script src="/share.js?v={CACHE_V}" defer></script>
 </body>
 </html>
 """
@@ -535,7 +870,10 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
 
 def write_sitemap(codes: list[str], lastmod: str = "") -> None:
     lm = f"\n    <lastmod>{lastmod}</lastmod>" if lastmod else ""
-    urls = [f"  <url>\n    <loc>{SITE}/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>"]
+    urls = [
+        f"  <url>\n    <loc>{SITE}/</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>",
+        f"  <url>\n    <loc>{SITE}/rilis-terbaru</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>",
+    ]
     for c in codes:
         urls.append(
             f"  <url>\n    <loc>{SITE}/saham/{c.lower()}</loc>{lm}\n    <changefreq>monthly</changefreq>\n    <priority>0.7</priority>\n  </url>"
@@ -558,6 +896,8 @@ def main() -> None:
     if not codes:
         die("data.js tidak punya saham.")
 
+    entered, exited = compute_deltas(present)
+
     os.makedirs(SAHAM_DIR, exist_ok=True)
     for old in os.listdir(SAHAM_DIR):
         if old.lower().endswith(".html"):
@@ -571,13 +911,21 @@ def main() -> None:
         if len(bits) != len(meta):
             die(f"Panjang bitstring {code} ({len(bits)}) != jumlah rilis ({len(meta)})")
         name = names.get(code) or code
-        html = page_html(code, name, bits, meta)
+        related = related_block_html(code, bits, present, names, entered, exited)
+        html = page_html(code, name, bits, meta, related)
         path = os.path.join(SAHAM_DIR, f"{code.lower()}.html")
         open(path, "w", encoding="utf-8", newline="\n").write(html)
 
+    open(RILIS_PATH, "w", encoding="utf-8", newline="\n").write(
+        rilis_terbaru_html(meta, names, entered, exited, present)
+    )
+
     lastmod = iso_date(meta[-1]["date"]) if meta else ""
     write_sitemap(codes, lastmod)
-    print(f"[OK] {len(codes)} halaman di saham/ + sitemap.xml ({len(codes) + 1} URL, lastmod {lastmod})")
+    print(
+        f"[OK] {len(codes)} halaman di saham/ + rilis-terbaru.html + sitemap.xml "
+        f"({len(codes) + 2} URL, lastmod {lastmod}, masuk={len(entered)} keluar={len(exited)})"
+    )
 
 
 if __name__ == "__main__":

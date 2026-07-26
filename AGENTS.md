@@ -2,41 +2,41 @@
 
 > Pemilik project adalah NON-CODER. Jelaskan dalam Bahasa Indonesia santai, langkah "ketik ini", tanpa jargon. Laporkan hasil dengan jujur (kalau gagal bilang gagal), verifikasi sebelum klaim selesai.
 
-## Status aktif (24 Jul 2026)
-- **IDE aktif = Cursor.** Owner lanjut semua edit (fitur, UI/UX, responsive, security, sync) dari chat Cursor di folder ini.
-- **Sinkron terverifikasi:** lokal `main` = `origin/main` = commit `aad69b0`, live cache `?v=247`. Tiap ubah JS/CSS/data → naikkan `?v=` di 2 tag script, `git push` → Netlify.
-- Standar produk: **gratis lead magnet**, bukan one-time sale. Roast/audit ulang sudah dikerjakan di Cursor 24 Jul 2026.
+## Status aktif (26 Jul 2026)
+- **Folder proyek (Desktop):** `C:\Users\GEEKOM A8\Desktop\DES Daftar Efek Syariah\` — situs di subfolder `des-flow-tool-v2\`. HANDOFF lengkap di `..\HANDOFF.md`.
+- **Versi:** v2.5 (dashboard + 850 halaman `/saham/KODE` + `/rilis-terbaru`). Cache `?v=294`.
+- **Sinkron:** `git push` ke `main` = auto-deploy Netlify. Tiap ubah JS/CSS/data → naikkan `?v=` di 2 tag script `index.html`.
+- Standar produk: **gratis lead magnet**, bukan one-time sale. JANGAN paywall.
 
 ## Apa ini
-Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**. Versi **v2.4.3 LIVE** di https://des.lotmetrik.my.id. GRATIS permanen (lead magnet) — **JANGAN pernah dipagari/paywall** (keputusan tertulis owner; data sudah publik + terindeks price:0).
-
-## Konteks lengkap
-**Baca `../HANDOFF.md`** (di folder induk `Claude Migrasi/DES/`) untuk sejarah lengkap, arsitektur, integrasi, dan rencana ke depan.
+Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**. LIVE di https://des.lotmetrik.my.id.
 
 ## Deploy & repo
-- Repo: **`alfindigital/lotmetrik-des`** (GitHub, publik). **`git push` ke `main` = auto-deploy Netlify** (site `lotmetrikdes`, domain via Cloudflare DNS). Jangan deploy cara lain.
-- v1 lama (folder saudara `des-flow-tool`, repo `alfindigital/des-flow-v1`) sudah **301-redirect** ke domain ini. Jangan digarap lagi, jangan hapus (redirect-nya hidup dari situ).
+- Repo situs: **`alfindigital/lotmetrik-des`** (publik). Push `main` → Netlify site `lotmetrikdes`.
+- Repo arsip: **`alfindigital/des`** (Excel + otomasi). Folder induk lokal adalah git arsip ini.
+- v1 lama (`des-flow-tool`, repo `des-flow-v1`) = 301 redirect. Jangan digarap / jangan hapus.
 
 ## Struktur penting
-- Situs statis tanpa build: `index.html` (semua CSS inline) + `app.js` (semua logika) + `data.js` (data 21 rilis, 850 saham, bitstring). Zero dependency.
-- **Cache busting `?v=N` di 2 tag `<script>` — WAJIB naikkan tiap ubah app.js/data.js/CSS.**
-- `_update/` = kit update mandiri per semester: `parse_des.py` + `build_data.py` + `render_og.py` + 21 Excel OJK (`ojk_excel/`) + font OFL (`fonts/`). Dua pemicu:
-  1. **`update.bat`** (double-click di PC), atau
-  2. **upload Excel ke `_update/ojk_excel/` via GitHub web** → GitHub Actions (`.github/workflows/update-des.yml`) auto-regen + deploy (terbukti ~12 detik).
-  Baca `_update/CARA-UPDATE.md`. Nama file Excel WAJIB: `DES_YYYY_Pn_KEPnn.xlsx`.
-- `RELEASE-PLAYBOOK.md` = checklist hari-H rilis OJK (~29 Mei & ~29 Nov).
-- Reminder rilis = **Cloudflare Worker `des-reminder`** (folder saudara `des-reminder-worker/`, BUKAN di repo ini; cron `0 0 29 5,11 *` → Telegram @desidx_bot). GitHub cron TIDAK dipakai (auto-disable 60 hari).
+- Statis tanpa build: `index.html` + `app.js` + `data.js`. Zero dependency runtime.
+- **`saham/`** = 850 halaman SEO (DIGENERATE). **JANGAN edit manual** — ubah `_update/generate_saham.py`, lalu `python _update/generate_saham.py`.
+- **`rilis-terbaru.html`** = ringkasan masuk/keluar rilis terakhir (ikut di-regen generator). Pretty URL `/rilis-terbaru`.
+- `share.js` = Bagikan + theme di halaman saham/rilis.
+- `analytics.js` = GA4 (`G-KJVN9Z014V`) + Microsoft Clarity (`xrvlyaao2k`). **Jangan pakai inline `<script>`** — CSP `script-src 'self'` + daftar putih memblokir inline. Domain pihak ketiga wajib didaftarkan di `_headers`.
+- `_update/` = kit update semester: `parse_des.py`, `build_data.py` (panggil generator), `generate_saham.py`, `render_og.py`, `ojk_excel/`, `fonts/`.
+- Pemicu update: `update.bat` ATAU upload Excel ke `_update/ojk_excel/` via GitHub web → Actions.
+- Reminder: Cloudflare Worker `des-reminder` (folder saudara `des-reminder-worker/`), cron 29 Mei & 29 Nov → Telegram @desidx_bot.
+- `_socmed/` di folder induk = kit gambar sosmed **LOKAL SAJA** (sengaja tidak di-git).
 
 ## Aturan WAJIB (jangan dilanggar)
-- Kriteria syariah di Panduan = **POJK 8/2025** (utang bunga →33% bertahap, non-halal <5% sejak ~Apr 2026). JANGAN kembalikan ke angka lama 45%/10% (POJK 35/2017 sudah dicabut).
-- **Verdict banner** di tracker ("X ADA/TIDAK ada di Daftar Efek Syariah · sejak <rilis>") = fitur inti, jangan dihilangkan.
-- Provenance: CSV per-periode pakai tanggal + nomor KEP periode itu (csvSource(p)); teks share bawa "edukasi, bukan rekomendasi". Chart TIDAK pakai watermark (dihapus di v2.4.3 atas permintaan owner — jangan ditambahkan lagi).
-- TIDAK ada: lede/tagline di home, tombol (i) di sebelah Lacak, seksi "Fakta dekade", "Alat gratis lain" di Panduan, panah dropdown di kotak cari — semua sengaja dihapus v2.4.3, jangan dikembalikan.
-- Header: logo bulan-sabit+bintang minimalis, "Dashboard Daftar Efek Syariah" dengan "by lotmetrik" DITUMPUK di bawahnya.
-- Panduan = halaman penuh `#panduan`, layout 2 kolom kartu.
-- Halaman SEO per saham: `/saham/KODE` (di-generate `_update/generate_saham.py` dari `data.js`). Tombol **Bagikan** di tracker memakai URL itu (bukan `#t=`). Jangan hapus folder `saham/` / `sitemap.xml` — ikut di-regen tiap update data.
-- Data: semua angka dihitung dari `data.js`. Jangan ubah data tanpa regenerasi dari Excel OJK asli (via `_update/`). `build_data.py` punya gate rekonsiliasi — kalau "TIDAK COCOK", berhenti, jangan dipaksa.
-- Angka statis yang TIDAK auto-update dari JS: meta description / og:description / og:image:alt ("307 jadi 688 lalu 622"), JSON-LD "21 rilis" — `build_data.py` sudah menyamakan otomatis saat update; jangan edit manual asal-asalan.
-- Jangan menambah klaim/opini/prediksi syariah; situs hanya menampilkan data resmi OJK. Banned words brand: cuan/pasti naik/beli sekarang/target price/dijamin.
-- Footer & Panduan punya link Telegram t.me/lotmetrik + link OJK — pertahankan.
-- Warna dikunci: teal = naik/masuk, merah = turun/keluar. Semua angka font mono.
+- Kriteria Panduan = **POJK 8/2025** (utang bunga →33% bertahap, non-halal <5%). JANGAN kembalikan ke 45%/10%.
+- Verdict banner di tracker = fitur inti. Tombol **Profil KODE** mengarah ke `/saham/kode`. Daftar masuk/keluar dashboard = link crawlable ke `/saham/` (klik biasa tetap buka tracker).
+- Halaman saham: blok **saham senasib / rilis terbaru** + link ke `/rilis-terbaru` wajib dipertahankan (SEO internal linking).
+- Copy: **tanpa em-dash**; "agar" bukan "biar"; bulan ditulis penuh; verdict evergreen (tanpa "sejak Jun 2026" yang basi).
+- Provenance: CSV pakai tanggal+KEP periode; share bawa disclaimer edukasi. Chart TANPA watermark.
+- TIDAK ada (sengaja dihapus): lede home, tombol (i) Lacak, Fakta dekade, Alat gratis lain, panah dropdown search.
+- Header: logo bulan-sabit+bintang, "by lotmetrik" ditumpuk di bawah judul.
+- Data hanya dari `data.js` / Excel OJK. Gate rekonsiliasi di `build_data.py` — kalau TIDAK COCOK, berhenti.
+- Banned words: cuan/pasti naik/beli sekarang/target price/dijamin.
+- Warna: teal = naik/masuk, merah = turun/keluar. Angka font mono.
+- `/saham/` kosong di-redirect ke `/` (lihat `_redirects`). Jangan bikin index tipis yang duplikat home.
+- `generate_saham.py` pakai f-string dengan CSS/JS: kurung kurawal literal digandakan `{{ }}`. Hati-hati saat edit template.

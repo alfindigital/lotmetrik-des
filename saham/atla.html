@@ -94,6 +94,15 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
 .btn{appearance:none;border:1px solid var(--border-strong);background:var(--surface);color:var(--navy);
   font:inherit;font-weight:700;font-size:13.5px;padding:10px 18px;border-radius:8px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.related{margin:0 0 18px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.related h2{font-size:13px;margin:0 0 10px;font-weight:800;letter-spacing:-.01em;color:var(--navy)}
+.related .links{display:flex;flex-wrap:wrap;gap:8px}
+.related a.tk-link{font-family:var(--mono);font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--border);background:var(--off);color:var(--navy);text-decoration:none}
+.related a.tk-link:hover{border-color:var(--teal);color:var(--teal);text-decoration:none}
+.related a.tk-link.in{color:var(--teal-text);border-color:rgba(15,148,136,.35)}
+.related a.tk-link.out{color:var(--red-text);border-color:rgba(220,38,38,.28)}
+.related .more{display:block;margin:10px 0 0;font-size:12.5px}
 .foot{margin-top:auto;padding-top:8px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);
   display:flex;flex-wrap:wrap;gap:10px 12px;align-items:center;justify-content:space-between}
 .foot-meta{display:inline-flex;flex-wrap:wrap;align-items:center;gap:5px 10px}
@@ -162,7 +171,7 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
   
   <div class="dots" role="img" aria-label="ATLA ada di daftar pada: Juni 2024, Desember 2024, Juni 2025, Desember 2025, Juni 2026"><span class="dot" title="Juni 2016: tidak"></span><span class="dot" title="Desember 2016: tidak"></span><span class="dot" title="Juni 2017: tidak"></span><span class="dot" title="Desember 2017: tidak"></span><span class="dot" title="Juni 2018: tidak"></span><span class="dot" title="Desember 2018: tidak"></span><span class="dot" title="Juni 2019: tidak"></span><span class="dot" title="Desember 2019: tidak"></span><span class="dot" title="Agustus 2020: tidak"></span><span class="dot" title="Desember 2020: tidak"></span><span class="dot" title="Agustus 2021: tidak"></span><span class="dot" title="Desember 2021: tidak"></span><span class="dot" title="Juli 2022: tidak"></span><span class="dot" title="Desember 2022: tidak"></span><span class="dot" title="Juni 2023: tidak"></span><span class="dot" title="Desember 2023: tidak"></span><span class="dot on" title="Juni 2024: ada"></span><span class="dot on" title="Desember 2024: ada"></span><span class="dot on" title="Juni 2025: ada"></span><span class="dot on" title="Desember 2025: ada"></span><span class="dot on" title="Juni 2026: ada"></span></div>
   <div class="stats-line" aria-label="Ringkasan jejak">
-    <div class="stat"><span class="sv">24%</span><span class="sl">% syariah</span></div>
+    <div class="stat"><span class="sv">24%</span><span class="sl">rilis syariah</span></div>
     <div class="stat"><span class="sv">5/21</span><span class="sl">muncul</span></div>
     <div class="stat"><span class="sv up">1</span><span class="sl">masuk</span></div>
     <div class="stat"><span class="sv down">0</span><span class="sl">keluar</span></div>
@@ -171,6 +180,8 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
   <div class="actions">
     <button type="button" class="btn" id="shareBtn" data-url="https://des.lotmetrik.my.id/saham/atla" data-text="ATLA (PT Atlantis Subsea Indonesia Tbk) saat ini berstatus SYARIAH. Terdaftar di Daftar Efek Syariah OJK. Cek: https://des.lotmetrik.my.id/saham/atla">Bagikan</button>
   </div>
+
+  <section class="related" aria-label="Saham lain dengan status serupa"><h2>Saham lain dengan status serupa</h2><div class="links"><a class="tk-link in" href="/saham/asri" title="PT Alam Sutera Realty Tbk">ASRI</a><a class="tk-link in" href="/saham/assa" title="PT Adi Sarana Armada Tbk">ASSA</a><a class="tk-link in" href="/saham/atap" title="PT Trimitra Prawara Goldland Tbk">ATAP</a><a class="tk-link in" href="/saham/atic" title="PT Anabatic Technologies Tbk">ATIC</a><a class="tk-link in" href="/saham/auto" title="PT Astra Otoparts Tbk">AUTO</a><a class="tk-link in" href="/saham/avia" title="PT Avia Avian Tbk">AVIA</a><a class="tk-link in" href="/saham/awan" title="PT Era Digital Media Tbk">AWAN</a><a class="tk-link in" href="/saham/axio" title="PT Tera Data Indonusa Tbk">AXIO</a></div><p class="more"><a href="/rilis-terbaru">Lihat semua masuk &amp; keluar rilis terbaru →</a></p></section>
 
   <div class="foot">
     <div class="foot-meta">
@@ -191,6 +202,6 @@ h1{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;ma
     </span>
   </div>
 </div>
-<script src="/share.js?v=293" defer></script>
+<script src="/share.js?v=294" defer></script>
 </body>
 </html>

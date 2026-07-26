@@ -271,10 +271,18 @@ function renderIO(){var p=periods[curPeriod],out=p.keluar.slice(),inn=p.masuk.sl
   $('#cntOut').textContent=p.baseline?'0':fmtNum(out.length);
   $('#cntIn').textContent=fmtNum(inn.length);
   function col(ul,arr,cls,baseEmpty){
-    if(!arr.length){ul.innerHTML='<li class="io-empty">'+(baseEmpty||'Tidak ada.')+'</li>';return;}
-    ul.innerHTML=arr.map(function(t){return '<li class="io-row '+cls+'" role="button" tabindex="0" data-trk="'+t+'" aria-label="'+esc(t+' '+(NAMES[t]||t))+'"><span class="tk mono">'+t+'</span><span class="nm">'+esc(NAMES[t]||t)+'</span><span class="ar mono">›</span></li>';}).join('');}
+    if(!arr.length){ul.innerHTML='<div class="io-empty" role="listitem">'+(baseEmpty||'Tidak ada.')+'</div>';return;}
+    /* Real <a href> supaya Google crawl ke /saham/; klik biasa tetap buka tracker di dashboard. */
+    ul.innerHTML=arr.map(function(t){return '<a class="io-row '+cls+'" role="listitem" href="/saham/'+t.toLowerCase()+'" data-trk="'+t+'" aria-label="'+esc(t+' '+(NAMES[t]||t))+'"><span class="tk mono">'+t+'</span><span class="nm">'+esc(NAMES[t]||t)+'</span><span class="ar mono">›</span></a>';}).join('');}
 }
-function ioActivate(e){var r=e.target.closest('[data-trk]');if(r){showTracker(r.dataset.trk,true);scrollTo('#lacak');}}
+function ioActivate(e){
+  var r=e.target.closest('[data-trk]');
+  if(!r)return;
+  if(e.type==='click'&&(e.metaKey||e.ctrlKey||e.shiftKey||e.altKey||e.button===1))return;
+  e.preventDefault();
+  showTracker(r.dataset.trk,true);
+  scrollTo('#lacak');
+}
 ['#ioListOut','#ioListIn'].forEach(function(sel){var e=$(sel);if(!e)return;
   e.addEventListener('click',ioActivate);
   e.addEventListener('keydown',function(ev){if((ev.key==='Enter'||ev.key===' ')&&ev.target.closest('[data-trk]')){ev.preventDefault();ioActivate(ev);}});});
@@ -306,7 +314,7 @@ function showTracker(code,user){code=String(code||'').trim().toUpperCase();var r
       '<div class="vbody"><div class="vmain">'+(inNow?'SYARIAH':'TIDAK SYARIAH')+'</div>'+
         '<div class="vsub">'+esc(rec.name)+'</div></div>'+
       '<div class="tr-acts">'+
-        '<a class="btn btn-ghost btn-sm" href="'+seo+'">Lihat Detail</a>'+
+        '<a class="btn btn-ghost btn-sm" href="'+seo+'">Profil '+code+' →</a>'+
         '<button class="btn btn-ghost btn-sm" id="trkShare" type="button">Bagikan</button>'+
       '</div></div>';
   $('#trkShare').onclick=function(){var url=SITE+seo,txt=trackerText(rec);

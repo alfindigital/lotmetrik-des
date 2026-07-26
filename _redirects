@@ -1,2 +1,8 @@
 # Pretty URL halaman saham: /saham/asii → saham/asii.html
-/saham/:code  /saham/:code.html  200
+# /saham/ kosong → dashboard (ada kotak cari)
+/saham/       /                    301
+/saham        /                    301
+/saham/:code  /saham/:code.html    200
+
+# Halaman ringkasan masuk/keluar rilis terbaru
+/rilis-terbaru  /rilis-terbaru.html  200
