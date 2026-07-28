@@ -1,31 +1,57 @@
-# DES Dashboard — Release Playbook (tiap rilis OJK, ~2x/tahun)
+# DES Dashboard — Release Playbook (tiap rilis OJK, ~2×/tahun)
 
-Rilis DES cuma keluar **sekitar 2x setahun** (pertengahan & akhir tahun) — ini satu-satunya
-momen traffic organik. Rilis berikutnya diperkirakan **≈ Des 2026**. Jalankan checklist ini
-di hari SK (KEP) baru terbit. Situs = static, deploy lewat `git push` (Netlify auto-deploy).
+Rilis DES periodik OJK: **akhir Mei** (efektif ~1 Juni) dan **akhir November** (efektif ~1 Desember).
+Ini momen traffic organik. Situs static; publish = `update.bat` atau upload Excel ke GitHub.
+
+**Sumber langkah update yang benar:** `_update/CARA-UPDATE.md` + `update.bat`.
+Dokumen ini = checklist hari-H (update + promosi). Jangan edit `data.js` / `index.html` manual.
+
+---
 
 ## H-7 (siap-siap)
-- [ ] Pantau OJK: <https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/>
-- [ ] Draft carousel IG @lotmetrik dari data lama (pakai tombol **Salin caption** + **Unduh CSV** di situs).
+
+- [ ] Pantau OJK: https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/
+- [ ] Siapkan draf konten IG/TikTok/Telegram (pakai kit `_socmed\` atau angka dari situs setelah update)
+- [ ] Catat di kalender pribadi: window update (tidak ada bot reminder lagi)
 
 ## H+0 (hari KEP terbit) — urut
-1. [ ] Unduh Excel DES terbaru dari OJK (ini sumber resmi; WAJIB dari OJK, bukan pihak ketiga).
-2. [ ] Regenerasi `data.js` (kasih Excel ke Claude / `parse_des.py`). Pastikan log rekonsiliasi **tidak ada "!!MISMATCH"**.
-3. [ ] Timpa `data.js` di `des-flow-tool-v2/`. JANGAN edit tangan (850 saham × N rilis).
-4. [ ] **Samakan angka STATIS di `index.html`** (JavaScript tidak bisa update ini, crawler baca ini):
-   - `<title>`, `meta description`, `og:description`, `twitter:description`, `og:image:alt`
-   - Literal cerita **"307 / 688 / 622"** → sesuaikan kalau awal/puncak/terakhir berubah.
-   - **"21 rilis"** di JSON-LD + teks → naikkan kalau jumlah rilis bertambah.
-5. [ ] Gambar ulang OG: `python _render_og_desdash.py` (angka auto dari `data.js`).
-6. [ ] Naikkan cache-buster `?v=NNN` di **2** tag `<script>` di `index.html`.
-7. [ ] Cek cepat di browser lokal: angka Kini/Puncak, lacak 1 saham (verdict ADA/TIDAK), buka Panduan.
-8. [ ] `git add -A && git commit && git push` → Netlify auto-deploy.
-9. [ ] Verifikasi live: buka **des.lotmetrik.my.id**, hard-refresh (Ctrl+Shift+R).
-10. [ ] Broadcast ke Telegram **@lotmetrik** + posting carousel IG "X saham keluar DES <bulan tahun>".
-11. [ ] (Opsional) Re-scrape preview link di Facebook Sharing Debugger / Twitter Card Validator biar og.png baru kebaca.
 
-## Catatan
-- **Kriteria syariah saat ini = POJK 8/2025** (utang berbasis bunga → 33% bertahap 10 th; pendapatan non-halal < 5%, berlaku ~Apr 2026). Kalau OJK ubah lagi, koreksi `buildPanduan()` di `app.js`.
-- Semua angka on-page dihitung ulang otomatis dari `data.js` — kecuali literal statis di langkah 4.
-- **Jangan pernah** janji "prediksi/skor keluar". Data ini cuma riwayat kehadiran (matriks 0/1), **tanpa** rasio keuangan/sektor/harga.
-- v1 lama (celebrated-choux) sudah 301-redirect ke sini — abaikan, jangan di-update.
+### A. Update data (wajib, ~2 menit)
+
+1. [ ] Unduh Excel DES terbaru dari OJK (sumber resmi saja).
+2. [ ] Rename: `DES_TAHUN_Pn_KEPno.xlsx`  
+   Contoh: `DES_2026_P2_KEP60.xlsx` (P1 = tengah tahun, P2 = akhir tahun).
+3. [ ] Pilih satu:
+   - **PC:** taruh file di `des-flow-tool-v2\_update\ojk_excel\` → double-click **`update.bat`** → tunggu SELESAI.
+   - **HP/browser:** GitHub `lotmetrik-des` → `_update/ojk_excel` → Upload files → commit (Actions mengerjakan sisanya).
+4. [ ] Script otomatis: `data.js`, halaman `/saham/` + `/rilis/`, sitemap, og.png, cache `?v=`, commit + push → Netlify deploy.
+5. [ ] Verifikasi live: https://des.lotmetrik.my.id → **Ctrl+Shift+R**. Cek angka Kini, 1 saham di tracker, 1 halaman `/saham/KODE`.
+
+Kalau **GAGAL**: baca pesan error. Nama file salah = betulkan. Format Excel OJK berubah = minta bantuan AI/dev (`parse_des.py`).
+
+### B. Promosi (funnel brand Lotmetrik)
+
+6. [ ] Posting IG @lotmetrik: "X saham keluar / masuk DES [bulan tahun]" (+ kartu dari `_socmed\out\` bila ada).
+7. [ ] Posting TikTok @lotmetrik (carousel / short) — arahkan ke situs atau Telegram.
+8. [ ] Broadcast channel Telegram **https://t.me/lotmetrik** (ini funnel utama situs: popup → Telegram).
+9. [ ] (Opsional) Refresh preview OG: [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) → Scrape Again.
+
+---
+
+## Catatan tetap
+
+- Kriteria Panduan = **POJK 8/2025** (utang bunga → 33% bertahap; non-halal < 5%).
+- Angka on-page dihitung dari `data.js` oleh `build_data.py` — jangan timpa tangan.
+- Jangan janji prediksi/skor keluar DES. Data = riwayat kehadiran saja.
+- Reminder Cloudflare Worker **sudah dimatikan** (bot dihapus). Andalkan kalender + pantau OJK.
+- Halaman SEO `/saham/` (850) + `/rilis/` biarkan; ikut ter-regen tiap update.
+
+## Link cepat
+
+| Apa | URL |
+|---|---|
+| Situs | https://des.lotmetrik.my.id |
+| Repo | https://github.com/alfindigital/lotmetrik-des |
+| Cara update detail | `_update/CARA-UPDATE.md` |
+| Telegram funnel | https://t.me/lotmetrik |
+| OJK DES | https://ojk.go.id/id/kanal/syariah/data-dan-statistik/daftar-efek-syariah/ |

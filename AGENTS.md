@@ -25,7 +25,8 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 - `analytics.js` = GA4 (`G-KJVN9Z014V`) + Microsoft Clarity (`xrvlyaao2k`). **Jangan pakai inline `<script>`** — CSP `script-src 'self'` + daftar putih memblokir inline. Domain pihak ketiga wajib didaftarkan di `_headers`.
 - `_update/` = kit update semester: `parse_des.py`, `build_data.py` (panggil generator), `generate_saham.py`, `render_og.py`, `ojk_excel/`, `fonts/`.
 - Pemicu update: `update.bat` ATAU upload Excel ke `_update/ojk_excel/` via GitHub web → Actions.
-- Reminder: Cloudflare Worker `des-reminder` (folder saudara `des-reminder-worker/`), cron 29 Mei & 29 Nov → Telegram @desidx_bot.
+- Reminder Cloudflare Worker `des-reminder` **DIMATIKAN 28 Jul 2026** (bot Telegram dihapus). Update pakai kalender + OJK.
+- Funnel brand: popup Telegram `t.me/lotmetrik` (`funnel.js`) — muncul setelah 5 detik, auto-tutup 5 detik / bisa disilang. Satu kali per sesi browser.
 - `_socmed/` di folder induk = kit gambar sosmed **LOKAL SAJA** (sengaja tidak di-git).
 
 ## Aturan WAJIB (jangan dilanggar)

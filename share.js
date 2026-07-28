@@ -34,7 +34,7 @@
   }
 
   var btn = document.getElementById("shareBtn");
-  if (!btn) return;
+  if (btn) {
   var url = btn.getAttribute("data-url") || location.href;
   var text = btn.getAttribute("data-text") || document.title;
   var label = btn.textContent;
@@ -71,4 +71,14 @@
       window.prompt("Salin teks:", text);
     }
   });
+  }
+})();
+
+/* Load Telegram funnel (home juga memuat funnel.js langsung). */
+(function () {
+  if (window.__lotmetrikTgFunnel) return;
+  var s = document.createElement("script");
+  s.src = "/funnel.js?v=296";
+  s.defer = true;
+  document.head.appendChild(s);
 })();

@@ -34,7 +34,7 @@ echo [3/4] (halaman SEO per saham dan per rilis sudah digenerate di langkah 1)
 echo.
 
 echo [4/4] Publish ke GitHub (Netlify akan deploy otomatis)...
-git add data.js index.html app.js og.png sitemap.xml _redirects saham rilis _update\ojk_excel
+git add data.js index.html app.js share.js funnel.js analytics.js og.png sitemap.xml _redirects saham rilis _update\ojk_excel
 git ls-files --error-unmatch rilis-terbaru.html >nul 2>nul && git add -u rilis-terbaru.html
 git diff --cached --quiet
 if not errorlevel 1 (
