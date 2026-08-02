@@ -78,7 +78,7 @@
 (function () {
   if (window.__lotmetrikTgFunnel) return;
   var s = document.createElement("script");
-  s.src = "/funnel.js?v=298";
+  s.src = "/funnel.js?v=299";
   s.defer = true;
   document.head.appendChild(s);
 })();
