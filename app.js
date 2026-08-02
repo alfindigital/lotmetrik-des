@@ -179,11 +179,17 @@ function renderTotal(){
     var a=pts[i-1],b=pts[i],down=META[i].total<META[i-1].total;
     segs+='<path d="M'+a[0].toFixed(1)+' '+a[1].toFixed(1)+' L'+b[0].toFixed(1)+' '+b[1].toFixed(1)+'" fill="none" stroke="'+(down?'var(--down)':'var(--up)')+'" stroke-width="'+(down?'2.6':'2.4')+'" stroke-linejoin="round" stroke-linecap="round"/>';
   }
+  var maxUpI=-1,maxDownI=-1,maxUpD=-1e9,maxDownD=1e9;
+  for(var i=1;i<N;i++){
+    var dlt=META[i].total-META[i-1].total;
+    if(dlt>maxUpD){maxUpD=dlt;maxUpI=i;}
+    if(dlt<maxDownD){maxDownD=dlt;maxDownI=i;}
+  }
   var dots='',labs='',hits='';
   for(var i=0;i<N;i++){
-    var isP=i===peak.i,isL=i===N-1;
     var downPt=i>0&&META[i].total<META[i-1].total;
-    var c=downPt?'var(--down)':'var(--up)',r=isP||isL?8:3;
+    var isSpecial=i===maxUpI||i===maxDownI;
+    var c=downPt?'var(--down)':'var(--up)',r=isSpecial?9:3;
     dots+='<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)+'" r="'+r+'" fill="'+c+'"/>';
     labs+='<text x="'+pts[i][0].toFixed(1)+'" y="'+Math.max(12,pts[i][1]-10).toFixed(1)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--text)">'+fmtNum(META[i].total)+'</text>';
     hits+=hitRect(i);
