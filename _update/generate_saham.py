@@ -21,7 +21,7 @@ DATA_JS = os.path.join(ROOT, "data.js")
 SAHAM_DIR = os.path.join(ROOT, "saham")
 SITEMAP = os.path.join(ROOT, "sitemap.xml")
 SITE = "https://des.lotmetrik.my.id"
-CACHE_V = "297"
+CACHE_V = "298"
 
 
 def die(msg: str) -> None:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 
 SITE = "https://des.lotmetrik.my.id"
-CACHE_V = "297"
+CACHE_V = "298"
 
 
 def esc(s: str) -> str:
