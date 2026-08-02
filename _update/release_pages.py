@@ -215,7 +215,7 @@ def _brand_header(back_href: str = "/") -> str:
     return f"""<div class="top">
   <a class="brand" href="/">
     <span class="brand-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/><circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/><path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/></svg></span>
-    <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
+    <span><span class="wm">Daftar Efek Syariah</span><span class="by">by @lotmetrik</span></span>
   </a>
   <div class="nav-act"><a class="icon-btn" href="/#panduan" aria-label="Panduan &amp; sumber" title="Panduan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg></a></div>
 </div>

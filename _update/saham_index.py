@@ -142,7 +142,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;margin:0 0 12px;f
           <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
         </svg>
       </span>
-      <span><span class="wm">Daftar Efek Syariah</span><span class="by">by lotmetrik</span></span>
+      <span><span class="wm">Daftar Efek Syariah</span><span class="by">by @lotmetrik</span></span>
     </a>
   </div>
   <h1>Cek status saham di Daftar Efek Syariah</h1>

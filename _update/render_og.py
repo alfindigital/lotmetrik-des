@@ -43,7 +43,7 @@ tracked(d, (M, 48 * S), "DAFTAR EFEK SYARIAH · IDX · 2016–" + DES["meta"][-1
 # title
 d.text((M, 80 * S), "DES Dashboard", font=sansb(62), fill=INK)
 tw = d.textlength("DES Dashboard", font=sansb(62))
-d.text((M + tw + 18 * S, 108 * S), "by lotmetrik", font=monob(20), fill=MUT)
+d.text((M + tw + 18 * S, 108 * S), "by @lotmetrik", font=monob(20), fill=MUT)
 # sub
 d.text((M, 158 * S), "Saham yang masuk & keluar daftar syariah OJK, tiap rilis.", font=sans(25), fill=MUT)
 
