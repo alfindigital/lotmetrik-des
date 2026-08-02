@@ -183,7 +183,7 @@ function renderTotal(){
   for(var i=0;i<N;i++){
     var isP=i===peak.i,isL=i===N-1;
     var downPt=i>0&&META[i].total<META[i-1].total;
-    var c=downPt?'var(--down)':'var(--up)',r=isP||isL?6:3;
+    var c=downPt?'var(--down)':'var(--up)',r=isP||isL?8:3;
     dots+='<circle cx="'+pts[i][0].toFixed(1)+'" cy="'+pts[i][1].toFixed(1)+'" r="'+r+'" fill="'+c+'"/>';
     labs+='<text x="'+pts[i][0].toFixed(1)+'" y="'+Math.max(12,pts[i][1]-10).toFixed(1)+'" font-size="11" font-weight="700" text-anchor="middle" fill="var(--text)">'+fmtNum(META[i].total)+'</text>';
     hits+=hitRect(i);
