@@ -196,14 +196,14 @@ section{padding:16px 0}
 .tl::-webkit-scrollbar{display:none;height:0}
 .tl-wrap::after{content:"";position:absolute;top:0;right:0;bottom:10px;width:26px;pointer-events:none;background:linear-gradient(to right,transparent,var(--surface))}
 .tl-box{flex:none;width:66px;min-height:64px;scroll-snap-align:center;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);
-  padding:8px 4px 9px;text-align:center;cursor:pointer;transition:border-color var(--dur-fast),background var(--dur-fast);position:relative;font:inherit;color:inherit;display:block}
+  padding:8px 4px 9px;text-align:center;cursor:pointer;transition:border-color var(--dur-fast),background var(--dur-fast),box-shadow var(--dur-fast);position:relative;font:inherit;color:inherit;display:block}
 .tl-box:hover{border-color:var(--border-strong)}
 .tl-box .yr{font-weight:700;font-size:14px;line-height:1;color:var(--text);display:block}
 .tl-box .ph{font-size:10px;color:var(--text-muted);letter-spacing:.06em;margin-top:2px;display:block}
 .tl-box .tt2{font-size:11px;color:var(--text-secondary);margin-top:5px;display:block}
 .tl-box .nb{position:absolute;left:8px;right:8px;bottom:0;height:2.5px;border-radius:2px;background:var(--slate-300)}
 .tl-box .nb.pos{background:var(--up)} .tl-box .nb.neg{background:var(--down)}
-.tl-box.active{border-color:var(--accent);background:var(--up-soft)}
+.tl-box.active{border:2px solid var(--accent);background:var(--up-soft);box-shadow:0 0 0 2px var(--up-soft);padding:7px 3px 8px}
 .tl-box.active .yr{color:var(--accent-text)}
 .tl-select{display:none;width:100%;font:inherit;font-size:16px;font-weight:700;padding:11px 12px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--surface);color:var(--text);margin-bottom:10px}
 
@@ -537,9 +537,9 @@ footer{margin-top:34px;border-top:1px solid var(--border);background:var(--surfa
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="data.js?v=298"></script>
-<script src="app.js?v=298"></script>
-<script src="funnel.js?v=298" defer></script>
+<script src="data.js?v=300"></script>
+<script src="app.js?v=300"></script>
+<script src="funnel.js?v=300" defer></script>
 <!-- Cloudflare Web Analytics -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f8a766728ebe4ca9ae83f72f42ca57b1"}'></script>
 <!-- End Cloudflare Web Analytics -->
