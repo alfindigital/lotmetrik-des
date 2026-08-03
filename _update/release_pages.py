@@ -185,7 +185,7 @@ summary{cursor:pointer;font-weight:800;font-size:13px}details .links{margin-top:
 def _head(title: str, desc: str, canonical: str, ld: dict) -> str:
     return f"""<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script src="/analytics.js"></script>
+<script src="/analytics.js" defer></script>
 <title>{escape(title)}</title>
 <meta name="description" content="{escape(desc)}">
 <meta name="theme-color" content="#0B1F3A">

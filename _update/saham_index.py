@@ -75,7 +75,7 @@ def build_saham_index(
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<script src="/analytics.js"></script>
+<script src="/analytics.js" defer></script>
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <meta name="theme-color" content="#0B1F3A">

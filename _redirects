@@ -1,11 +1,3 @@
-# Block internal tooling / docs from public HTTP (security hygiene)
-# Trailing ! = force even when the static file exists on disk
-/update.bat              /404.html   404!
-/_update/*               /404.html   404!
-/AGENTS.md               /404.html   404!
-/CLAUDE.md               /404.html   404!
-/RELEASE-PLAYBOOK.md     /404.html   404!
-
 # Pretty URLs (tanpa unicode di komentar - aman untuk parser Netlify)
 # /saham/ dan /rilis/ dilayani oleh index.html di folder masing-masing
 /saham/:code          /saham/:code.html          200
