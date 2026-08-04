@@ -481,7 +481,18 @@ def write_redirects(root: str, meta: list) -> None:
         for item in meta
     ]
 
-    body = f"""# Pretty URLs (tanpa unicode di komentar - aman untuk parser Netlify)
+    body = f"""# Block internal tooling / docs from public HTTP (security hygiene)
+# Trailing ! = force even when the static file exists on disk
+# PENTING: baris ini WAJIB tetap di sini, bukan cuma di file _redirects manual -
+# write_redirects() menulis ulang SELURUH file tiap generate_saham.py jalan,
+# jadi kalau baris ini dihapus dari SINI, ia hilang lagi di regen berikutnya.
+/update.bat              /404.html   404!
+/_update/*               /404.html   404!
+/AGENTS.md               /404.html   404!
+/CLAUDE.md               /404.html   404!
+/RELEASE-PLAYBOOK.md     /404.html   404!
+
+# Pretty URLs (tanpa unicode di komentar - aman untuk parser Netlify)
 # /saham/ dan /rilis/ dilayani oleh index.html di folder masing-masing
 /saham/:code          /saham/:code.html          200
 {chr(10).join(legacy_aliases)}
