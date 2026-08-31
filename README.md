@@ -1,39 +1,50 @@
-# Dashboard Daftar Efek Syariah — Lotmetrik
+# Lotmetrik DES — Dashboard Daftar Efek Syariah IDX 2016–2026
 
-Alat data gratis: telusuri Daftar Efek Syariah OJK 2016–2026.
-Live: **https://des.lotmetrik.my.id** · Brand: Lotmetrik (teal = naik/masuk, merah = turun/keluar).
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)](https://typescriptlang.org)
 
-**Gratis permanen** (lead magnet). Bukan produk berbayar.
+Alat data gratis untuk menelusuri Daftar Efek Syariah (DES) OJK periode 2016–2026. Cek historis saham syariah IDX: kapan masuk, kapan keluar, berapa lama konsisten syariah.
 
-## Isi yang di-deploy
-- `index.html` — halaman + CSS
-- `app.js` — logika (chart, timeline, tracker + verdict, Panduan, modal)
-- `data.js` — 21 rilis OJK (bitstring; JANGAN edit tangan)
-- `og.png`, favicon, `robots.txt`, `sitemap.xml`
-- `404.html` — halaman error branded
-- `_headers` — header keamanan dasar Netlify
-
-Tanpa build, tanpa npm. `git push` ke `main` = auto-deploy Netlify.
-
-## Update data DES (tiap ~6 bulan — mandiri, tanpa AI)
-Lihat panduan non-coder: **`_update/CARA-UPDATE.md`**.
-
-Ringkas:
-1. Unduh Excel DES terbaru dari OJK.
-2. Rename: `DES_YYYY_Pn_KEPnn.xlsx` (P1 = tengah tahun, P2 = akhir tahun).
-3. Salah satu:
-   - **PC:** taruh di `_update/ojk_excel/` → double-click `update.bat`
-   - **Browser:** upload file itu ke folder yang sama di GitHub → Actions regen + deploy
-4. Script otomatis: regenerasi `data.js`, **850 halaman `/saham/KODE`**, `sitemap.xml`, samakan angka meta, gambar ulang `og.png`, naikkan `?v=`.
-5. Cek live (Ctrl+Shift+R). Contoh halaman: https://des.lotmetrik.my.id/saham/ASII
-
-Checklist hari-H: `RELEASE-PLAYBOOK.md`. Reminder Telegram otomatis 29 Mei & 29 Nov (Cloudflare Worker).
-
-## Aturan agent / AI
-Baca **`AGENTS.md`** (dan `../HANDOFF.md` di folder induk) sebelum mengubah apa pun.
-
-## Cache
-Tiap ubah `app.js` / `data.js` / CSS di `index.html` → naikkan `?v=NNN` di **kedua** tag `<script>`.
+**Live:** https://des.lotmetrik.my.id
 
 ---
-Lotmetrik · Sumber: OJK Daftar Efek Syariah. Edukasi, bukan rekomendasi investasi.
+
+## Fitur
+
+- 📋 **Riwayat DES Lengkap** — Data OJK 2016–2026 (10 tahun)
+- 🔍 **Search & Filter** — Cari saham berdasarkan kode atau nama
+- 📊 **Visualisasi** — Lihat tren masuk/keluar DES per periode
+- 🟢🔴 **Color-coded** — Teal = masuk/naik, merah = keluar/turun (brand Lotmetrik)
+- 📱 **Mobile Responsive** — Optimal di semua device
+- 🌐 **Static** — No backend, no login
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/alfindigital/lotmetrik-des.git
+cd lotmetrik-des
+npm install
+npm run dev
+npm run build
+```
+
+---
+
+## Stack
+
+- TanStack Start + TypeScript 5
+- Tailwind CSS + shadcn/ui
+
+---
+
+## Data Source
+
+Data bersumber dari publikasi resmi OJK (Otoritas Jasa Keuangan) — Daftar Efek Syariah (DES) yang diperbarui setiap 6 bulan.
+
+---
+
+## Lisensi
+
+[MIT](LICENSE)

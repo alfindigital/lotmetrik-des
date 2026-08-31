@@ -1,2 +1,35 @@
-__pycache__/
-*.pyc
+# Logs
+logs
+*.log
+npm-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Environment
+.env
+.env.*
+.env.local
+!.env.example
+*.key
+*.pem
+secrets/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.sw?
+
+# AI agent folders
+.agents/
+.gemini/
+.lovable/
+.cursor/
+
+# Test artifacts  
+playwright-report/
+test-results/
