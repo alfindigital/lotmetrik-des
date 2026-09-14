@@ -16,8 +16,7 @@ echo Kalau muncul jendela login GitHub, ikuti saja (cukup sekali seumur PC).
 echo.
 pause
 
-set "PY=python"
-where python >nul 2>nul || set "PY=C:\Python314\python.exe"
+set "PY=C:\Users\GEEKOM A8\AppData\Local\Programs\Python\Python312\python.exe"
 
 echo.
 echo [1/4] Menghitung ulang data...
