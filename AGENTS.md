@@ -3,7 +3,7 @@
 > Pemilik project adalah NON-CODER. Jelaskan dalam Bahasa Indonesia santai, langkah "ketik ini", tanpa jargon. Laporkan hasil dengan jujur (kalau gagal bilang gagal), verifikasi sebelum klaim selesai.
 
 ## Status aktif (4 Agu 2026 — diverifikasi ulang, lihat catatan di bawah)
-- **Folder proyek:** `C:\Users\GEEKOM A8\Documents\IDX\DES Daftar Efek Syariah\` (pindah dari Desktop, Sep 2026) — situs di subfolder `des-flow-tool-v2\`.
+- **Folder proyek:** `C:\Users\GEEKOM A8\Documents\IDX\DES Daftar Efek Syariah\` (pindah dari Desktop, Sep 2026) — **situs di ROOT repo ini** (konsolidasi 23 Sep: subfolder `des-flow-tool-v2\` dihapus, dulunya clone kedua repo yang sama).
 - **Handoff AI baru:** baca `..\CURSOR-HANDOFF.md` dulu, lalu `..\HANDOFF.md`. Skill Cursor: `../.cursor/skills/des-dashboard/SKILL.md` (mirror di `.cursor/skills/des-dashboard/` folder ini).
 - **Versi:** v2.5 LIVE. Cache **`?v=301`**. Commit terakhir: `e1bcbddc` di `lotmetrik-des`.
 - **Funnel:** `funnel.js` **v3** (internal, lihat komentar baris 1 file) — delay 5s, circle countdown **10s**, CTA `t.me/lotmetrik`, key sessionStorage **`lotmetrik-tg-funnel-v3`**.
