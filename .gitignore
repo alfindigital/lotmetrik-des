@@ -36,3 +36,18 @@ test-results/
 
 __pycache__/
 *.pyc
+
+# Internal-only material (LOCAL ONLY — jangan pernah push ke remote publik lotmetrik-des)
+# Lineage lama juga tersimpan di branch lokal archive/local-legacy-20260922
+DESOJK/
+DES_FLOW_migration/
+_arsip-era-v0/
+_brand_alfindigital/
+_socmed/
+des-flow-tool/
+des-flow-tool-v2/
+HANDOFF.md
+CURSOR-HANDOFF.md
+LINK-PENTING.md
+LAPORAN_*.md
+THREAT_MODEL*.md
