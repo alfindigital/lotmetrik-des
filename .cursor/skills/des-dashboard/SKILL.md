@@ -11,17 +11,19 @@ description: >-
 
 ## First action
 
-Read in order (paths relative to this repo / parent):
+Read in order (repo root):
 
-1. `../CURSOR-HANDOFF.md` — status + next steps from Cursor handoff
-2. `../HANDOFF.md` — long-form handoff
-3. `AGENTS.md` — hard product rules (this folder)
+1. `HANDOFF.md` — long-form handoff (local-only, gitignored)
+2. `AGENTS.md` — hard product rules
+
+`CURSOR-HANDOFF.md` no longer exists — skip references to it in old docs.
 
 Confirm briefly; do not change files until asked.
 
-## Snapshot (2 Aug 2026)
+## Snapshot (9 Okt 2026)
 
-- Live `?v=297` · funnel v2 → `t.me/lotmetrik` · Worker reminder **deleted**
+- Live `?v=301` · funnel v3 → `t.me/lotmetrik` · Worker reminder **deleted**
+- Site at repo ROOT — subfolder `des-flow-tool-v2/` removed 23 Sep; content commit `f7e1bc50`
 - Push this repo (`lotmetrik-des`) to deploy Netlify
 - Focus: **promotion**, not new features
 - Semester update: `update.bat` + `RELEASE-PLAYBOOK.md`
@@ -35,4 +37,4 @@ Confirm briefly; do not change files until asked.
 - No inline third-party scripts (CSP) — use `analytics.js` + `_headers`
 - No DES prediction / buy-signal copy
 
-Full rules: `AGENTS.md`. Full session log: `../CURSOR-HANDOFF.md`.
+Full rules: `AGENTS.md` (repo root). Full session log: `HANDOFF.md` (repo root, local-only).

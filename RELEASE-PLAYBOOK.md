@@ -22,7 +22,7 @@ Dokumen ini = checklist hari-H (update + promosi). Jangan edit `data.js` / `inde
 2. [ ] Rename: `DES_TAHUN_Pn_KEPno.xlsx`  
    Contoh: `DES_2026_P2_KEP60.xlsx` (P1 = tengah tahun, P2 = akhir tahun).
 3. [ ] Pilih satu:
-   - **PC:** taruh file di `des-flow-tool-v2\_update\ojk_excel\` → double-click **`update.bat`** → tunggu SELESAI.
+   - **PC:** taruh file di `_update\ojk_excel\` → double-click **`update.bat`** → tunggu SELESAI.
    - **HP/browser:** GitHub `lotmetrik-des` → `_update/ojk_excel` → Upload files → commit (Actions mengerjakan sisanya).
 4. [ ] Script otomatis: `data.js`, halaman `/saham/` + `/rilis/`, sitemap, og.png, cache `?v=`, commit + push → Netlify deploy.
 5. [ ] Verifikasi live: https://des.lotmetrik.my.id → **Ctrl+Shift+R**. Cek angka Kini, 1 saham di tracker, 1 halaman `/saham/KODE`.

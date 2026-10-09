@@ -2,10 +2,10 @@
 
 > Pemilik project adalah NON-CODER. Jelaskan dalam Bahasa Indonesia santai, langkah "ketik ini", tanpa jargon. Laporkan hasil dengan jujur (kalau gagal bilang gagal), verifikasi sebelum klaim selesai.
 
-## Status aktif (4 Agu 2026 — diverifikasi ulang, lihat catatan di bawah)
+## Status aktif (9 Okt 2026 — diverifikasi ulang ke live, lihat catatan di bawah)
 - **Folder proyek:** `C:\Users\GEEKOM A8\Documents\IDX\DES Daftar Efek Syariah\` (pindah dari Desktop, Sep 2026) — **situs di ROOT repo ini** (konsolidasi 23 Sep: subfolder `des-flow-tool-v2\` dihapus, dulunya clone kedua repo yang sama).
-- **Handoff AI baru:** baca `..\CURSOR-HANDOFF.md` dulu, lalu `..\HANDOFF.md`. Skill Cursor: `../.cursor/skills/des-dashboard/SKILL.md` (mirror di `.cursor/skills/des-dashboard/` folder ini).
-- **Versi:** v2.5 LIVE. Cache **`?v=301`**. Commit terakhir: `e1bcbddc` di `lotmetrik-des`.
+- **Handoff AI baru:** baca `HANDOFF.md` di folder ini (lokal saja, gitignored). Skill: `.cursor/skills/des-dashboard/SKILL.md` di folder ini juga. `CURSOR-HANDOFF.md` sudah TIDAK ADA — jangan dicari.
+- **Versi:** v2.5 LIVE. Cache **`?v=301`** (sama di lokal & live — dicek 9 Okt 2026). Commit konten terakhir: `f7e1bc50` di `lotmetrik-des` (cek `git log -1` untuk HEAD — commit docs tidak mengubah situs).
 - **Funnel:** `funnel.js` **v3** (internal, lihat komentar baris 1 file) — delay 5s, circle countdown **10s**, CTA `t.me/lotmetrik`, key sessionStorage **`lotmetrik-tg-funnel-v3`**.
 - **Reminder Worker:** **DIHAPUS** di Cloudflare (bukan cuma dimatikan). Update DES pakai kalender + OJK.
 - **PENTING — dokumen ini pernah basi 12 commit:** per 4 Agu, angka `?v=`/commit di file ini SUDAH disamakan lagi ke live. Tapi ini bisa basi lagi kapan saja kalau kerja lanjut tanpa update baris ini. **Sebelum percaya angka di atas, cek dulu:** `grep -o '?v=[0-9]*' index.html` (lokal) vs `curl -s https://des.lotmetrik.my.id/ | grep -o 'app.js?v=[0-9]*'` (live). Kalau beda, dokumen ini yang salah, bukan situsnya.
@@ -18,7 +18,7 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 
 ## Deploy & repo
 - Repo situs: **`alfindigital/lotmetrik-des`** (publik). Push `main` → Netlify site `lotmetrikdes`.
-- Repo arsip: **`alfindigital/des`** (Excel + otomasi). Folder induk lokal adalah git arsip ini.
+- Repo arsip: **`alfindigital/des`** (Excel + otomasi). **Tidak ada clone lokal** — folder induk `IDX\` BUKAN git repo; clone ulang dari GitHub kalau perlu.
 - v1 lama (`des-flow-tool`, repo `des-flow-v1`) = 301 redirect. Jangan digarap / jangan hapus.
 
 ## Struktur penting
@@ -30,9 +30,9 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 - `analytics.js` = GA4 (`G-KJVN9Z014V`) + Microsoft Clarity (`xrvlyaao2k`). **Jangan pakai inline `<script>`** — CSP `script-src 'self'` + daftar putih memblokir inline. Domain pihak ketiga wajib didaftarkan di `_headers`.
 - `_update/` = kit update semester: `parse_des.py`, `build_data.py` (panggil generator), `generate_saham.py`, `render_og.py`, `ojk_excel/`, `fonts/`.
 - Pemicu update: `update.bat` ATAU upload Excel ke `_update/ojk_excel/` via GitHub web → Actions.
-- Reminder Cloudflare Worker `des-reminder` **DIHAPUS** dari account CF (1 Agu 2026). Source lokal di `../des-reminder-worker/` = stub disabled. Update pakai kalender + OJK.
+- Reminder Cloudflare Worker `des-reminder` **DIHAPUS** dari account CF (1 Agu 2026). Folder lokal `des-reminder-worker/` tinggal kerangka kosong (source ikut terhapus). Update DES pakai kalender + OJK.
 - Funnel brand: popup Telegram `t.me/lotmetrik` (`funnel.js` v3) — delay 5s, ring countdown 10s, dismiss X/skip/backdrop/Esc. Satu kali per sesi (`lotmetrik-tg-funnel-v3`). Event: `telegram_funnel_*`.
-- `_socmed/` di folder induk = kit gambar sosmed **LOKAL SAJA** (sengaja tidak di-git).
+- `_socmed/` di folder ini = kit gambar sosmed **LOKAL SAJA** (sengaja tidak di-git).
 
 ## Aturan WAJIB (jangan dilanggar)
 - Kriteria Panduan = **POJK 8/2025** (utang bunga →33% bertahap, non-halal <5%). JANGAN kembalikan ke 45%/10%.

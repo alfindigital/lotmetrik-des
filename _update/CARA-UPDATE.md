@@ -35,8 +35,8 @@ baru, kamu tinggal kasih 1 file Excel — semua angka, grafik, verdict, dan gamb
 Paling cepat, semua di PC kamu.
 
 1. Taruh file Excel (yang sudah diganti nama) ke folder:
-   `des-flow-tool-v2\_update\ojk_excel\`
-2. **Double-click `update.bat`** (ada di folder `des-flow-tool-v2`).
+   `_update\ojk_excel\`
+2. **Double-click `update.bat`** (ada di root folder repo).
 3. Ikuti layar → ketik apa saja saat diminta "pause" → biarkan jalan.
 4. Kalau muncul **"SELESAI"**, buka <https://des.lotmetrik.my.id> (Ctrl+Shift+R). Beres.
 
