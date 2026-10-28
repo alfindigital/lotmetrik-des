@@ -19,8 +19,8 @@ Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**.
 ## Deploy & repo
 - Repo situs: **`alfindigital/lotmetrik-des`** (publik). Push `main` → Netlify site `lotmetrikdes`.
 - Repo arsip: **`alfindigital/des`** (Excel + otomasi). **Tidak ada clone lokal** — folder induk `IDX\` BUKAN git repo; clone ulang dari GitHub kalau perlu.
-- v1 lama (`des-flow-tool`, repo `des-flow-v1`) = 301 redirect. Jangan digarap / jangan hapus.
-  - **Per 28 Okt 2026 repo GitHub `alfindigital/des-flow-v1` sudah tidak ada (404)**. Folder `des-flow-tool\` (git 2 commit, HEAD `2fdf323`, di-gitignore repo ini) kini **satu-satunya salinan** v1; terlindungi hanya oleh backup Duplicati Documents. Remote `origin` di dalamnya masih menunjuk repo yang hilang, jadi `git push` di sana gagal. Push ulang ke repo baru = keputusan owner.
+- v1 lama (`des-flow-tool`) = 301 redirect. Jangan digarap / jangan hapus.
+  - Repo lama `alfindigital/des-flow-v1` hilang (404, dicek 28 Okt 2026). Atas ACC owner 28 Okt, folder `des-flow-tool\` (git 2 commit, HEAD `2fdf323`, di-gitignore repo ini) di-push ke repo baru **`alfindigital/des-flow-tool` (privat)**; `origin` di folder itu sudah menunjuk repo baru. Scan gitleaks sebelum push: 0 temuan.
 
 ## Struktur penting
 - Statis tanpa build: `index.html` + `app.js` + `data.js`. Zero dependency runtime.
