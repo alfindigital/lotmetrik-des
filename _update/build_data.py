@@ -108,7 +108,7 @@ def main():
 
     # ---- tulis data.js ----
     header = ("/* Lotmetrik · DES Dashboard data · sumber resmi OJK (Daftar Efek Syariah) "
-              + order[0][:4] + "-" + order[-1][:4] + " · des.lotmetrik.my.id */\n")
+              + order[0][:4] + "-" + order[-1][:4] + " · desojk.web.id */\n")
     body = "window.DES=" + json.dumps({"meta": meta, "names": names, "present": present}, ensure_ascii=False) + ";\n"
     open(DATA_JS, "w", encoding="utf-8", newline="\n").write(header + body)
 

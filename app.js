@@ -9,7 +9,7 @@ var DES = window.DES;
 if(!DES){document.body.innerHTML='<p style="padding:40px">Gagal memuat data.</p>';return;}
 var META=DES.meta, NAMES=DES.names, PRES=DES.present, N=META.length;
 var TICKERS=Object.keys(PRES).sort();
-var MINUS='−', SITE='https://des.lotmetrik.my.id';
+var MINUS='−', SITE='https://desojk.web.id';
 var BLN=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
 
 var $=function(s,r){return (r||document).querySelector(s);};
@@ -141,8 +141,14 @@ function closePanduan(){if(!document.body.classList.contains('panduan-open'))ret
 /* ---------- stats (hero) ---------- */
 function renderHero(){
   var first=periods[0],last=periods[N-1];
+  var hn=$('#heroNum');if(hn)hn.textContent=fmtNum(last.total);
+  var he=$('#heroEyebrow span');if(he)he.innerHTML='Rilis '+esc(last.label)+(last.kep?'<span class="kep"> · '+esc(last.kep)+'</span>':'');
+  var hd=$('#heroDelta');if(hd)hd.innerHTML=
+    '<span class="hero-pill in"><span class="k">Masuk</span><b>+'+last.masuk.length+'</b></span>'+
+    '<span class="hero-pill out"><span class="k">Keluar</span><b>'+MINUS+last.keluar.length+'</b></span>'+
+    '<span class="hero-pill"><span class="k">Net</span><b>'+fmtSigned(last.net)+'</b></span>'+
+    '<a class="hero-pill rel" href="'+releaseUrl(last.i)+'">Lihat rilis →</a>';
   $('#heroMetrics').innerHTML=[
-    st(fmtNum(last.total),'m-now','Terbaru'),
     st(fmtNum(peak.total),'m-peak','Puncak'),
     st(String(survivors.length),'m-setia','Setia',0),
     st(String(comeback.length),'m-back','Comeback',2)
@@ -384,8 +390,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal(
 var TKEY='lotmetrik-des-theme';
 var CKEY='lotmetrik-des-chart-open';
 function applyTheme(m){var t=$('#themeBtn');
-  if(m==='terminal'){document.documentElement.setAttribute('data-theme','terminal');document.querySelector('meta[name=theme-color]').content='#0B1F3A';if(t)t.setAttribute('aria-pressed','true');}
-  else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#F5F7FA';if(t)t.setAttribute('aria-pressed','false');}}
+  if(m==='terminal'){document.documentElement.setAttribute('data-theme','terminal');document.querySelector('meta[name=theme-color]').content='#0A1712';if(t)t.setAttribute('aria-pressed','true');}
+  else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#0F3D2E';if(t)t.setAttribute('aria-pressed','false');}}
 (function(){try{var s=localStorage.getItem(TKEY);if(s)applyTheme(s);}catch(e){}})();
 $('#themeBtn').addEventListener('click',function(){var term=document.documentElement.getAttribute('data-theme')==='terminal';var next=term?'light':'terminal';applyTheme(next);try{localStorage.setItem(TKEY,next);}catch(e){}});
 (function initChartTog(){

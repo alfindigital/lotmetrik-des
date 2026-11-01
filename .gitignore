@@ -51,3 +51,6 @@ CURSOR-HANDOFF.md
 LINK-PENTING.md
 LAPORAN_*.md
 THREAT_MODEL*.md
+
+# Cloudflare wrangler cache (deploy desojk)
+.wrangler/

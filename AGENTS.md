@@ -13,6 +13,17 @@
 - **Sinkron:** `git push` `main` di **repo ini** (`lotmetrik-des`) = auto-deploy Netlify. Tiap ubah JS/CSS/data → naikkan `?v=` di `index.html` + loader di `share.js` + `CACHE_V` generator.
 - Standar produk: **gratis lead magnet**, bukan one-time sale. JANGAN paywall.
 
+## desojk.web.id (v3, situs kedua — mulai 2 Nov 2026)
+- Keputusan owner 2 Nov 2026: **desojk.web.id dan des.lotmetrik.my.id jalan INDEPENDEN masing-masing.** TIDAK ada redirect 301 di antara keduanya; jangan usulkan lagi. desojk tetap "by Lotmetrik" + funnel Telegram, isi lengkap, desain "Islami geometris modern" (hijau tua #0F3D2E + emas #C9A24B + krem, judul Fraunces, angka mono). des.lotmetrik tetap desain lama.
+- desojk hidup di branch **`desojk-v3`**, des.lotmetrik di `main`. JANGAN merge `desojk-v3` ke `main` (push `main` = Netlify des.lotmetrik berubah jadi desojk).
+- Rilis DES baru = update DUA kali: data/Excel di `main` (des.lotmetrik) DAN di `desojk-v3` (lalu deploy Pages di bawah).
+- Tampilan diatur **satu file `desojk.css`** (dimuat SETELAH `<style>` bawaan tiap halaman, termasuk semua halaman generator). Ubah desain di file ini, bukan di CSS inline generator. Tiap ubah CSS/JS: naikkan `?v=` (sekarang `302`) di `index.html` + `CACHE_V` generator.
+- Domain di generator: `SITE = "https://desojk.web.id"`. `index.html` sekarang UTF-8 (dulu cp1252, judul tampil "�" di live lama).
+- Beacon Cloudflare Web Analytics lama (token situs lama) sengaja dilepas dari `index.html`.
+- **LIVE 2 Nov 2026** di https://desojk.web.id (Pages `desojk-web-id`, akun `b534acd3…`), diverifikasi: `/`, `/saham/<kode>`, `/rilis/<slug>`, alias 301 rilis, 404 untuk file internal, font + motif termuat di bawah CSP. `_headers` img-src kini mengizinkan `https://www.googletagmanager.com` (piksel GA4 dulu diblokir). des.lotmetrik.my.id sengaja TIDAK dialihkan (keputusan owner: independen).
+- Jebakan Cloudflare Pages: rewrite `200` ke `:x.html` (gaya Netlify) bikin loop 308. `build_dist_desojk.py` membuangnya otomatis; jangan tambahkan lagi di `dist/_redirects`.
+- Deploy: `python _update/generate_saham.py` → `python _update/render_og.py` → `python _update/build_dist_desojk.py` (rakit `dist/` daftar putih + `_redirects` versi Cloudflare) → `npx wrangler@4 pages deploy dist --project-name desojk-web-id --branch main --commit-dirty=true` (akun Cloudflare utama, proyek Pages parkir desojk dari `Documents/Apps/domain-parking`; **izin owner wajib**).
+
 ## Apa ini
 Web freebie data Daftar Efek Syariah (DES) OJK 2016–2026, brand **Lotmetrik**. LIVE di https://des.lotmetrik.my.id.
 

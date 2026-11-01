@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://des.lotmetrik.my.id/sitemap.xml
+Sitemap: https://desojk.web.id/sitemap.xml

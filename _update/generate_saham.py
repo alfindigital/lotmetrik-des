@@ -20,8 +20,8 @@ ROOT = os.path.dirname(HERE)
 DATA_JS = os.path.join(ROOT, "data.js")
 SAHAM_DIR = os.path.join(ROOT, "saham")
 SITEMAP = os.path.join(ROOT, "sitemap.xml")
-SITE = "https://des.lotmetrik.my.id"
-CACHE_V = "301"
+SITE = "https://desojk.web.id"
+CACHE_V = "302"
 
 
 def die(msg: str) -> None:
@@ -424,7 +424,7 @@ def page_html(
 <script src="/analytics.js" defer></script>
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(og_desc)}">
-<meta name="theme-color" content="#0B1F3A">
+<meta name="theme-color" content="#0F3D2E">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lotmetrik">
@@ -438,7 +438,7 @@ def page_html(
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 <style>
 :root{{--navy:#0B1F3A;--teal:#0F9488;--teal-text:#0D7A70;--teal-soft:rgba(20,184,166,.12);
@@ -542,6 +542,7 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
 }}
 @media(prefers-reduced-motion:reduce){{*{{animation-duration:.01ms!important;transition-duration:.01ms!important}}}}
 </style>
+<link rel="stylesheet" href="/desojk.css?v={CACHE_V}">
 </head>
 <body>
 <div class="wrap">
@@ -549,9 +550,9 @@ h1{{font-size:clamp(1.25rem,4vw,1.55rem);letter-spacing:-.03em;line-height:1.2;m
     <a class="brand" href="/">
       <span class="brand-ic" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/>
-          <circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/>
-          <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
+          <circle cx="10.5" cy="12.5" r="7.2" fill="#C9A24B"/>
+          <circle cx="13.8" cy="10.4" r="6" fill="#0F3D2E"/>
+          <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#F3E3B5"/>
         </svg>
       </span>
       <span><span class="wm">Daftar Efek Syariah</span><span class="by">by @lotmetrik</span></span>
@@ -779,7 +780,7 @@ def rilis_terbaru_html(
 <script src="/analytics.js" defer></script>
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
-<meta name="theme-color" content="#0B1F3A">
+<meta name="theme-color" content="#0F3D2E">
 <link rel="canonical" href="{url}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lotmetrik">
@@ -793,11 +794,12 @@ def rilis_terbaru_html(
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@600;700&display=swap">
 <script type="application/ld+json">{json.dumps(ld, ensure_ascii=False)}</script>
 <style>
 {_shell_css()}
 </style>
+<link rel="stylesheet" href="/desojk.css?v={CACHE_V}">
 </head>
 <body>
 <div class="wrap">
@@ -805,9 +807,9 @@ def rilis_terbaru_html(
     <a class="brand" href="/">
       <span class="brand-ic" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none">
-          <circle cx="10.5" cy="12.5" r="7.2" fill="#2DD4BF"/>
-          <circle cx="13.8" cy="10.4" r="6" fill="#0B1F3A"/>
-          <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#FBBF24"/>
+          <circle cx="10.5" cy="12.5" r="7.2" fill="#C9A24B"/>
+          <circle cx="13.8" cy="10.4" r="6" fill="#0F3D2E"/>
+          <path d="M17.4 6.8L17.9 8.1L19.2 8.6L17.9 9.1L17.4 10.4L16.9 9.1L15.6 8.6L16.9 8.1Z" fill="#F3E3B5"/>
         </svg>
       </span>
       <span><span class="wm">Daftar Efek Syariah</span><span class="by">by @lotmetrik</span></span>

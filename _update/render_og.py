@@ -26,8 +26,9 @@ sansb = lambda s: font("PlusJakartaSans-ExtraBold.ttf", s)
 mono  = lambda s: font("JetBrainsMono-Regular.ttf", s)
 monob = lambda s: font("JetBrainsMono-Bold.ttf", s)
 
-NAVY = (11, 31, 58); NAVY950 = (6, 18, 31); INK = (245, 247, 250); MUT = (138, 153, 173)
-TEAL = (45, 212, 191); AMBER = (251, 191, 36); RED = (248, 113, 113); GRID = (18, 42, 74); SLATE = (95, 113, 134)
+NAVY = (15, 61, 46); NAVY950 = (8, 34, 26); INK = (244, 238, 223); MUT = (190, 198, 186)
+TEAL = (127, 224, 191); AMBER = (228, 204, 142); RED = (255, 170, 156); GRID = (20, 70, 54); SLATE = (160, 172, 160)
+GOLD = (201, 162, 75)
 
 img = Image.new("RGB", (W, H), NAVY); d = ImageDraw.Draw(img)
 M = 64 * S
@@ -39,7 +40,7 @@ def tracked(draw, xy, text, fnt, fill, track):
     return x
 
 # eyebrow
-tracked(d, (M, 48 * S), "DAFTAR EFEK SYARIAH · IDX · 2016–" + DES["meta"][-1]["date"].split()[-1], monob(18), TEAL, 2 * S)
+tracked(d, (M, 48 * S), "DAFTAR EFEK SYARIAH · IDX · 2016–" + DES["meta"][-1]["date"].split()[-1], monob(18), GOLD, 2 * S)
 # title
 d.text((M, 80 * S), "DES Dashboard", font=sansb(62), fill=INK)
 tw = d.textlength("DES Dashboard", font=sansb(62))
@@ -49,7 +50,7 @@ d.text((M, 158 * S), "Saham yang masuk & keluar daftar syariah OJK, tiap rilis."
 
 # ---- chart panel ----
 cx0, cy0, cx1, cy1 = M, 214 * S, W - M, 522 * S
-d.rounded_rectangle([cx0, cy0, cx1, cy1], radius=10 * S, fill=NAVY950, outline=(27, 58, 96), width=S)
+d.rounded_rectangle([cx0, cy0, cx1, cy1], radius=10 * S, fill=NAVY950, outline=(201, 162, 75), width=S)
 px0, py0, px1, py1 = cx0 + 30 * S, cy0 + 34 * S, cx1 - 30 * S, cy1 - 30 * S
 for gx in range(px0, px1, 40 * S): d.line([gx, py0, gx, py1], fill=GRID, width=1)
 for gy in range(py0, py1, 34 * S): d.line([px0, gy, px1, gy], fill=GRID, width=1)
@@ -59,10 +60,10 @@ Y = lambda v: py0 + (py1 - py0) * (1 - (v - ymin) / (ymax - ymin))
 pts = [(X(i), Y(totals[i])) for i in range(N)]
 poly = pts + [(pts[-1][0], py1), (pts[0][0], py1)]
 fill_img = Image.new("RGBA", img.size, (0, 0, 0, 0)); fd = ImageDraw.Draw(fill_img)
-fd.polygon(poly, fill=(45, 212, 191, 28)); img = Image.alpha_composite(img.convert("RGBA"), fill_img).convert("RGB"); d = ImageDraw.Draw(img)
+fd.polygon(poly, fill=(127, 224, 191, 30)); img = Image.alpha_composite(img.convert("RGBA"), fill_img).convert("RGB"); d = ImageDraw.Draw(img)
 for i in range(1, N):
     d.line([pts[i - 1], pts[i]], fill=(RED if i > peak_i else TEAL), width=3 * S)
-d.text((px0 + 4 * S, py0 + 4 * S), "@lotmetrik", font=monob(15), fill=(45, 212, 191), anchor="la")
+d.text((px0 + 4 * S, py0 + 4 * S), "@lotmetrik", font=monob(15), fill=GOLD, anchor="la")
 for i in range(N):
     r, col = 2.6 * S, TEAL
     if i == 0: col = INK
@@ -76,9 +77,9 @@ lbl(0, INK, -34 * S); lbl(peak_i, AMBER, -34 * S); lbl(N - 1, RED, 30 * S)
 fy = 558 * S
 d.text((M, fy), "lot", font=sansb(30), fill=INK)
 xw = M + d.textlength("lot", font=sansb(30))
-d.text((xw, fy), "metrik", font=sansb(30), fill=TEAL); xw += d.textlength("metrik", font=sansb(30))
+d.text((xw, fy), "metrik", font=sansb(30), fill=GOLD); xw += d.textlength("metrik", font=sansb(30))
 d.text((xw + 14 * S, fy + 6 * S), "Tiap lot, ada datanya.", font=mono(19), fill=SLATE)
-stamp = "Sumber: OJK · des.lotmetrik.my.id"
+stamp = "Sumber: OJK · desojk.web.id"
 sw = d.textlength(stamp, font=mono(19))
 d.text((W - M - sw, fy + 6 * S), stamp, font=mono(19), fill=SLATE)
 

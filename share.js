@@ -7,11 +7,11 @@
     var t = document.getElementById("themeBtn");
     if (m === "terminal") {
       document.documentElement.setAttribute("data-theme", "terminal");
-      if (meta) meta.content = "#0B1F3A";
+      if (meta) meta.content = "#0A1712";
       if (t) t.setAttribute("aria-pressed", "true");
     } else {
       document.documentElement.removeAttribute("data-theme");
-      if (meta) meta.content = "#F5F7FA";
+      if (meta) meta.content = "#0F3D2E";
       if (t) t.setAttribute("aria-pressed", "false");
     }
   }
