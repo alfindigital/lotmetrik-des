@@ -390,8 +390,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal(
 var TKEY='lotmetrik-des-theme';
 var CKEY='lotmetrik-des-chart-open';
 function applyTheme(m){var t=$('#themeBtn');
-  if(m==='terminal'){document.documentElement.setAttribute('data-theme','terminal');document.querySelector('meta[name=theme-color]').content='#0A1712';if(t)t.setAttribute('aria-pressed','true');}
-  else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#0F3D2E';if(t)t.setAttribute('aria-pressed','false');}}
+  if(m==='terminal'){document.documentElement.setAttribute('data-theme','terminal');document.querySelector('meta[name=theme-color]').content='#0B1F3A';if(t)t.setAttribute('aria-pressed','true');}
+  else{document.documentElement.removeAttribute('data-theme');document.querySelector('meta[name=theme-color]').content='#F5F7FA';if(t)t.setAttribute('aria-pressed','false');}}
 (function(){try{var s=localStorage.getItem(TKEY);if(s)applyTheme(s);}catch(e){}})();
 $('#themeBtn').addEventListener('click',function(){var term=document.documentElement.getAttribute('data-theme')==='terminal';var next=term?'light':'terminal';applyTheme(next);try{localStorage.setItem(TKEY,next);}catch(e){}});
 (function initChartTog(){

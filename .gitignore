@@ -54,3 +54,4 @@ THREAT_MODEL*.md
 
 # Cloudflare wrangler cache (deploy desojk)
 .wrangler/
+_preview/
